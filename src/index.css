@@ -1156,4 +1156,381 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
+/* ==========================================
+   MOBILE RESPONSIVE STYLES
+   ========================================== */
+
+/* Mobile Breakpoints */
+@media (max-width: 768px) {
+  /* Navbar Mobile Styles */
+  .desktop-nav {
+    display: none !important;
+  }
+  
+  .mobile-menu-button {
+    display: flex !important;
+  }
+
+  /* Dashboard Mobile */
+  .dashboard-page {
+    padding: 20px 15px !important;
+  }
+
+  .dashboard-content-wrapper {
+    padding: 0 !important;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 0;
+  }
+
+  .dashboard-hero h1 {
+    font-size: 2rem !important;
+  }
+
+  .dashboard-hero p {
+    font-size: 1.1rem !important;
+  }
+
+  .dashboard-new-entry-btn {
+    width: 100%;
+    padding: 18px !important;
+    font-size: 18px !important;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .dashboard-card {
+    padding: 25px !important;
+  }
+
+  .dashboard-card-header h2 {
+    font-size: 1.3rem !important;
+  }
+
+  .dashboard-card-stat {
+    font-size: 2.5rem !important;
+  }
+
+  /* Journal Editor Mobile */
+  .journal-editor {
+    padding: 15px !important;
+    margin-top: 70px !important;
+  }
+
+  .journal-editor-content {
+    padding: 20px 15px !important;
+  }
+
+  .journal-editor h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .journal-editor input[type="text"],
+  .journal-editor textarea {
+    font-size: 16px !important; /* Prevents iOS zoom */
+    padding: 15px !important;
+  }
+
+  .journal-editor .media-buttons {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  .journal-editor .media-buttons button {
+    flex: 1 1 calc(50% - 5px) !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+  }
+
+  .journal-editor .action-buttons {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .journal-editor .action-buttons button {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+
+  /* Community Mobile */
+  .community-container {
+    padding: 15px !important;
+  }
+
+  .community-container h1 {
+    font-size: 2rem !important;
+  }
+
+  .community-filters {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .community-filters button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .community-post {
+    padding: 20px !important;
+  }
+
+  .community-post-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  /* Timeline Mobile */
+  .timeline-container {
+    padding: 15px !important;
+    margin-top: 70px !important;
+  }
+
+  .timeline-entry {
+    padding: 20px !important;
+    margin-left: 30px !important;
+  }
+
+  .timeline-entry::before {
+    left: -30px !important;
+  }
+
+  /* Analytics Mobile */
+  .analytics-container {
+    padding: 15px !important;
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .analytics-card {
+    padding: 20px !important;
+  }
+
+  /* Settings Mobile */
+  .settings-container {
+    padding: 15px !important;
+    max-width: 100% !important;
+  }
+
+  .settings-section {
+    padding: 20px !important;
+  }
+
+  .color-picker-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  /* Modal Mobile */
+  .modal-overlay {
+    padding: 15px !important;
+  }
+
+  .modal-content {
+    width: 95% !important;
+    max-height: 90vh !important;
+    padding: 20px !important;
+    overflow-y: auto !important;
+  }
+
+  .share-modal {
+    width: 95% !important;
+    max-width: 100% !important;
+  }
+
+  /* Emotion Check-in Mobile */
+  .emotion-checkin {
+    padding: 15px !important;
+  }
+
+  .emotion-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .emotion-card {
+    padding: 20px !important;
+  }
+
+  .emotion-card .emoji {
+    font-size: 2.5rem !important;
+  }
+
+  /* Auth Page Mobile */
+  .auth-container {
+    padding: 20px !important;
+    width: 95% !important;
+  }
+
+  .auth-tabs {
+    flex-direction: row !important;
+  }
+
+  .auth-tabs button {
+    flex: 1 !important;
+    padding: 12px !important;
+  }
+
+  /* General Mobile Typography */
+  h1 {
+    font-size: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+  }
+
+  p {
+    font-size: 1rem !important;
+  }
+
+  /* Touch-friendly buttons */
+  button {
+    min-height: 44px !important; /* Apple's recommended touch target size */
+    touch-action: manipulation; /* Improves touch responsiveness */
+  }
+
+  /* Floating Action Button */
+  .dashboard-fab {
+    bottom: 20px !important;
+    right: 20px !important;
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  /* Reduce animations on mobile for performance */
+  .dashboard-particle,
+  .dashboard-sparkle {
+    display: none;
+  }
+
+  .dashboard-orb {
+    filter: blur(40px) !important;
+  }
+}
+
+/* Small Mobile (iPhone SE, older devices) */
+@media (max-width: 375px) {
+  .dashboard-hero h1 {
+    font-size: 1.75rem !important;
+  }
+
+  .dashboard-card-stat {
+    font-size: 2rem !important;
+  }
+
+  .emotion-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .color-picker-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .journal-editor .media-buttons button {
+    flex: 1 1 100% !important;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .desktop-nav {
+    display: flex !important;
+    gap: 10px !important;
+  }
+
+  .desktop-nav button {
+    padding: 10px 15px !important;
+    font-size: 14px !important;
+  }
+
+  .mobile-menu-button {
+    display: none !important;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .community-filters {
+    justify-content: center !important;
+  }
+}
+
+/* Desktop - Show all features */
+@media (min-width: 1025px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+
+  .mobile-menu-button {
+    display: none !important;
+  }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .dashboard-hero {
+    padding: 20px 0 !important;
+  }
+
+  .dashboard-hero h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .modal-content {
+    max-height: 95vh !important;
+  }
+}
+
+/* iOS Safe Area Support */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .dashboard-bottom-nav,
+  .journal-editor-actions {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+  }
+
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* PWA Standalone Mode Adjustments */
+@media (display-mode: standalone) {
+  header {
+    padding-top: max(15px, env(safe-area-inset-top)) !important;
+  }
+
+  .dashboard-page {
+    padding-top: calc(70px + env(safe-area-inset-top)) !important;
+  }
+}
+
+/* Dark Mode Text Contrast for Mobile */
+@media (max-width: 768px) {
+  .text-gray-400 {
+    color: #9ca3af !important;
+  }
+
+  .text-white {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+}
+
 
