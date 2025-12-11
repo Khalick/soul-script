@@ -32,7 +32,7 @@ const SUPPORTIVE_MESSAGES = [
 
 export function Community() {
   const user = useAuthStore((state) => state.user);
-  const { favoriteColor, favoriteEmoji } = useSettingsStore();
+  const { favoriteColor } = useSettingsStore();
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'trending' | 'recent'>('recent');
@@ -161,7 +161,7 @@ export function Community() {
     });
   };
 
-  const sendSupportMessage = (postId: string, message: string) => {
+  const sendSupportMessage = (_postId: string, _message: string) => {
     // Visual feedback only for now
     const notification = document.createElement('div');
     notification.style.cssText = `

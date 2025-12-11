@@ -115,15 +115,6 @@ export function Settings() {
             </p>
           </div>
 
-          {/* Customizable Dear Prompt */}
-          <div className="dashboard-card" style={{ animationDelay: '0.2s' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '15px', color: 'white' }}>
-              📝 Customize Your Greeting
-            </h2>
-            <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '15px' }}>
-              Change who you're writing to (e.g., "Dear Mom", "Dear Future Me", "Dear God")
-            </p>
-
           {/* Install App Section */}
           {!isInstalled && (
             <div className="dashboard-card" style={{ animationDelay: '0.1s', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3))', border: '2px solid rgba(255, 255, 255, 0.2)' }}>
