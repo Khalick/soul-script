@@ -16,7 +16,7 @@ import { Analytics } from './components/Analytics';
 import { Community } from './components/Community';
 import { Navbar } from './components/Navbar';
 import { OfflineIndicator } from './components/OfflineIndicator';
-import { Home, Calendar, BarChart3, PlusCircle, LogOut } from 'lucide-react';
+import { Calendar, BarChart3, PlusCircle } from 'lucide-react';
 
 type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy';
 

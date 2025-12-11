@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, WifiOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, WifiOff, AlertCircle } from 'lucide-react';
 import { useSettingsStore } from '../stores/settingsStore';
 
 interface SaveNotificationProps {
@@ -9,7 +9,7 @@ interface SaveNotificationProps {
 }
 
 export const SaveNotification: React.FC<SaveNotificationProps> = ({ type, message, onClose }) => {
-  const { favoriteColor, favoriteEmoji } = useSettingsStore();
+  const { favoriteColor } = useSettingsStore();
 
   const getIcon = () => {
     if (type === 'offline') {

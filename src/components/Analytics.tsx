@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useJournalStore } from '../stores/journalStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getGradientBackground } from '../lib/colorUtils';
-import { TrendingUp, Calendar, Heart, Clock, Sparkles } from 'lucide-react';
+import { TrendingUp, Heart, Clock, Sparkles } from 'lucide-react';
 
 export function Analytics() {
   const entries = useJournalStore((state) => state.entries);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useOfflineStore } from '../stores/offlineStore';
-import { WifiOff, Wifi, Cloud, CloudOff } from 'lucide-react';
+import { WifiOff, Cloud, CloudOff } from 'lucide-react';
 import { syncOfflineEntries } from '../lib/offlineSync';
 import { useAuthStore } from '../stores/authStore';
 import { SyncSuccess } from './SyncSuccess';

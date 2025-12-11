@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Heart, Hash, Globe, Lock } from 'lucide-react';
+import { Users, Heart, Hash, Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -127,10 +127,7 @@ export function Community() {
     return posted.toLocaleDateString();
   };
 
-  const extractHashtags = (text: string): string[] => {
-    const hashtagRegex = /#[\w]+/g;
-    return text.match(hashtagRegex) || [];
-  };
+
 
   return (
     <div className="min-h-screen p-6 pb-24">
