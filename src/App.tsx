@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './stores/authStore';
 import { useJournalStore } from './stores/journalStore';
-import { useOfflineStore } from './stores/offlineStore';
 import { setupOnlineListener, syncOfflineEntries } from './lib/offlineSync';
 import AuthPage from './components/AuthPage';
 import { Dashboard } from './components/Dashboard';

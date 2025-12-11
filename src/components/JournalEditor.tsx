@@ -83,7 +83,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
 
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        const url = URL.createObjectURL(audioBlob);
+        URL.createObjectURL(audioBlob);
         // Audio URL created but not stored in state
         const file = new File([audioBlob], `voice-${Date.now()}.webm`, { type: 'audio/webm' });
         setMediaFiles((prev) => [...prev, file]);
