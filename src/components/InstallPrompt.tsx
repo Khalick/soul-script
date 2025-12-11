@@ -14,7 +14,11 @@ export default function InstallPrompt() {
 
   useEffect(() => {
     // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+      || (window.navigator as any).standalone 
+      || document.referrer.includes('android-app://');
+    
+    if (isStandalone) {
       setIsInstalled(true);
       console.log('✅ App is already installed');
       return;
@@ -24,6 +28,7 @@ export default function InstallPrompt() {
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
     console.log('📱 iOS detected:', ios);
+    console.log('🌐 User Agent:', navigator.userAgent);
 
     // For iOS, show prompt after 5 seconds
     if (ios) {
@@ -36,15 +41,18 @@ export default function InstallPrompt() {
 
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('🎉 beforeinstallprompt event fired!');
+      console.log('🎉 beforeinstallprompt event fired!', e);
       e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      const promptEvent = e as BeforeInstallPromptEvent;
+      setDeferredPrompt(promptEvent);
       
-      // Show prompt after 3 seconds if not dismissed before
+      // Show prompt immediately when event fires
       const hasBeenDismissed = localStorage.getItem('installPromptDismissed');
       if (!hasBeenDismissed) {
-        console.log('⏰ Will show install prompt in 3 seconds');
-        setTimeout(() => setShowPrompt(true), 3000);
+        console.log('⏰ Showing install prompt immediately');
+        setShowPrompt(true);
+      } else {
+        console.log('ℹ️ Install prompt was previously dismissed');
       }
     };
 
@@ -52,6 +60,7 @@ export default function InstallPrompt() {
 
     // Log if event listener is set up
     console.log('👂 Listening for beforeinstallprompt event');
+    console.log('🔧 ServiceWorker ready:', 'serviceWorker' in navigator);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -83,10 +92,10 @@ export default function InstallPrompt() {
   const handleDismiss = () => {
     setShowPrompt(false);
     localStorage.setItem('installPromptDismissed', 'true');
-    // Clear dismissal after 7 days
+    // Clear dismissal after 1 day for testing
     setTimeout(() => {
       localStorage.removeItem('installPromptDismissed');
-    }, 7 * 24 * 60 * 60 * 1000);
+    }, 24 * 60 * 60 * 1000);
   };
 
   // Don't show if already installed
