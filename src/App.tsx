@@ -14,6 +14,7 @@ import { Analytics } from './components/Analytics';
 import { Community } from './components/Community';
 import { Navbar } from './components/Navbar';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import InstallPrompt from './components/InstallPrompt';
 import { Calendar, BarChart3, PlusCircle } from 'lucide-react';
 
 type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy';
@@ -268,6 +269,9 @@ function App() {
 
       {/* Offline Indicator */}
       <OfflineIndicator />
+
+      {/* Install App Prompt */}
+      <InstallPrompt />
 
       {/* Floating Action Button */}
       <button

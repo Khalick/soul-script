@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useSubscriptionStore } from '../stores/subscriptionStore';
 import { getGradientBackground } from '../lib/colorUtils';
-import { Crown, Volume2 } from 'lucide-react';
+import { Crown, Volume2, Download, Smartphone } from 'lucide-react';
 
 export function Settings() {
   const { theme, favoriteColor, favoriteEmoji, dearPrompt, backgroundAmbience, ambienceVolume, customMusicUrl, setTheme, setFavoriteColor, setFavoriteEmoji, setDearPrompt, setBackgroundAmbience, setAmbienceVolume, setCustomMusicUrl } = useSettingsStore();
@@ -12,6 +12,9 @@ export function Settings() {
   const [tempPrompt, setTempPrompt] = useState(dearPrompt);
   const [tempMusicUrl, setTempMusicUrl] = useState(customMusicUrl);
   const [saved, setSaved] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   const premiumActive = checkSubscriptionStatus();
 
@@ -47,6 +50,43 @@ export function Settings() {
     return () => clearInterval(interval);
   }, []);
 
+  // Check PWA install status
+  useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+    }
+
+    // Check if iOS
+    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsIOS(ios);
+
+    // Listen for install prompt
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === 'accepted') {
+      setIsInstalled(true);
+    }
+
+    setDeferredPrompt(null);
+  };
+
   const handleSave = () => {
     setFavoriteColor(tempColor);
     setFavoriteEmoji(tempEmoji);
@@ -74,6 +114,89 @@ export function Settings() {
               Personalize your Soul Script experience
             </p>
           </div>
+
+          {/* Customizable Dear Prompt */}
+          <div className="dashboard-card" style={{ animationDelay: '0.2s' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '15px', color: 'white' }}>
+              📝 Customize Your Greeting
+            </h2>
+            <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '15px' }}>
+              Change who you're writing to (e.g., "Dear Mom", "Dear Future Me", "Dear God")
+            </p>
+
+          {/* Install App Section */}
+          {!isInstalled && (
+            <div className="dashboard-card" style={{ animationDelay: '0.1s', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3))', border: '2px solid rgba(255, 255, 255, 0.2)' }}>
+              <div style={{ display: 'flex', alignItems: 'start', gap: '20px' }}>
+                <div style={{ 
+                  padding: '15px', 
+                  background: 'rgba(255, 255, 255, 0.2)', 
+                  borderRadius: '16px',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  {isIOS ? <Smartphone size={32} color="white" /> : <Download size={32} color="white" />}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '10px', color: 'white' }}>
+                    📱 Install Soul Script
+                  </h2>
+                  <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '15px', lineHeight: '1.6' }}>
+                    {isIOS 
+                      ? 'Add Soul Script to your home screen for the best experience! Tap the Share button and select "Add to Home Screen".'
+                      : 'Install Soul Script as an app! Works offline, faster loading, and feels like a native app.'
+                    }
+                  </p>
+                  {!isIOS && deferredPrompt && (
+                    <button
+                      onClick={handleInstall}
+                      style={{
+                        padding: '12px 24px',
+                        background: 'white',
+                        color: '#8B5CF6',
+                        border: 'none',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        boxShadow: '0 4px 15px rgba(255, 255, 255, 0.3)',
+                        transition: 'transform 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                      <Download size={18} />
+                      Install Now
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isInstalled && (
+            <div className="dashboard-card" style={{ animationDelay: '0.1s', background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3))', border: '2px solid rgba(255, 255, 255, 0.2)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div style={{ 
+                  padding: '12px', 
+                  background: 'rgba(255, 255, 255, 0.2)', 
+                  borderRadius: '12px'
+                }}>
+                  <Smartphone size={24} color="white" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: 'white', marginBottom: '5px' }}>
+                    ✅ App Installed
+                  </h3>
+                  <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)' }}>
+                    Soul Script is installed on your device!
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Customizable Dear Prompt */}
           <div className="dashboard-card" style={{ animationDelay: '0.2s' }}>
