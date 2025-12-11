@@ -22,8 +22,39 @@ function App() {
   const { user, isAuthenticated, setUser, logout } = useAuthStore();
   const { entries, setEntries } = useJournalStore();
   const [currentView, setCurrentView] = useState<View>('home');
+  const [viewHistory, setViewHistory] = useState<View[]>(['home']);
   const [loading, setLoading] = useState(true);
   const [editingEntry, setEditingEntry] = useState<any>(null);
+
+  // Handle browser back button
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      if (viewHistory.length > 1) {
+        const newHistory = [...viewHistory];
+        newHistory.pop(); // Remove current view
+        const previousView = newHistory[newHistory.length - 1];
+        setViewHistory(newHistory);
+        setCurrentView(previousView);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    // Push initial state
+    window.history.pushState({ view: currentView }, '');
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [viewHistory]);
+
+  // Update history when view changes
+  const navigateToView = (view: View) => {
+    setViewHistory([...viewHistory, view]);
+    setCurrentView(view);
+    window.history.pushState({ view }, '');
+  };
 
   // Setup online/offline listeners
   useEffect(() => {
@@ -90,26 +121,27 @@ function App() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     logout();
+    setViewHistory(['home']);
     setCurrentView('home');
   };
 
   const handleNewEntry = () => {
     setEditingEntry(null);
-    setCurrentView('checkin');
+    navigateToView('checkin');
   };
 
   const handleCheckInComplete = () => {
-    setCurrentView('editor');
+    navigateToView('editor');
   };
 
   const handleEntrySaved = () => {
     setEditingEntry(null);
-    setCurrentView('timeline');
+    navigateToView('timeline');
   };
 
   const handleEditEntry = (entry: any) => {
     setEditingEntry(entry);
-    setCurrentView('editor');
+    navigateToView('editor');
   };
 
   if (loading) {
@@ -123,7 +155,10 @@ function App() {
   }
 
   if (!isAuthenticated) {
-    return <AuthPage onSuccess={() => setCurrentView('home')} />;
+    return <AuthPage onSuccess={() => {
+      setViewHistory(['home']);
+      setCurrentView('home');
+    }} />;
   }
 
   // Show beautiful dashboard for home view
@@ -132,11 +167,11 @@ function App() {
       <>
         <Navbar 
           currentView="home"
-          onNavigate={(view) => setCurrentView(view)}
+          onNavigate={navigateToView}
           onLogout={handleLogout}
         />
         <Dashboard 
-          onNavigate={(view) => setCurrentView(view)}
+          onNavigate={navigateToView}
           onNewEntry={handleNewEntry}
           onLogout={handleLogout}
         />
@@ -149,7 +184,7 @@ function App() {
       {/* Navigation */}
       <Navbar 
         currentView={currentView}
-        onNavigate={(view) => setCurrentView(view)}
+        onNavigate={navigateToView}
         onLogout={handleLogout}
       />
 

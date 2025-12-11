@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Heart, Hash, Lock } from 'lucide-react';
+import { Users, Heart, Hash, Lock, Sparkles, TrendingUp, Clock, Smile, Frown, Meh, Zap, MessageCircle, BookmarkPlus, Flag } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -19,6 +19,17 @@ interface CommunityPost {
   user_echoed?: boolean;
 }
 
+const SUPPORTIVE_MESSAGES = [
+  "You're not alone in this 💜",
+  "Thank you for sharing 🌟",
+  "Sending strength your way 💪",
+  "We see you and we're here 🤗",
+  "Your feelings are valid ✨",
+  "One day at a time 🌈",
+  "You've got this! 🌟",
+  "Proud of you for sharing 💜"
+];
+
 export function Community() {
   const user = useAuthStore((state) => state.user);
   const { favoriteColor, favoriteEmoji } = useSettingsStore();
@@ -26,6 +37,9 @@ export function Community() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'trending' | 'recent'>('recent');
   const [searchHashtag, setSearchHashtag] = useState('');
+  const [moodFilter, setMoodFilter] = useState<string | null>(null);
+  const [showSupportModal, setShowSupportModal] = useState<string | null>(null);
+  const [savedPosts, setSavedPosts] = useState<Set<string>>(new Set());
 
   // Create floating particles
   useEffect(() => {
@@ -61,6 +75,10 @@ export function Community() {
 
       if (searchHashtag) {
         query = query.contains('hashtags', [searchHashtag]);
+      }
+
+      if (moodFilter) {
+        query = query.eq('mood', moodFilter);
       }
 
       const { data, error } = await query;
@@ -131,6 +149,40 @@ export function Community() {
     }
   };
 
+  const toggleSavePost = (postId: string) => {
+    setSavedPosts(prev => {
+      const newSaved = new Set(prev);
+      if (newSaved.has(postId)) {
+        newSaved.delete(postId);
+      } else {
+        newSaved.add(postId);
+      }
+      return newSaved;
+    });
+  };
+
+  const sendSupportMessage = (postId: string, message: string) => {
+    // Visual feedback only for now
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background: linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-weight: 600;
+      z-index: 10000;
+      animation: slideInRight 0.3s ease-out;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    `;
+    notification.textContent = '💜 Support sent!';
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 2000);
+    setShowSupportModal(null);
+  };
+
   const getTimeAgo = (date: string) => {
     const now = new Date();
     const posted = new Date(date);
@@ -152,43 +204,21 @@ export function Community() {
     <div className="dashboard-page" style={{
       background: getGradientBackground(favoriteColor),
       minHeight: '100vh',
-      paddingTop: '100px'
+      paddingTop: '0px'
     }}>
       {/* Floating orbs with dynamic color */}
       <div className="dashboard-orb dashboard-orb1" style={{ background: `${favoriteColor}40` }}></div>
       <div className="dashboard-orb dashboard-orb2" style={{ background: `${favoriteColor}30` }}></div>
       <div className="dashboard-orb dashboard-orb3" style={{ background: `${favoriteColor}50` }}></div>
 
-      <div className="max-w-4xl mx-auto p-4 md:p-6 pb-24">
-        {/* Header */}
-        <div className="mb-6 md:mb-8 text-center animate-fadeIn">
-          <div className="flex items-center justify-center gap-2 md:gap-3 mb-2 md:mb-3">
-            <span style={{ fontSize: '48px' }}>{favoriteEmoji}</span>
-          </div>
-          <h1 style={{ 
-            fontSize: '3rem',
-            fontWeight: '800',
-            color: 'white',
-            marginBottom: '10px',
-            textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-            letterSpacing: '-0.5px'
-          }}>Community</h1>
-          <p style={{ 
-            fontSize: '1.2rem',
-            color: 'rgba(255, 255, 255, 0.8)',
-            fontWeight: '500'
-          }}>
-            Share your journey anonymously and support others 💜
-          </p>
-        </div>
-
+      <div className="max-w-4xl mx-auto px-4 md:px-6 pb-24" style={{ paddingTop: '0px', marginTop: '-45px' }}>
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+        <div className="flex flex-col sm:flex-row gap-2 mb-2 animate-fadeIn" style={{ animationDelay: '0s', marginTop: '0' }}>
           <button
-            onClick={() => setFilter('recent')}
+            onClick={() => { setFilter('recent'); setMoodFilter(null); }}
             style={{
               padding: '15px 30px',
-              background: filter === 'recent'
+              background: filter === 'recent' && !moodFilter
                 ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                 : 'rgba(255, 255, 255, 0.15)',
               border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -198,20 +228,20 @@ export function Community() {
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.3s',
-              boxShadow: filter === 'recent' ? `0 4px 15px ${favoriteColor}66` : 'none',
+              boxShadow: filter === 'recent' && !moodFilter ? `0 4px 15px ${favoriteColor}66` : 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px'
             }}
           >
-            🕒 Recent
+            <Clock size={18} /> Recent
           </button>
           <button
-            onClick={() => setFilter('trending')}
+            onClick={() => { setFilter('trending'); setMoodFilter(null); }}
             style={{
               padding: '15px 30px',
-              background: filter === 'trending'
+              background: filter === 'trending' && !moodFilter
                 ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                 : 'rgba(255, 255, 255, 0.15)',
               border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -221,19 +251,136 @@ export function Community() {
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.3s',
-              boxShadow: filter === 'trending' ? `0 4px 15px ${favoriteColor}66` : 'none',
+              boxShadow: filter === 'trending' && !moodFilter ? `0 4px 15px ${favoriteColor}66` : 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px'
             }}
           >
-            🔥 Trending
+            <TrendingUp size={18} /> Trending
+          </button>
+        </div>
+
+        {/* Mood Filters */}
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          marginBottom: '8px',
+          flexWrap: 'wrap',
+          animation: 'fadeIn 0.6s ease-out',
+          animationDelay: '0.05s',
+          animationFillMode: 'both'
+        }}>
+          <button
+            onClick={() => setMoodFilter(moodFilter === 'Happy' ? null : 'Happy')}
+            style={{
+              padding: '10px 20px',
+              background: moodFilter === 'Happy' 
+                ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
+                : 'rgba(255, 255, 255, 0.1)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              color: 'white',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <Smile size={16} /> Happy
+          </button>
+          <button
+            onClick={() => setMoodFilter(moodFilter === 'Sad' ? null : 'Sad')}
+            style={{
+              padding: '10px 20px',
+              background: moodFilter === 'Sad' 
+                ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
+                : 'rgba(255, 255, 255, 0.1)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              color: 'white',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <Frown size={16} /> Sad
+          </button>
+          <button
+            onClick={() => setMoodFilter(moodFilter === 'Anxious' ? null : 'Anxious')}
+            style={{
+              padding: '10px 20px',
+              background: moodFilter === 'Anxious' 
+                ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
+                : 'rgba(255, 255, 255, 0.1)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              color: 'white',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <Zap size={16} /> Anxious
+          </button>
+          <button
+            onClick={() => setMoodFilter(moodFilter === 'Calm' ? null : 'Calm')}
+            style={{
+              padding: '10px 20px',
+              background: moodFilter === 'Calm' 
+                ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
+                : 'rgba(255, 255, 255, 0.1)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              color: 'white',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <Meh size={16} /> Calm
+          </button>
+          <button
+            onClick={() => setMoodFilter(moodFilter === 'Grateful' ? null : 'Grateful')}
+            style={{
+              padding: '10px 20px',
+              background: moodFilter === 'Grateful' 
+                ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
+                : 'rgba(255, 255, 255, 0.1)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              color: 'white',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <Sparkles size={16} /> Grateful
           </button>
         </div>
 
         {/* Hashtag Search */}
-        <div className="mb-6 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+        <div className="mb-2 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
           <div style={{ 
             position: 'relative',
             background: 'rgba(255, 255, 255, 0.1)',
@@ -487,48 +634,281 @@ export function Community() {
                   </div>
                 )}
 
-                {/* Echo Button */}
-                <button
-                  onClick={() => handleEcho(post.id, post.user_echoed || false)}
-                  style={{
+                {/* Action Buttons */}
+                <div style={{
+                  display: 'flex',
+                  gap: '10px',
+                  flexWrap: 'wrap'
+                }}>
+                  {/* Echo Button */}
+                  <button
+                    onClick={() => handleEcho(post.id, post.user_echoed || false)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '12px 20px',
+                      background: post.user_echoed 
+                        ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
+                        : 'rgba(255, 255, 255, 0.15)',
+                      border: '2px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '15px',
+                      color: 'white',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      boxShadow: post.user_echoed ? `0 4px 15px ${favoriteColor}66` : 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!post.user_echoed) {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                      }
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!post.user_echoed) {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                      }
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <Heart
+                      size={20}
+                      fill={post.user_echoed ? 'white' : 'none'}
+                      style={{ color: 'white' }}
+                    />
+                    <span>
+                      {post.echo_count} {post.echo_count === 1 ? 'echo' : 'echoes'}
+                    </span>
+                  </button>
+
+                  {/* Send Support Button */}
+                  <button
+                    onClick={() => setShowSupportModal(post.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '12px 20px',
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      border: '2px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '15px',
+                      color: 'white',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <MessageCircle size={18} />
+                    <span>Support</span>
+                  </button>
+
+                  {/* Save/Bookmark Button */}
+                  <button
+                    onClick={() => toggleSavePost(post.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '12px 20px',
+                      background: savedPosts.has(post.id)
+                        ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
+                        : 'rgba(255, 255, 255, 0.15)',
+                      border: '2px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '15px',
+                      color: 'white',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      boxShadow: savedPosts.has(post.id) ? `0 4px 15px ${favoriteColor}66` : 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!savedPosts.has(post.id)) {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                      }
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!savedPosts.has(post.id)) {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                      }
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <BookmarkPlus size={18} />
+                    <span>{savedPosts.has(post.id) ? 'Saved' : 'Save'}</span>
+                  </button>
+
+                  {/* Report Button */}
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Report this post for violating community guidelines?')) {
+                        const notification = document.createElement('div');
+                        notification.style.cssText = `
+                          position: fixed;
+                          top: 100px;
+                          right: 20px;
+                          background: rgba(239, 68, 68, 0.9);
+                          color: white;
+                          padding: 15px 25px;
+                          border-radius: 12px;
+                          font-weight: 600;
+                          z-index: 10000;
+                          animation: slideInRight 0.3s ease-out;
+                          box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                        `;
+                        notification.textContent = '🚩 Post reported. Thank you.';
+                        document.body.appendChild(notification);
+                        setTimeout(() => notification.remove(), 2000);
+                      }
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '12px 20px',
+                      background: 'rgba(239, 68, 68, 0.2)',
+                      border: '2px solid rgba(239, 68, 68, 0.4)',
+                      borderRadius: '15px',
+                      color: 'white',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.3)';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <Flag size={18} />
+                  </button>
+                </div>
+
+                {/* Support Message Modal */}
+                {showSupportModal === post.id && (
+                  <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(10px)',
+                    zIndex: 10000,
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    padding: '12px 20px',
-                    background: post.user_echoed 
-                      ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
-                      : 'rgba(255, 255, 255, 0.15)',
-                    border: '2px solid rgba(255, 255, 255, 0.3)',
-                    borderRadius: '15px',
-                    color: 'white',
-                    fontSize: '15px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    boxShadow: post.user_echoed ? `0 4px 15px ${favoriteColor}66` : 'none'
+                    justifyContent: 'center',
+                    padding: '20px',
+                    animation: 'fadeIn 0.3s ease-out'
                   }}
-                  onMouseEnter={(e) => {
-                    if (!post.user_echoed) {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
-                    }
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!post.user_echoed) {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                    }
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }}
-                >
-                  <Heart
-                    size={20}
-                    fill={post.user_echoed ? 'white' : 'none'}
-                    style={{ color: 'white' }}
-                  />
-                  <span>
-                    {post.echo_count} {post.echo_count === 1 ? 'echo' : 'echoes'}
-                  </span>
-                </button>
+                  onClick={() => setShowSupportModal(null)}
+                  >
+                    <div 
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
+                        backdropFilter: 'blur(20px)',
+                        borderRadius: '20px',
+                        padding: '30px',
+                        maxWidth: '500px',
+                        width: '100%',
+                        border: '2px solid rgba(255, 255, 255, 0.3)',
+                        animation: 'scaleIn 0.3s ease-out'
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <h3 style={{
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        color: 'white',
+                        marginBottom: '20px',
+                        textAlign: 'center'
+                      }}>
+                        💜 Send Support
+                      </h3>
+                      <p style={{
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '20px',
+                        textAlign: 'center'
+                      }}>
+                        Choose a supportive message to send anonymously:
+                      </p>
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px'
+                      }}>
+                        {SUPPORTIVE_MESSAGES.map((message, i) => (
+                          <button
+                            key={i}
+                            onClick={() => sendSupportMessage(post.id, message)}
+                            style={{
+                              padding: '15px 20px',
+                              background: 'rgba(255, 255, 255, 0.15)',
+                              border: '2px solid rgba(255, 255, 255, 0.3)',
+                              borderRadius: '12px',
+                              color: 'white',
+                              fontSize: '16px',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s',
+                              textAlign: 'left'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`;
+                              e.currentTarget.style.transform = 'translateX(10px)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                              e.currentTarget.style.transform = 'translateX(0)';
+                            }}
+                          >
+                            {message}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => setShowSupportModal(null)}
+                        style={{
+                          marginTop: '20px',
+                          width: '100%',
+                          padding: '15px',
+                          background: 'rgba(255, 255, 255, 0.1)',
+                          border: '2px solid rgba(255, 255, 255, 0.2)',
+                          borderRadius: '12px',
+                          color: 'white',
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
