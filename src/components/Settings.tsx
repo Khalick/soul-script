@@ -133,11 +133,25 @@ export function Settings() {
                   </h2>
                   <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '15px', lineHeight: '1.6' }}>
                     {isIOS 
-                      ? 'Add Soul Script to your home screen for the best experience! Tap the Share button and select "Add to Home Screen".'
+                      ? 'Add Soul Script to your home screen for the best experience!'
                       : 'Install Soul Script as an app! Works offline, faster loading, and feels like a native app.'
                     }
                   </p>
-                  {!isIOS && deferredPrompt && (
+                  {isIOS ? (
+                    <div style={{ 
+                      background: 'rgba(255, 255, 255, 0.15)', 
+                      padding: '15px', 
+                      borderRadius: '12px',
+                      fontSize: '13px',
+                      lineHeight: '1.8',
+                      color: 'white'
+                    }}>
+                      <p style={{ fontWeight: '600', marginBottom: '8px' }}>📱 How to Install on iOS:</p>
+                      <p>1️⃣ Tap the <strong>Share</strong> button (📤) at the bottom</p>
+                      <p>2️⃣ Scroll and tap <strong>"Add to Home Screen"</strong></p>
+                      <p>3️⃣ Tap <strong>"Add"</strong> in the top right</p>
+                    </div>
+                  ) : deferredPrompt ? (
                     <button
                       onClick={handleInstall}
                       style={{
@@ -161,6 +175,20 @@ export function Settings() {
                       <Download size={18} />
                       Install Now
                     </button>
+                  ) : (
+                    <div style={{ 
+                      background: 'rgba(255, 255, 255, 0.15)', 
+                      padding: '15px', 
+                      borderRadius: '12px',
+                      fontSize: '13px',
+                      lineHeight: '1.8',
+                      color: 'white'
+                    }}>
+                      <p style={{ fontWeight: '600', marginBottom: '8px' }}>💻 How to Install:</p>
+                      <p><strong>Chrome/Edge:</strong> Look for the install icon (➕) in the address bar</p>
+                      <p><strong>Desktop:</strong> Click the ⋮ menu → "Install Soul Script"</p>
+                      <p><strong>Mobile:</strong> Tap ⋮ menu → "Add to Home screen"</p>
+                    </div>
                   )}
                 </div>
               </div>

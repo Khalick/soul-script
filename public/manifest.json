@@ -29,14 +29,14 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshot-mobile.png",
-      "sizes": "390x844",
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "/screenshot-desktop.png",
-      "sizes": "1920x1080",
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "form_factor": "wide"
     }
@@ -50,7 +50,7 @@
       "url": "/?action=new-entry",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "/web-app-manifest-192x192.png",
           "sizes": "192x192"
         }
       ]
@@ -62,7 +62,7 @@
       "url": "/?view=timeline",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "/web-app-manifest-192x192.png",
           "sizes": "192x192"
         }
       ]
@@ -74,7 +74,7 @@
       "url": "/?view=community",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "/web-app-manifest-192x192.png",
           "sizes": "192x192"
         }
       ]
