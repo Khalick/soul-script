@@ -286,7 +286,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
         for (const file of mediaFiles) {
           const fileExt = file.name.split('.').pop();
           const fileName = `${user.id}/${editingEntry.id}/${Date.now()}.${fileExt}`;
-          const filePath = `journal-media/${fileName}`;
+          const filePath = fileName; // Remove 'journal-media/' prefix - bucket name is already in .from()
 
           const { error: uploadError } = await supabase.storage
             .from('journal-media')
@@ -343,7 +343,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
         for (const file of mediaFiles) {
           const fileExt = file.name.split('.').pop();
           const fileName = `${user.id}/${entry.id}/${Date.now()}.${fileExt}`;
-          const filePath = `journal-media/${fileName}`;
+          const filePath = fileName; // Remove 'journal-media/' prefix - bucket name is already in .from()
 
           const { error: uploadError } = await supabase.storage
             .from('journal-media')
