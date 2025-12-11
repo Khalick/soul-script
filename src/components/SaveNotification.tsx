@@ -9,7 +9,7 @@ interface SaveNotificationProps {
 }
 
 export const SaveNotification: React.FC<SaveNotificationProps> = ({ type, message, onClose }) => {
-  const { favoriteColor } = useSettingsStore();
+  // favoriteColor removed as it's not used in this component
 
   const getIcon = () => {
     if (type === 'offline') {

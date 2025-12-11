@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, CheckCircle } from 'lucide-react';
+import { useSettingsStore } from '../stores/settingsStore';
 
 interface SyncSuccessProps {
   count: number;
@@ -7,7 +8,7 @@ interface SyncSuccessProps {
 }
 
 export const SyncSuccess: React.FC<SyncSuccessProps> = ({ count, onClose }) => {
-  const { favoriteColor } = useSettingsStore();
+  // favoriteColor removed as green color is hardcoded in this component
 
   return (
     <div

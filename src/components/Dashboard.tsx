@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useAuthStore } from '../stores/authStore';
 import { useJournalStore } from '../stores/journalStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getGradientBackground } from '../lib/colorUtils';

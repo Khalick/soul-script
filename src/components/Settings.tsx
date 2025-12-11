@@ -6,7 +6,7 @@ import { Crown, Volume2 } from 'lucide-react';
 
 export function Settings() {
   const { theme, favoriteColor, favoriteEmoji, dearPrompt, backgroundAmbience, ambienceVolume, customMusicUrl, setTheme, setFavoriteColor, setFavoriteEmoji, setDearPrompt, setBackgroundAmbience, setAmbienceVolume, setCustomMusicUrl } = useSettingsStore();
-  const { isPremium, checkSubscriptionStatus, setSubscription } = useSubscriptionStore();
+  const { checkSubscriptionStatus, setSubscription } = useSubscriptionStore();
   const [tempColor, setTempColor] = useState(favoriteColor);
   const [tempEmoji, setTempEmoji] = useState(favoriteEmoji);
   const [tempPrompt, setTempPrompt] = useState(dearPrompt);

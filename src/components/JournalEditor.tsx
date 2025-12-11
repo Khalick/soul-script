@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Video, Image, X, Square, Camera, Upload, FileText } from 'lucide-react';
 import { useJournalStore } from '../stores/journalStore';
-import { getRandomPrompt, getRandomSupportiveMessage } from '../data/emotions';
-import { journalTemplates, getTemplateById } from '../data/templates';
+import { getRandomPrompt } from '../data/emotions';
+import { journalTemplates } from '../data/templates';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -32,7 +32,6 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
   const [uploading, setUploading] = useState(false);
   const [prompt] = useState(getRandomPrompt());
   const [isRecording, setIsRecording] = useState(false);
-  const [audioURL, setAudioURL] = useState('');
   const [showPhotoMenu, setShowPhotoMenu] = useState(false);
   const [showVideoMenu, setShowVideoMenu] = useState(false);
   const [showCamera, setShowCamera] = useState(false);

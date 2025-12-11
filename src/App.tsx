@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './stores/authStore';
 import { useJournalStore } from './stores/journalStore';
-import { useSettingsStore } from './stores/settingsStore';
 import { useOfflineStore } from './stores/offlineStore';
 import { setupOnlineListener, syncOfflineEntries } from './lib/offlineSync';
 import AuthPage from './components/AuthPage';
@@ -16,7 +15,7 @@ import { Analytics } from './components/Analytics';
 import { Community } from './components/Community';
 import { Navbar } from './components/Navbar';
 import { OfflineIndicator } from './components/OfflineIndicator';
-import { Home, Calendar, BarChart3, PlusCircle, LogOut } from 'lucide-react';
+import { Calendar, BarChart3, PlusCircle } from 'lucide-react';
 
 type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy';
 
@@ -158,7 +157,7 @@ function App() {
 
       {/* Main Content */}
       <main className="pb-20">
-        {currentView === 'home' && (
+        {currentView === 'checkin' && (
           <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
             <div className="text-center space-y-4">
               <h1 className="text-5xl font-display font-bold text-gray-900 dark:text-white">
