@@ -20,17 +20,14 @@ export const AmbiencePlayer: React.FC<AmbiencePlayerProps> = ({ isActive = true 
   const { backgroundAmbience, ambienceVolume, customMusicUrl, setBackgroundAmbience, setAmbienceVolume } = useSettingsStore();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const [error, setError] = React.useState(false);
 
   const playAudio = async () => {
     if (!audioRef.current) return;
     try {
       await audioRef.current.play();
       setIsPlaying(true);
-      setError(false);
     } catch (err) {
       console.error('Failed to play audio:', err);
-      setError(true);
       setIsPlaying(false);
     }
   };
