@@ -277,6 +277,12 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
           if (updateError) throw updateError;
 
         // Upload new media files
+        // Verify authentication before uploading
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          throw new Error('Not authenticated. Please log in again.');
+        }
+
         for (const file of mediaFiles) {
           const fileExt = file.name.split('.').pop();
           const fileName = `${user.id}/${editingEntry.id}/${Date.now()}.${fileExt}`;
@@ -286,13 +292,16 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
             .from('journal-media')
             .upload(filePath, file);
 
-          if (uploadError) throw uploadError;
+          if (uploadError) {
+            console.error('Storage upload error:', uploadError);
+            throw uploadError;
+          }
 
           const { data: urlData } = supabase.storage
             .from('journal-media')
             .getPublicUrl(filePath);
 
-          await supabase.from('media_attachments').insert({
+          const { error: insertError } = await supabase.from('media_attachments').insert({
             entry_id: editingEntry.id,
             user_id: user.id,
             type: file.type.startsWith('image/') ? 'photo' : file.type.startsWith('video/') ? 'video' : 'audio',
@@ -300,6 +309,13 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
             size_bytes: file.size,
             blur_faces: false,
           });
+
+          if (insertError) {
+            console.error('Media insert error:', insertError);
+            console.error('Attempted user_id:', user.id);
+            console.error('Session user_id:', session.user.id);
+            throw insertError;
+          }
         }
 
         updateEntry(editingEntry.id, { title, text_content: textContent });
