@@ -22,7 +22,6 @@ type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'communit
 function App() {
   const { user, isAuthenticated, setUser, logout } = useAuthStore();
   const { entries, setEntries } = useJournalStore();
-  const { isOnline } = useOfflineStore();
   const [currentView, setCurrentView] = useState<View>('home');
   const [loading, setLoading] = useState(true);
   const [editingEntry, setEditingEntry] = useState<any>(null);

@@ -1,6 +1,5 @@
 import React from 'react';
 import { X, CheckCircle } from 'lucide-react';
-import { useSettingsStore } from '../stores/settingsStore';
 
 interface SyncSuccessProps {
   count: number;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { X, WifiOff, AlertCircle } from 'lucide-react';
-import { useSettingsStore } from '../stores/settingsStore';
 
 interface SaveNotificationProps {
   type: 'offline' | 'error';
