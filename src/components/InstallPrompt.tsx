@@ -16,26 +16,42 @@ export default function InstallPrompt() {
     // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
+      console.log('✅ App is already installed');
       return;
     }
 
     // Check if iOS
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
+    console.log('📱 iOS detected:', ios);
+
+    // For iOS, show prompt after 5 seconds
+    if (ios) {
+      const hasBeenDismissed = localStorage.getItem('installPromptDismissed');
+      if (!hasBeenDismissed) {
+        console.log('⏰ Will show iOS install prompt in 5 seconds');
+        setTimeout(() => setShowPrompt(true), 5000);
+      }
+    }
 
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('🎉 beforeinstallprompt event fired!');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       
       // Show prompt after 3 seconds if not dismissed before
       const hasBeenDismissed = localStorage.getItem('installPromptDismissed');
       if (!hasBeenDismissed) {
+        console.log('⏰ Will show install prompt in 3 seconds');
         setTimeout(() => setShowPrompt(true), 3000);
       }
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // Log if event listener is set up
+    console.log('👂 Listening for beforeinstallprompt event');
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -43,14 +59,21 @@ export default function InstallPrompt() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      console.log('❌ No deferred prompt available');
+      return;
+    }
 
+    console.log('🚀 Prompting user to install...');
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
 
+    console.log('📊 User choice:', outcome);
     if (outcome === 'accepted') {
-      console.log('User accepted install');
+      console.log('✅ User accepted install');
       setIsInstalled(true);
+    } else {
+      console.log('❌ User dismissed install');
     }
 
     setDeferredPrompt(null);

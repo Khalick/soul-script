@@ -8,33 +8,43 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'favicon.svg', 'web-app-manifest-192x192.png', 'web-app-manifest-512x512.png'],
       manifest: {
-        name: 'Soul Script - Emotional Journal',
-        short_name: 'Soul Script',
-        description: 'Your Safe Space to Feel Everything - Emotional Journaling Platform',
-        theme_color: '#e74c63',
-        background_color: '#ffffff',
+        name: 'Soul Script',
+        short_name: 'SoulScript',
+        description: 'Your safe space for emotional journaling and self-reflection',
+        theme_color: '#8B5CF6',
+        background_color: '#0a0a0a',
         display: 'standalone',
-        orientation: 'portrait',
+        orientation: 'portrait-primary',
         scope: '/',
         start_url: '/',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: '/web-app-manifest-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
+            src: '/web-app-manifest-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
+          },
+          {
+            src: '/apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png'
+          }
+        ],
+        shortcuts: [
+          {
+            name: 'New Entry',
+            short_name: 'New Entry',
+            description: 'Start a new journal entry',
+            url: '/?action=new-entry',
+            icons: [{ src: '/web-app-manifest-192x192.png', sizes: '192x192' }]
           }
         ]
       },
@@ -56,6 +66,10 @@ export default defineConfig({
             }
           }
         ]
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module'
       }
     })
   ],
