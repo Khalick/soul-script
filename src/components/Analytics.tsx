@@ -3,6 +3,10 @@ import { useJournalStore } from '../stores/journalStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getGradientBackground } from '../lib/colorUtils';
 import { TrendingUp, Heart, Clock, Sparkles } from 'lucide-react';
+import { EmotionalThreads } from './EmotionalThreads';
+import { InnerWeather } from './InnerWeather';
+import { EchoTrails } from './EchoTrails';
+import { WordFrequency } from './WordFrequency';
 
 export function Analytics() {
   const entries = useJournalStore((state) => state.entries);
@@ -361,6 +365,18 @@ export function Analytics() {
               </div>
             </div>
           </div>
+
+          {/* Emotional Threads */}
+          <EmotionalThreads />
+
+          {/* Inner Weather */}
+          <InnerWeather />
+
+          {/* Echo Trails */}
+          <EchoTrails />
+
+          {/* Word Frequency */}
+          <WordFrequency />
 
           {/* Motivational Message */}
           {analytics.currentStreak >= 7 && (

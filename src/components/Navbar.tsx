@@ -78,7 +78,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               boxShadow: currentView === 'home' ? `0 4px 15px ${favoriteColor}66` : 'none'
             }}
           >
-            🏠 Home
+            🏠 Sanctuary
           </button>
           
           <button
@@ -124,7 +124,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               boxShadow: currentView === 'community' ? `0 4px 15px ${favoriteColor}66` : 'none'
             }}
           >
-            👥 Community
+            👥 The Quiet
           </button>
           
           <button
@@ -170,7 +170,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               boxShadow: currentView === 'settings' ? `0 4px 15px ${favoriteColor}66` : 'none'
             }}
           >
-            ⚙️ Settings
+            ⚙️ Boundaries
           </button>
           
           <button
@@ -252,7 +252,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
                 boxShadow: currentView === 'home' ? `0 4px 15px ${favoriteColor}66` : 'none'
               }}
             >
-              🏠 Home
+              🏠 Sanctuary
             </button>
             
             <button
@@ -298,7 +298,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
                 boxShadow: currentView === 'community' ? `0 4px 15px ${favoriteColor}66` : 'none'
               }}
             >
-              👥 Community
+              👥 The Quiet
             </button>
             
             <button
@@ -344,7 +344,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
                 boxShadow: currentView === 'settings' ? `0 4px 15px ${favoriteColor}66` : 'none'
               }}
             >
-              ⚙️ Settings
+              ⚙️ Boundaries
             </button>
             
             <button

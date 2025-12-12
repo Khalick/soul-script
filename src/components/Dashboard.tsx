@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useJournalStore } from '../stores/journalStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getGradientBackground } from '../lib/colorUtils';
+import { TodaysInvitation } from './TodaysInvitation';
 
 interface DashboardProps {
   onNavigate?: (view: 'home' | 'checkin' | 'timeline' | 'analytics' | 'community' | 'settings') => void;
@@ -80,7 +81,7 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
       <div className="dashboard-content-wrapper">
         {/* Header */}
         <header className="dashboard-header">
-          <div className="dashboard-logo">{favoriteEmoji} Soul Script</div>
+          <div className="dashboard-logo">{favoriteEmoji} Sanctuary</div>
           <div className="dashboard-nav-icons">
             <div className="dashboard-nav-icon" onClick={() => handleNavigate('home')}>🏠</div>
             <div className="dashboard-nav-icon" onClick={() => handleNavigate('timeline')}>📅</div>
@@ -98,9 +99,14 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
             boxShadow: `0 10px 30px ${favoriteColor}40`
           }}>
             <span>➕</span>
-            <span>New Entry</span>
+            <span>Begin</span>
           </button>
         </section>
+
+        {/* A Gentle Nudge */}
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px' }}>
+          <TodaysInvitation />
+        </div>
 
         {/* Dashboard Grid */}
         <div className="dashboard-grid">
@@ -112,7 +118,7 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
             </div>
             <p className="dashboard-card-description">See your emotional journey over time</p>
             <div className="dashboard-card-stat">{entries.length}</div>
-            <div className="dashboard-card-label">Total Entries</div>
+            <div className="dashboard-card-label">Moments Captured</div>
           </div>
 
           {/* Insights Card */}
@@ -130,11 +136,11 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
           <div className="dashboard-card" onClick={() => onNavigate?.('community')} style={{ cursor: 'pointer' }}>
             <div className="dashboard-card-header">
               <div className="dashboard-card-icon">👥</div>
-              <h2>Community</h2>
+              <h2>The Quiet</h2>
             </div>
             <p className="dashboard-card-description">Share anonymously and support others</p>
             <div className="dashboard-card-stat">💜</div>
-            <div className="dashboard-card-label">Join Community</div>
+            <div className="dashboard-card-label">Join The Quiet</div>
           </div>
         </div>
 

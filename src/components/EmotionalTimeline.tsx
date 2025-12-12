@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns';
 import { useJournalStore, JournalEntry } from '../stores/journalStore';
 import { getMoodColor } from '../data/emotions';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Share2 } from 'lucide-react';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getGradientBackground } from '../lib/colorUtils';
+import { SharePostModal } from './SharePostModal';
 
 interface EmotionalTimelineProps {
   onEntryClick?: (entry: JournalEntry) => void;
@@ -15,6 +16,7 @@ const EmotionalTimeline: React.FC<EmotionalTimelineProps> = ({ onEntryClick }) =
   const { favoriteColor, favoriteEmoji } = useSettingsStore();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -146,7 +148,26 @@ const EmotionalTimeline: React.FC<EmotionalTimelineProps> = ({ onEntryClick }) =
                   ))}
                 </div>
               )}
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginTop: '20px' }}>
+                <button 
+                  onClick={() => setShowShareModal(true)}
+                  style={{
+                    padding: '12px 30px',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    borderRadius: '25px',
+                    color: 'white',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <Share2 size={18} /> Release
+                </button>
                 <button 
                   onClick={() => onEntryClick && onEntryClick(selectedEntry)}
                   style={{
@@ -162,10 +183,25 @@ const EmotionalTimeline: React.FC<EmotionalTimelineProps> = ({ onEntryClick }) =
                     transition: 'all 0.3s'
                   }}
                 >
-                  ✏️ Edit Entry
+                  ✏️ Revisit
                 </button>
               </div>
             </div>
+          )}
+
+          {/* Share Modal */}
+          {showShareModal && selectedEntry && (
+            <SharePostModal
+              entryId={selectedEntry.id}
+              mood={selectedEntry.mood}
+              intensity={selectedEntry.intensity}
+              textContent={selectedEntry.text_content || ''}
+              onClose={() => setShowShareModal(false)}
+              onSuccess={() => {
+                setShowShareModal(false);
+                alert('✨ Your moment has been released into The Quiet!');
+              }}
+            />
           )}
         </div>
       </div>

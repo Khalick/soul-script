@@ -119,6 +119,64 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Screenshot and copy protection
+  useEffect(() => {
+    // Disable right-click context menu
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      return false;
+    };
+
+    // Detect screenshot attempts (keyboard shortcuts)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent PrintScreen, Cmd+Shift+3/4 (Mac), Windows+Shift+S, etc.
+      if (
+        e.key === 'PrintScreen' ||
+        (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5')) ||
+        (e.ctrlKey && e.shiftKey && e.key === 'S')
+      ) {
+        e.preventDefault();
+        // Optionally show a gentle message
+        console.log('Screenshot protection enabled for your privacy');
+        return false;
+      }
+    };
+
+    // Disable text selection and copy for sensitive content
+    const handleCopy = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      // Only prevent copy for journal content, not input fields
+      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && 
+          !target.classList.contains('ProseMirror')) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('copy', handleCopy);
+
+    // Add CSS to prevent text selection on sensitive areas
+    const style = document.createElement('style');
+    style.textContent = `
+      .dashboard-card:not(:has(input)):not(:has(textarea)) {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('copy', handleCopy);
+      document.head.removeChild(style);
+    };
+  }, []);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     logout();

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Download, X, Smartphone } from 'lucide-react';
+import { Download, X, Smartphone, Share2, Plus } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -11,6 +11,7 @@ export default function InstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [userInteracted, setUserInteracted] = useState(false);
 
   useEffect(() => {
     // Check if already installed
@@ -20,69 +21,85 @@ export default function InstallPrompt() {
     
     if (isStandalone) {
       setIsInstalled(true);
-      console.log('✅ App is already installed');
       return;
     }
 
     // Check if iOS
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
-    console.log('📱 iOS detected:', ios);
-    console.log('🌐 User Agent:', navigator.userAgent);
 
-    // For iOS, show prompt after 5 seconds
+    // Track user interaction for Chrome engagement heuristic
+    const handleInteraction = () => {
+      setUserInteracted(true);
+    };
+
+    window.addEventListener('click', handleInteraction, { once: true });
+    window.addEventListener('scroll', handleInteraction, { once: true });
+
+    // For iOS, show prompt after user interaction + delay
     if (ios) {
       const hasBeenDismissed = localStorage.getItem('installPromptDismissed');
-      if (!hasBeenDismissed) {
-        console.log('⏰ Will show iOS install prompt in 5 seconds');
-        setTimeout(() => setShowPrompt(true), 5000);
+      const dismissedTime = localStorage.getItem('installPromptDismissedTime');
+      const now = Date.now();
+      
+      // Re-show after 7 days
+      if (dismissedTime && now - parseInt(dismissedTime) < 7 * 24 * 60 * 60 * 1000) {
+        return;
+      }
+      
+      if (!hasBeenDismissed || (dismissedTime && now - parseInt(dismissedTime) > 7 * 24 * 60 * 60 * 1000)) {
+        setTimeout(() => {
+          if (userInteracted) {
+            setShowPrompt(true);
+          }
+        }, 8000); // 8 seconds after interaction
       }
     }
 
-    // Listen for install prompt
+    // Listen for install prompt (Chrome/Edge)
     const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('🎉 beforeinstallprompt event fired!', e);
       e.preventDefault();
       const promptEvent = e as BeforeInstallPromptEvent;
       setDeferredPrompt(promptEvent);
       
-      // Show prompt immediately when event fires
       const hasBeenDismissed = localStorage.getItem('installPromptDismissed');
-      if (!hasBeenDismissed) {
-        console.log('⏰ Showing install prompt immediately');
-        setShowPrompt(true);
-      } else {
-        console.log('ℹ️ Install prompt was previously dismissed');
+      const dismissedTime = localStorage.getItem('installPromptDismissedTime');
+      const now = Date.now();
+      
+      // Re-show after 7 days
+      if (dismissedTime && now - parseInt(dismissedTime) < 7 * 24 * 60 * 60 * 1000) {
+        return;
+      }
+      
+      if (!hasBeenDismissed || (dismissedTime && now - parseInt(dismissedTime) > 7 * 24 * 60 * 60 * 1000)) {
+        // Wait for user interaction before showing
+        setTimeout(() => {
+          if (userInteracted) {
+            setShowPrompt(true);
+          }
+        }, 3000);
       }
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Log if event listener is set up
-    console.log('👂 Listening for beforeinstallprompt event');
-    console.log('🔧 ServiceWorker ready:', 'serviceWorker' in navigator);
-
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('click', handleInteraction);
+      window.removeEventListener('scroll', handleInteraction);
     };
-  }, []);
+  }, [userInteracted]);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      console.log('❌ No deferred prompt available');
-      return;
-    }
+    if (!deferredPrompt) return;
 
-    console.log('🚀 Prompting user to install...');
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
 
-    console.log('📊 User choice:', outcome);
     if (outcome === 'accepted') {
-      console.log('✅ User accepted install');
       setIsInstalled(true);
-    } else {
-      console.log('❌ User dismissed install');
+      localStorage.removeItem('installPromptDismissed');
+      localStorage.removeItem('installPromptDismissedTime');
     }
 
     setDeferredPrompt(null);
@@ -92,10 +109,7 @@ export default function InstallPrompt() {
   const handleDismiss = () => {
     setShowPrompt(false);
     localStorage.setItem('installPromptDismissed', 'true');
-    // Clear dismissal after 1 day for testing
-    setTimeout(() => {
-      localStorage.removeItem('installPromptDismissed');
-    }, 24 * 60 * 60 * 1000);
+    localStorage.setItem('installPromptDismissedTime', Date.now().toString());
   };
 
   // Don't show if already installed
@@ -104,44 +118,92 @@ export default function InstallPrompt() {
   // iOS Install Instructions
   if (isIOS && showPrompt) {
     return (
-      <div className="fixed bottom-20 left-4 right-4 z-50 animate-slideInUp md:left-auto md:right-4 md:max-w-sm">
-        <div className="relative bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl shadow-2xl overflow-hidden">
-          {/* Animated Background */}
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full blur-3xl animate-float"></div>
-            <div className="absolute bottom-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
-          </div>
+      <div 
+        className="fixed bottom-20 left-4 right-4 z-50 md:left-auto md:right-4 md:max-w-md"
+        style={{
+          animation: 'slideInUp 0.5s ease-out'
+        }}
+      >
+        <div 
+          className="relative rounded-2xl shadow-2xl overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          }}
+        >
+          {/* Close button */}
+          <button
+            onClick={handleDismiss}
+            className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors z-10"
+            style={{ color: 'white' }}
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
           <div className="relative p-6 text-white">
-            <button
-              onClick={handleDismiss}
-              className="absolute top-3 right-3 p-1 hover:bg-white/20 rounded-full transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                <Smartphone className="w-6 h-6" />
+            <div className="flex items-center gap-3 mb-4">
+              <div 
+                className="p-3 rounded-xl backdrop-blur-sm"
+                style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+              >
+                <Smartphone className="w-7 h-7" />
               </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-lg mb-2">Install Soul Script</h3>
-                <p className="text-sm text-white/90 mb-4">
-                  Add to your home screen for the best experience!
-                </p>
-                <div className="space-y-2 text-sm">
-                  <p className="flex items-center gap-2">
-                    <span className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center font-bold">1</span>
-                    Tap the Share button <span className="inline-block w-5 h-5">📤</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center font-bold">2</span>
-                    Select "Add to Home Screen" <span className="inline-block w-5 h-5">➕</span>
-                  </p>
+              <div>
+                <h3 className="font-bold text-xl">Install Sanctuary</h3>
+                <p className="text-sm opacity-90">Add to Home Screen</p>
+              </div>
+            </div>
+
+            <p className="text-sm opacity-90 mb-5">
+              Get the full app experience with offline access and faster loading!
+            </p>
+
+            <div className="space-y-4 mb-5">
+              <div className="flex items-start gap-3">
+                <div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0"
+                  style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+                >
+                  1
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="text-sm">Tap the Share button</span>
+                  <Share2 className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0"
+                  style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+                >
+                  2
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="text-sm">Scroll and tap "Add to Home Screen"</span>
+                  <Plus className="w-5 h-5" />
                 </div>
               </div>
             </div>
+
+            <button
+              onClick={handleDismiss}
+              className="w-full py-3 px-6 rounded-xl font-semibold transition-all"
+              style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                color: '#667eea',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 1)';
+                e.currentTarget.style.transform = 'scale(1.02)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.95)';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              Got it!
+            </button>
           </div>
         </div>
       </div>
@@ -151,40 +213,83 @@ export default function InstallPrompt() {
   // Android/Desktop Install Button
   if (deferredPrompt && showPrompt) {
     return (
-      <div className="fixed bottom-20 left-4 right-4 z-50 animate-slideInUp md:left-auto md:right-4 md:max-w-sm">
-        <div className="relative bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl shadow-2xl overflow-hidden">
-          {/* Animated Background */}
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full blur-3xl animate-float"></div>
-            <div className="absolute bottom-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
-          </div>
+      <div 
+        className="fixed bottom-20 left-4 right-4 z-50 md:left-auto md:right-4 md:max-w-md"
+        style={{
+          animation: 'slideInUp 0.5s ease-out'
+        }}
+      >
+        <div 
+          className="relative rounded-2xl shadow-2xl overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          }}
+        >
+          {/* Close button */}
+          <button
+            onClick={handleDismiss}
+            className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors z-10"
+            style={{ color: 'white' }}
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
           <div className="relative p-6 text-white">
-            <button
-              onClick={handleDismiss}
-              className="absolute top-3 right-3 p-1 hover:bg-white/20 rounded-full transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-3 mb-4">
+              <div 
+                className="p-3 rounded-xl backdrop-blur-sm"
+                style={{ background: 'rgba(255, 255, 255, 0.2)' }}
+              >
+                <Download className="w-7 h-7" />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl">Install Sanctuary</h3>
+                <p className="text-sm opacity-90">Works offline & faster</p>
+              </div>
+            </div>
 
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                <Download className="w-6 h-6" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-lg mb-2">Install Soul Script</h3>
-                <p className="text-sm text-white/90 mb-4">
-                  Get the app experience! Works offline and saves to your home screen.
-                </p>
-                <button
-                  onClick={handleInstallClick}
-                  className="w-full bg-white text-purple-600 font-semibold py-3 px-6 rounded-xl hover:bg-opacity-90 transition-all transform hover:scale-105 flex items-center justify-center gap-2"
-                >
-                  <Download className="w-5 h-5" />
-                  Install App
-                </button>
-              </div>
+            <p className="text-sm opacity-90 mb-5">
+              Install the app for a better experience with offline access, faster loading, and home screen convenience.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleInstallClick}
+                className="flex-1 py-3 px-6 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  color: '#667eea',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 1)';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.95)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                <Download className="w-5 h-5" />
+                Install Now
+              </button>
+              
+              <button
+                onClick={handleDismiss}
+                className="py-3 px-6 rounded-xl font-semibold transition-all"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  color: 'white',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                }}
+              >
+                Later
+              </button>
             </div>
           </div>
         </div>

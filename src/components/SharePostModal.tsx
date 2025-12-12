@@ -23,7 +23,7 @@ export function SharePostModal({
 }: SharePostModalProps) {
   const user = useAuthStore((state) => state.user);
   const { favoriteColor } = useSettingsStore();
-  const [visibility, setVisibility] = useState<'public' | 'semi-private'>('public');
+  const [visibility, setVisibility] = useState<'public' | 'semi-private'>('semi-private');
   const [snippet, setSnippet] = useState('');
   const [customHashtags, setCustomHashtags] = useState('');
   const [sharing, setSharing] = useState(false);
@@ -92,7 +92,7 @@ export function SharePostModal({
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold">Share with Community</h2>
+          <h2 className="text-3xl font-bold">Release into The Quiet</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-white/10 rounded-full transition-all"
@@ -104,7 +104,7 @@ export function SharePostModal({
         {/* Visibility Toggle */}
         <div className="mb-6">
           <label className="block text-sm font-semibold mb-3 text-gray-300">
-            Who can see this?
+            How far should this drift?
           </label>
           <div className="flex gap-3">
             <button
@@ -117,7 +117,7 @@ export function SharePostModal({
               style={visibility === 'public' ? { backgroundColor: favoriteColor } : {}}
             >
               <Globe size={20} />
-              Public
+              Let It Drift
             </button>
             <button
               onClick={() => setVisibility('semi-private')}
@@ -129,13 +129,13 @@ export function SharePostModal({
               style={visibility === 'semi-private' ? { backgroundColor: favoriteColor } : {}}
             >
               <Lock size={20} />
-              Semi-Private
+              Onlookers Only
             </button>
           </div>
           <p className="text-xs text-gray-400 mt-2">
             {visibility === 'public' 
-              ? '✨ Everyone can see this post' 
-              : '🔒 Only logged-in users can see this post'}
+              ? '✨ Anyone can witness this moment' 
+              : '🔒 Only those who join The Quiet can see this'}
           </p>
         </div>
 
@@ -230,7 +230,7 @@ export function SharePostModal({
             className="flex-1 px-6 py-3 rounded-2xl font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105"
             style={{ backgroundColor: favoriteColor }}
           >
-            {sharing ? 'Sharing...' : '✨ Share with Community'}
+            {sharing ? 'Releasing...' : '✨ Release'}
           </button>
         </div>
 

@@ -7,7 +7,7 @@ interface AuthPageProps {
 }
 
 const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -116,135 +116,424 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
   };
 
   return (
-    <div className="auth-page">
-      {/* Floating orbs */}
-      <div className="auth-orb auth-orb1"></div>
-      <div className="auth-orb auth-orb2"></div>
-      <div className="auth-orb auth-orb3"></div>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+      padding: '20px',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Floating particles background */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        pointerEvents: 'none',
+      }}>
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              width: `${Math.random() * 4 + 2}px`,
+              height: `${Math.random() * 4 + 2}px`,
+              background: 'rgba(255, 255, 255, 0.3)',
+              borderRadius: '50%',
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `float ${Math.random() * 10 + 10}s infinite ease-in-out`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          />
+        ))}
+      </div>
 
-      <div className="auth-container">
-        <div className="auth-heart-icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      <div style={{
+        width: '100%',
+        maxWidth: '550px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '30px',
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        {/* Feather Icon */}
+        <div style={{
+          animation: 'fadeIn 0.8s ease-out, float 6s infinite ease-in-out',
+        }}>
+          <svg 
+            width="80" 
+            height="80" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="white" 
+            strokeWidth="1.5"
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            style={{
+              filter: 'drop-shadow(0 4px 20px rgba(255, 255, 255, 0.3))',
+            }}
+          >
+            <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+            <line x1="16" y1="8" x2="2" y2="22" />
+            <line x1="17.5" y1="15" x2="9" y2="15" />
           </svg>
         </div>
-        
-        <h1 className="auth-title">Your Safe Space to Feel Everything</h1>
-        <p className="auth-subtitle">✧･ﾟ: *✧･ﾟ:* Welcome *:･ﾟ✧*:･ﾟ✧</p>
 
-        <div className="auth-tabs">
-          <button 
+        {/* Title */}
+        <div style={{ 
+          textAlign: 'center',
+          animation: 'fadeIn 1s ease-out 0.2s backwards',
+        }}>
+          <h1 style={{
+            fontSize: '48px',
+            fontWeight: '400',
+            color: 'white',
+            margin: 0,
+            marginBottom: '20px',
+            letterSpacing: '-0.5px',
+            lineHeight: '1.2',
+          }}>
+            Write what your<br />heart whispers.
+          </h1>
+          <p style={{
+            fontSize: '18px',
+            color: 'rgba(255, 255, 255, 0.9)',
+            margin: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+          }}>
+            <span style={{ opacity: 0.6 }}>✦</span>
+            <span>Welcome</span>
+            <span style={{ opacity: 0.6 }}>✦</span>
+          </p>
+        </div>
+
+        {/* Tab Buttons */}
+        <div style={{
+          display: 'flex',
+          gap: '20px',
+          animation: 'fadeIn 1s ease-out 0.4s backwards',
+        }}>
+          <button
             type="button"
-            className={`auth-tab ${!isSignUp ? 'active' : ''}`}
             onClick={() => setIsSignUp(false)}
+            style={{
+              padding: '18px 50px',
+              fontSize: '20px',
+              fontWeight: '600',
+              color: 'white',
+              background: isSignUp ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.25)',
+              border: 'none',
+              borderRadius: '50px',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              backdropFilter: 'blur(10px)',
+              minWidth: '140px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = isSignUp ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.25)';
+            }}
           >
             Sign In
           </button>
-          <button 
+          <button
             type="button"
-            className={`auth-tab ${isSignUp ? 'active' : ''}`}
             onClick={() => setIsSignUp(true)}
+            style={{
+              padding: '18px 50px',
+              fontSize: '20px',
+              fontWeight: '600',
+              color: 'white',
+              background: isSignUp ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.15)',
+              border: 'none',
+              borderRadius: '50px',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              backdropFilter: 'blur(10px)',
+              minWidth: '140px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = isSignUp ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.15)';
+            }}
           >
             Sign Up
           </button>
         </div>
 
-        <form onSubmit={handleAuth} className={`auth-form ${!isSignUp ? 'active' : ''}`}>
-          <div className="auth-form-group" style={{ animationDelay: '0.9s' }}>
-            <label>Email</label>
-            <input 
-              type="email" 
-              placeholder="you@example.com" 
+        {/* Form */}
+        <form 
+          onSubmit={handleAuth}
+          style={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+            animation: 'fadeIn 1s ease-out 0.6s backwards',
+          }}
+        >
+          {/* Full Name - Sign Up Only */}
+          {isSignUp && (
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                left: '24px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none',
+              }}>
+                <svg 
+                  width="24" 
+                  height="24" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="rgba(255, 255, 255, 0.5)" 
+                  strokeWidth="1.5"
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+                  <line x1="16" y1="8" x2="2" y2="22" />
+                  <line x1="17.5" y1="15" x2="9" y2="15" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required={isSignUp}
+                style={{
+                  width: '100%',
+                  padding: '22px 24px 22px 60px',
+                  fontSize: '18px',
+                  color: 'white',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: 'none',
+                  borderRadius: '16px',
+                  outline: 'none',
+                  backdropFilter: 'blur(10px)',
+                  transition: 'all 0.3s',
+                  boxSizing: 'border-box',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              />
+            </div>
+          )}
+
+          {/* Email */}
+          <div style={{ position: 'relative' }}>
+            <div style={{
+              position: 'absolute',
+              left: '24px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              pointerEvents: 'none',
+            }}>
+              <svg 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="rgba(255, 255, 255, 0.5)" 
+                strokeWidth="1.5"
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+                <line x1="16" y1="8" x2="2" y2="22" />
+                <line x1="17.5" y1="15" x2="9" y2="15" />
+              </svg>
+            </div>
+            <input
+              type="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required 
+              required
+              style={{
+                width: '100%',
+                padding: '22px 24px 22px 60px',
+                fontSize: '18px',
+                color: 'white',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: 'none',
+                borderRadius: '16px',
+                outline: 'none',
+                backdropFilter: 'blur(10px)',
+                transition: 'all 0.3s',
+                boxSizing: 'border-box',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
             />
           </div>
-          <div className="auth-form-group" style={{ animationDelay: '1.0s' }}>
-            <label>Password</label>
-            <input 
-              type="password" 
-              placeholder="••••••••" 
+
+          {/* Password */}
+          <div style={{ position: 'relative' }}>
+            <div style={{
+              position: 'absolute',
+              left: '24px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              pointerEvents: 'none',
+            }}>
+              <svg 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="rgba(255, 255, 255, 0.5)" 
+                strokeWidth="1.5"
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+                <line x1="16" y1="8" x2="2" y2="22" />
+                <line x1="17.5" y1="15" x2="9" y2="15" />
+              </svg>
+            </div>
+            <input
+              type="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
+              style={{
+                width: '100%',
+                padding: '22px 24px 22px 60px',
+                fontSize: '18px',
+                color: 'white',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: 'none',
+                borderRadius: '16px',
+                outline: 'none',
+                backdropFilter: 'blur(10px)',
+                transition: 'all 0.3s',
+                boxSizing: 'border-box',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
             />
           </div>
+
+          {/* Error Message */}
           {error && (
-            <div className="auth-error">
+            <div style={{
+              padding: '16px',
+              background: 'rgba(239, 68, 68, 0.2)',
+              border: '2px solid rgba(239, 68, 68, 0.5)',
+              borderRadius: '12px',
+              color: 'white',
+              fontSize: '14px',
+              textAlign: 'center',
+            }}>
               {error}
             </div>
           )}
-          <button type="submit" className="auth-create-btn" disabled={loading}>
-            <span>{loading ? 'Please wait...' : 'Sign In'}</span>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              padding: '22px',
+              fontSize: '20px',
+              fontWeight: '700',
+              color: 'white',
+              background: 'rgba(255, 255, 255, 0.25)',
+              border: 'none',
+              borderRadius: '16px',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.3s',
+              backdropFilter: 'blur(10px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              opacity: loading ? 0.6 : 1,
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            {loading ? (
+              'Please wait...'
+            ) : isSignUp ? (
+              <>
+                <span style={{ fontSize: '20px' }}>✦</span>
+                Create Account
+              </>
+            ) : (
+              'Sign In'
+            )}
           </button>
         </form>
-
-        <form onSubmit={handleAuth} className={`auth-form ${isSignUp ? 'active' : ''}`}>
-          <div className="auth-form-group" style={{ animationDelay: '0.9s' }}>
-            <label>Full Name</label>
-            <input 
-              type="text" 
-              placeholder="Your name" 
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required 
-            />
-          </div>
-          <div className="auth-form-group" style={{ animationDelay: '1.0s' }}>
-            <label>Email</label>
-            <input 
-              type="email" 
-              placeholder="you@example.com" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required 
-            />
-          </div>
-          <div className="auth-form-group" style={{ animationDelay: '1.1s' }}>
-            <label>Password</label>
-            <input 
-              type="password" 
-              placeholder="••••••••" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-            />
-          </div>
-          {error && (
-            <div className="auth-error">
-              {error}
-            </div>
-          )}
-          <button type="submit" className="auth-create-btn" disabled={loading}>
-            <span>{loading ? 'Please wait...' : '✨ Create Account'}</span>
-          </button>
-        </form>
-
-        <div className="auth-features">
-          <div className="auth-feature">
-            <div className="auth-feature-icon">🔒</div>
-            Private
-          </div>
-          <div className="auth-feature">
-            <div className="auth-feature-icon">🔐</div>
-            Encrypted
-          </div>
-          <div className="auth-feature">
-            <div className="auth-feature-icon">💜</div>
-            Safe Space
-          </div>
-        </div>
-
-        <p className="auth-tagline">Your emotions belong to you. Always.</p>
-
-        <div className="auth-legal">
-          By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.<br />
-          All data is encrypted end-to-end and belongs only to you.
-        </div>
       </div>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0) translateX(0); }
+          25% { transform: translateY(-20px) translateX(10px); }
+          50% { transform: translateY(-10px) translateX(-10px); }
+          75% { transform: translateY(-15px) translateX(5px); }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        input::placeholder {
+          color: rgba(255, 255, 255, 0.5);
+        }
+      `}</style>
     </div>
   );
 };

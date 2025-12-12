@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getMoodEmoji } from '../data/emotions';
 import { getGradientBackground } from '../lib/colorUtils';
+import { Constellations } from './Constellations';
 
 interface CommunityPost {
   id: string;
@@ -432,6 +433,14 @@ export function Community() {
           )}
         </div>
 
+        {/* Constellations */}
+        {!loading && !searchHashtag && (
+          <Constellations 
+            posts={posts} 
+            onConstellationClick={(hashtag) => setSearchHashtag(hashtag)}
+          />
+        )}
+
         {/* Posts Grid */}
         {loading ? (
           <div style={{ 
@@ -679,7 +688,7 @@ export function Community() {
                       style={{ color: 'white' }}
                     />
                     <span>
-                      {post.echo_count} {post.echo_count === 1 ? 'echo' : 'echoes'}
+                      {post.echo_count} {post.echo_count === 1 ? 'Echo' : 'Echoes'}
                     </span>
                   </button>
 
@@ -710,7 +719,7 @@ export function Community() {
                     }}
                   >
                     <MessageCircle size={18} />
-                    <span>Support</span>
+                    <span>Whisper</span>
                   </button>
 
                   {/* Save/Bookmark Button */}
@@ -839,7 +848,7 @@ export function Community() {
                         marginBottom: '20px',
                         textAlign: 'center'
                       }}>
-                        💜 Send Support
+                        💜 Whisper Support
                       </h3>
                       <p style={{
                         color: 'rgba(255, 255, 255, 0.8)',

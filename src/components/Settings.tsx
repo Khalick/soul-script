@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useSubscriptionStore } from '../stores/subscriptionStore';
+import { useJournalStore } from '../stores/journalStore';
 import { getGradientBackground } from '../lib/colorUtils';
-import { Crown, Volume2, Download, Smartphone } from 'lucide-react';
+import { Crown, Volume2, Download, Smartphone, Package } from 'lucide-react';
 
 export function Settings() {
   const { theme, favoriteColor, favoriteEmoji, dearPrompt, backgroundAmbience, ambienceVolume, customMusicUrl, setTheme, setFavoriteColor, setFavoriteEmoji, setDearPrompt, setBackgroundAmbience, setAmbienceVolume, setCustomMusicUrl } = useSettingsStore();
   const { checkSubscriptionStatus, setSubscription } = useSubscriptionStore();
+  const { entries } = useJournalStore();
   const [tempColor, setTempColor] = useState(favoriteColor);
   const [tempEmoji, setTempEmoji] = useState(favoriteEmoji);
   const [tempPrompt, setTempPrompt] = useState(dearPrompt);
   const [tempMusicUrl, setTempMusicUrl] = useState(customMusicUrl);
   const [saved, setSaved] = useState(false);
+  const [exported, setExported] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -96,6 +99,35 @@ export function Settings() {
     setTimeout(() => setSaved(false), 3000);
   };
 
+  const handleExport = () => {
+    const exportData = {
+      exportDate: new Date().toISOString(),
+      entries: entries.map(entry => ({
+        id: entry.id,
+        mood: entry.mood,
+        intensity: entry.intensity,
+        text_content: entry.text_content,
+        tags: entry.tags,
+        created_at: entry.created_at,
+        is_public: entry.is_public,
+      })),
+      totalEntries: entries.length,
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `soulscript-journal-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setExported(true);
+    setTimeout(() => setExported(false), 3000);
+  };
+
   return (
     <div className="dashboard-page" style={{
       background: getGradientBackground(favoriteColor)
@@ -108,59 +140,102 @@ export function Settings() {
         <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
           <div className="text-center" style={{ animation: 'fadeIn 1s ease-out' }}>
             <h1 style={{ fontSize: '48px', fontWeight: '700', color: 'white', textShadow: '0 0 40px rgba(255, 255, 255, 0.5)', marginBottom: '10px', animation: 'glow 3s ease-in-out infinite' }}>
-              {favoriteEmoji} Settings
+              {favoriteEmoji} Boundaries
             </h1>
             <p style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.9)' }}>
-              Personalize your Soul Script experience
+              Personalize your Sanctuary experience
             </p>
           </div>
 
           {/* Install App Section */}
           {!isInstalled && (
-            <div className="dashboard-card" style={{ animationDelay: '0.1s', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3))', border: '2px solid rgba(255, 255, 255, 0.2)' }}>
-              <div style={{ display: 'flex', alignItems: 'start', gap: '20px' }}>
+            <div 
+              className="dashboard-card" 
+              style={{ 
+                animationDelay: '0.1s', 
+                background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4))', 
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              {/* Subtle background pattern */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                opacity: 0.1,
+                backgroundImage: 'radial-gradient(circle at 20% 50%, white 2px, transparent 2px), radial-gradient(circle at 80% 50%, white 2px, transparent 2px)',
+                backgroundSize: '50px 50px',
+                pointerEvents: 'none'
+              }}></div>
+
+              <div style={{ display: 'flex', alignItems: 'start', gap: '20px', position: 'relative', zIndex: 1 }}>
                 <div style={{ 
-                  padding: '15px', 
-                  background: 'rgba(255, 255, 255, 0.2)', 
+                  padding: '16px', 
+                  background: 'rgba(255, 255, 255, 0.25)', 
                   borderRadius: '16px',
-                  backdropFilter: 'blur(10px)'
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                 }}>
                   {isIOS ? <Smartphone size={32} color="white" /> : <Download size={32} color="white" />}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '10px', color: 'white' }}>
-                    📱 Install Soul Script
+                  <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '12px', color: 'white', textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                    {isIOS ? '📱 Install on iPhone' : '💜 Install Sanctuary'}
                   </h2>
-                  <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '15px', lineHeight: '1.6' }}>
+                  <p style={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.95)', marginBottom: '16px', lineHeight: '1.6' }}>
                     {isIOS 
-                      ? 'Add Soul Script to your home screen for the best experience!'
-                      : 'Install Soul Script as an app! Works offline, faster loading, and feels like a native app.'
+                      ? 'Tap the Share button (square with arrow) in your browser, then scroll down and select "Add to Home Screen" to install Sanctuary as an app!'
+                      : deferredPrompt
+                        ? 'Click the button below to install Sanctuary as a native app. Works offline, loads faster, and lives on your home screen!'
+                        : 'To install Sanctuary, interact with the site (click around) and wait a few moments. Chrome will show an install prompt when ready.'
                     }
                   </p>
                   {!isIOS && deferredPrompt && (
                     <button
                       onClick={handleInstall}
                       style={{
-                        padding: '12px 24px',
+                        padding: '14px 28px',
                         background: 'white',
-                        color: '#8B5CF6',
+                        color: '#667eea',
                         border: 'none',
                         borderRadius: '12px',
                         fontSize: '16px',
-                        fontWeight: '600',
+                        fontWeight: '700',
                         cursor: 'pointer',
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        boxShadow: '0 4px 15px rgba(255, 255, 255, 0.3)',
-                        transition: 'transform 0.2s'
+                        gap: '10px',
+                        boxShadow: '0 4px 20px rgba(255, 255, 255, 0.4)',
+                        transition: 'all 0.3s'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 25px rgba(255, 255, 255, 0.5)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(255, 255, 255, 0.4)';
+                      }}
                     >
-                      <Download size={18} />
-                      Install Now
+                      <Download size={20} />
+                      Install Sanctuary Now
                     </button>
+                  )}
+                  {!isIOS && !deferredPrompt && (
+                    <div style={{
+                      padding: '12px 16px',
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      borderRadius: '10px',
+                      fontSize: '13px',
+                      color: 'rgba(255, 255, 255, 0.9)',
+                      lineHeight: '1.5'
+                    }}>
+                      💡 <strong>Tip:</strong> Chrome requires user engagement before showing the install option. Scroll, click around, and check back in ~30 seconds!
+                    </div>
                   )}
                 </div>
               </div>
@@ -496,6 +571,62 @@ export function Settings() {
                 </button>
               </div>
             )}
+          </div>
+
+          {/* Export Data */}
+          <div className="dashboard-card" style={{ animationDelay: '0.8s' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+              <div style={{ 
+                padding: '12px', 
+                background: 'rgba(255, 255, 255, 0.2)', 
+                borderRadius: '12px'
+              }}>
+                <Package size={24} color="white" />
+              </div>
+              <div style={{ flex: 1 }}>
+                <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '6px' }}>
+                  Carry With Me
+                </h2>
+                <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+                  Download your journal entries as a keepsake
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleExport}
+              disabled={entries.length === 0}
+              style={{
+                padding: '15px 30px',
+                background: entries.length === 0 
+                  ? 'rgba(255, 255, 255, 0.1)'
+                  : exported 
+                    ? 'linear-gradient(135deg, #4ade80, #22c55e)' 
+                    : 'linear-gradient(135deg, #60a5fa, #3b82f6)',
+                border: 'none',
+                borderRadius: '12px',
+                color: entries.length === 0 ? 'rgba(255, 255, 255, 0.5)' : 'white',
+                fontSize: '16px',
+                fontWeight: '700',
+                cursor: entries.length === 0 ? 'not-allowed' : 'pointer',
+                boxShadow: entries.length === 0 ? 'none' : exported ? '0 8px 30px rgba(74, 222, 128, 0.4)' : '0 8px 30px rgba(96, 165, 250, 0.4)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                transition: 'all 0.3s',
+              }}
+            >
+              {exported ? (
+                <>✅ Carried Away!</>
+              ) : (
+                <>
+                  <Download size={20} /> 
+                  {entries.length === 0 ? 'No entries yet' : `Carry ${entries.length} ${entries.length === 1 ? 'Entry' : 'Entries'}`}
+                </>
+              )}
+            </button>
+            <p style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '12px' }}>
+              Your entries will be saved as a JSON file. Media files are not included.
+            </p>
           </div>
 
           {/* Save Button */}

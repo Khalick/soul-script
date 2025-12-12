@@ -748,7 +748,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
               </button>
             )}
             <button onClick={handleSave} disabled={uploading} className="dashboard-new-entry-btn" style={{ fontSize: '16px', padding: '16px 50px' }}>
-              <span>{uploading ? '💾 Saving...' : '✨ Save Entry'}</span>
+              <span>{uploading ? '💾 Saving...' : '✨ Release'}</span>
             </button>
           </div>
         </div>
