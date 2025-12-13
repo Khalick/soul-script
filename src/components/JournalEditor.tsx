@@ -13,6 +13,7 @@ import { AmbiencePlayer } from './AmbiencePlayer';
 import { Affirmation } from './Affirmation';
 import { SaveNotification } from './SaveNotification';
 import { SharePostModal } from './SharePostModal';
+import { useMediaRecording } from '../App';
 
 interface JournalEditorProps {
   onSave: () => void;
@@ -26,6 +27,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
   const { favoriteColor, favoriteEmoji } = useSettingsStore();
   const { customTemplates, addCustomTemplate } = useTemplateStore();
   const { isOnline, addOfflineEntry } = useOfflineStore();
+  const { setMediaActive } = useMediaRecording();
   const [textContent, setTextContent] = useState(editingEntry?.text_content || '');
   const [title, setTitle] = useState(editingEntry?.title || '');
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
@@ -77,6 +79,9 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
+      // Notify that media recording is active
+      setMediaActive(true);
+
       mediaRecorder.ondataavailable = (event) => {
         audioChunksRef.current.push(event.data);
       };
@@ -88,6 +93,9 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
         const file = new File([audioBlob], `voice-${Date.now()}.webm`, { type: 'audio/webm' });
         setMediaFiles((prev) => [...prev, file]);
         stream.getTracks().forEach(track => track.stop());
+        
+        // Notify that media recording stopped
+        setMediaActive(false);
       };
 
       mediaRecorder.start();
@@ -95,6 +103,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     } catch (error) {
       console.error('Error accessing microphone:', error);
       alert('Could not access microphone. Please check permissions.');
+      setMediaActive(false);
     }
   };
 
@@ -130,6 +139,9 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
       setShowCamera(true);
       setShowPhotoMenu(false);
       
+      // Notify that media recording is active
+      setMediaActive(true);
+      
       // Wait for the next tick to ensure the video element is rendered
       setTimeout(() => {
         if (videoPreviewRef.current) {
@@ -139,6 +151,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     } catch (error) {
       console.error('Error accessing camera:', error);
       alert('Could not access camera. Please check permissions.');
+      setMediaActive(false);
     }
   };
 
@@ -172,6 +185,9 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
       setShowVideoRecorder(true);
       setShowVideoMenu(false);
       
+      // Notify that media recording is active
+      setMediaActive(true);
+      
       // Wait for the next tick to ensure the video element is rendered
       setTimeout(() => {
         if (videoPreviewRef.current) {
@@ -192,6 +208,9 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
         const blob = new Blob(videoChunksRef.current, { type: 'video/webm' });
         const file = new File([blob], `video-${Date.now()}.webm`, { type: 'video/webm' });
         handleVideoUpload({ target: { files: [file] } } as any);
+        
+        // Notify that media recording stopped
+        setMediaActive(false);
       };
       
       videoRecorderRef.current = recorder;
@@ -199,6 +218,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     } catch (error) {
       console.error('Error accessing camera:', error);
       alert('Could not access camera. Please check permissions.');
+      setMediaActive(false);
     }
   };
 
@@ -221,6 +241,9 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     setShowCamera(false);
     setShowVideoRecorder(false);
     videoRecorderRef.current = null;
+    
+    // Notify that media recording stopped
+    setMediaActive(false);
   };
 
   const handleSave = async () => {

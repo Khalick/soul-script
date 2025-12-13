@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext, useContext } from 'react';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './stores/authStore';
 import { useJournalStore } from './stores/journalStore';
 import { setupOnlineListener, syncOfflineEntries } from './lib/offlineSync';
+import { useAutoLogout } from './hooks/useAutoLogout';
 import AuthPage from './components/AuthPage';
 import { Dashboard } from './components/Dashboard';
 import EmotionCheckIn from './components/EmotionCheckIn';
@@ -19,6 +20,21 @@ import { Calendar, BarChart3, PlusCircle } from 'lucide-react';
 
 type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy';
 
+// Context for media recording state
+interface MediaRecordingContextType {
+  setMediaActive: (active: boolean) => void;
+}
+
+const MediaRecordingContext = createContext<MediaRecordingContextType | null>(null);
+
+export const useMediaRecording = () => {
+  const context = useContext(MediaRecordingContext);
+  if (!context) {
+    throw new Error('useMediaRecording must be used within MediaRecordingProvider');
+  }
+  return context;
+};
+
 function App() {
   const { user, isAuthenticated, setUser, logout } = useAuthStore();
   const { entries, setEntries } = useJournalStore();
@@ -26,6 +42,17 @@ function App() {
   const [viewHistory, setViewHistory] = useState<View[]>(['home']);
   const [loading, setLoading] = useState(true);
   const [editingEntry, setEditingEntry] = useState<any>(null);
+
+  // Auto-logout after 20 minutes of inactivity (excludes media recording)
+  const { setMediaActive } = useAutoLogout({
+    timeout: 20 * 60 * 1000, // 20 minutes
+    onLogout: async () => {
+      if (isAuthenticated) {
+        await supabase.auth.signOut();
+        logout();
+      }
+    },
+  });
 
   // Handle browser back button
   useEffect(() => {
@@ -223,7 +250,7 @@ function App() {
   // Show beautiful dashboard for home view
   if (currentView === 'home') {
     return (
-      <>
+      <MediaRecordingContext.Provider value={{ setMediaActive }}>
         <Navbar 
           currentView="home"
           onNavigate={navigateToView}
@@ -234,21 +261,22 @@ function App() {
           onNewEntry={handleNewEntry}
           onLogout={handleLogout}
         />
-      </>
+      </MediaRecordingContext.Provider>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ paddingTop: '80px' }}>
-      {/* Navigation */}
-      <Navbar 
-        currentView={currentView}
-        onNavigate={navigateToView}
-        onLogout={handleLogout}
-      />
+    <MediaRecordingContext.Provider value={{ setMediaActive }}>
+      <div className="min-h-screen" style={{ paddingTop: '80px' }}>
+        {/* Navigation */}
+        <Navbar 
+          currentView={currentView}
+          onNavigate={navigateToView}
+          onLogout={handleLogout}
+        />
 
-      {/* Main Content */}
-      <main className="pb-20">
+        {/* Main Content */}
+        <main className="pb-20">,
         {currentView === 'checkin' && (
           <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
             <div className="text-center space-y-4">
@@ -339,6 +367,7 @@ function App() {
         <PlusCircle className="w-8 h-8" />
       </button>
     </div>
+    </MediaRecordingContext.Provider>
   );
 }
 
