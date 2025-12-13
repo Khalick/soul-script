@@ -17,7 +17,6 @@ export function Settings() {
   const [exported, setExported] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
 
   const premiumActive = checkSubscriptionStatus();
 
@@ -66,7 +65,6 @@ export function Settings() {
 
     // Check if iOS (manual install only)
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    setIsIOS(ios);
     
     if (ios) return;
 
