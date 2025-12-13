@@ -13,7 +13,7 @@ export default defineConfig({
         name: 'Soul Script',
         short_name: 'SoulScript',
         description: 'Your safe space for emotional journaling and self-reflection',
-        theme_color: '#8B5CF6',
+        theme_color: '#06b6d4',
         background_color: '#0a0a0a',
         display: 'standalone',
         orientation: 'portrait-primary',

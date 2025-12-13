@@ -8,7 +8,7 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } {
         g: parseInt(result[2], 16),
         b: parseInt(result[3], 16),
       }
-    : { r: 192, g: 132, b: 252 }; // Default purple
+    : { r: 20, g: 184, b: 166 }; // Default teal
 }
 
 export function rgbToHex(r: number, g: number, b: number): string {

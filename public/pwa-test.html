@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Install Diagnostics</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    .check { color: #10b981; }
+    .warning { color: #f59e0b; }
+    .error { color: #ef4444; }
+    .section {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      border: 1px solid #334155;
+    }
+    button {
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px 10px 10px 0;
+    }
+    button:hover { background: #7c3aed; }
+    button:disabled {
+      background: #475569;
+      cursor: not-allowed;
+    }
+    #log {
+      background: #000;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 15px;
+    }
+    .log-entry {
+      margin: 5px 0;
+      padding: 5px;
+      border-left: 3px solid #334155;
+      padding-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔧 PWA Install Diagnostics</h1>
+  <p>This page helps diagnose PWA installation issues</p>
+
+  <div class="section">
+    <h2>System Checks</h2>
+    <div id="checks"></div>
+  </div>
+
+  <div class="section">
+    <h2>Install Controls</h2>
+    <button id="installBtn" disabled>Install App</button>
+    <button onclick="location.reload()">Refresh Page</button>
+    <button onclick="clearLog()">Clear Log</button>
+    <p id="status">Waiting for install prompt...</p>
+  </div>
+
+  <div class="section">
+    <h2>Event Log</h2>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+    const status = document.getElementById('status');
+
+    function log(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `<span style="color: #64748b">${new Date().toLocaleTimeString()}</span> ${message}`;
+      logDiv.appendChild(entry);
+      logDiv.scrollTop = logDiv.scrollHeight;
+      console.log(message);
+    }
+
+    function clearLog() {
+      document.getElementById('log').innerHTML = '';
+    }
+
+    // Run system checks
+    function runChecks() {
+      const checksDiv = document.getElementById('checks');
+      let checks = [];
+
+      // Browser check
+      const isChrome = /Chrome|Chromium|Edg/.test(navigator.userAgent) && !/Firefox/.test(navigator.userAgent);
+      const isFirefox = /Firefox/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+      
+      let browserName = 'Unknown';
+      if (isChrome) browserName = 'Chrome/Edge';
+      if (isFirefox) browserName = 'Firefox';
+      if (isSafari) browserName = 'Safari';
+
+      checks.push(`<div class="${isChrome ? 'check' : 'warning'}">
+        ${isChrome ? '✅' : '⚠️'} Browser: ${browserName} ${isChrome ? '(Supports Auto-Install)' : '(Limited PWA Support)'}
+      </div>`);
+
+      if (isFirefox) {
+        checks.push(`<div class="warning">
+          ⚠️ Firefox does NOT support beforeinstallprompt event. PWA features work, but no auto-install prompt.
+        </div>`);
+      }
+
+      // Protocol check
+      const isSecure = location.protocol === 'https:' || location.hostname === 'localhost';
+      checks.push(`<div class="${isSecure ? 'check' : 'error'}">
+        ${isSecure ? '✅' : '❌'} Protocol: ${location.protocol} ${isSecure ? '(OK)' : '(Needs HTTPS)'}
+      </div>`);
+
+      // Service Worker support
+      const hasSW = 'serviceWorker' in navigator;
+      checks.push(`<div class="${hasSW ? 'check' : 'error'}">
+        ${hasSW ? '✅' : '❌'} Service Worker Support: ${hasSW ? 'Available' : 'Not Available'}
+      </div>`);
+
+      // Display mode
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      checks.push(`<div class="${isStandalone ? 'warning' : 'check'}">
+        ${isStandalone ? '⚠️' : '✅'} Display Mode: ${isStandalone ? 'Already Installed' : 'Browser'}
+      </div>`);
+
+      // iOS check
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      checks.push(`<div class="${isIOS ? 'warning' : 'check'}">
+        ${isIOS ? '⚠️' : '✅'} iOS: ${isIOS ? 'Detected (Manual Install Only)' : 'Not iOS'}
+      </div>`);
+
+      checksDiv.innerHTML = checks.join('');
+
+      log(`Browser detected: ${browserName}`);
+      if (isFirefox) {
+        log('⚠️ Firefox does not support beforeinstallprompt API', 'warning');
+        log('💡 To install on Firefox: Use browser menu → Install/Add to Home Screen', 'info');
+      }
+      log('System checks completed');
+    }
+
+    // Listen for beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      log('🎉 beforeinstallprompt event fired!', 'success');
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.disabled = false;
+      status.innerHTML = '<span class="check">✅ Ready to install!</span>';
+    });
+
+    // Install button click
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) {
+        log('❌ No deferred prompt available', 'error');
+        return;
+      }
+
+      log('🚀 Showing install prompt...');
+      deferredPrompt.prompt();
+
+      const { outcome } = await deferredPrompt.userChoice;
+      log(`📊 User choice: ${outcome}`);
+
+      if (outcome === 'accepted') {
+        log('✅ User accepted installation', 'success');
+        status.innerHTML = '<span class="check">✅ Installing...</span>';
+      } else {
+        log('❌ User dismissed installation', 'error');
+        status.innerHTML = '<span class="error">❌ Installation declined</span>';
+      }
+
+      deferredPrompt = null;
+      installBtn.disabled = true;
+    });
+
+    // App installed event
+    window.addEventListener('appinstalled', () => {
+      log('✅ PWA installed successfully!', 'success');
+      status.innerHTML = '<span class="check">✅ App Installed!</span>';
+    });
+
+    // Track user interaction
+    let interactionCount = 0;
+    ['click', 'scroll', 'keydown'].forEach(event => {
+      window.addEventListener(event, () => {
+        interactionCount++;
+        if (interactionCount === 1) {
+          log('👆 User interaction detected');
+        }
+      }, { once: true });
+    });
+
+    // Initialize
+    runChecks();
+    log('PWA Diagnostics initialized');
+    log('Waiting for beforeinstallprompt event...');
+    log('💡 Tip: Interact with the page (click, scroll) and wait 30+ seconds');
+
+    // Check for prompt after delay
+    setTimeout(() => {
+      if (!deferredPrompt) {
+        log('⏰ 30 seconds elapsed - no prompt yet', 'warning');
+        log('💡 Chrome requires user engagement. Keep interacting and wait longer.');
+      }
+    }, 30000);
+  </script>
+</body>
+</html>

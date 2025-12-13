@@ -34,7 +34,7 @@ const defaultSettings: Settings = {
   notificationsEnabled: true,
   pinEnabled: false,
   biometricEnabled: false,
-  favoriteColor: '#c084fc',
+  favoriteColor: '#14b8a6',
   favoriteEmoji: '💖',
   dearPrompt: 'Dear Diary',
   ambienceVolume: 0.5,

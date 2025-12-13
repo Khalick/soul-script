@@ -24,7 +24,7 @@ export function Settings() {
   const emojis = ['💖', '🌟', '🦋', '🌸', '🌈', '✨', '💫', '🔮', '🌺', '🍀', '🌙', '☀️'];
   const colors = [
     { name: 'Pink', value: '#ff6b9d' },
-    { name: 'Purple', value: '#c084fc' },
+    { name: 'Teal', value: '#14b8a6' },
     { name: 'Blue', value: '#60a5fa' },
     { name: 'Indigo', value: '#818cf8' },
     { name: 'Teal', value: '#14b8a6' },
@@ -56,13 +56,19 @@ export function Settings() {
   // Check PWA install status
   useEffect(() => {
     // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isIOSStandalone = (window.navigator as any).standalone === true;
+    
+    if (isStandalone || isIOSStandalone) {
       setIsInstalled(true);
+      return;
     }
 
-    // Check if iOS
+    // Check if iOS (manual install only)
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(ios);
+    
+    if (ios) return;
 
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -72,22 +78,35 @@ export function Settings() {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
+    // Listen for app installed event
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('appinstalled', handleAppInstalled);
+
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
 
-    if (outcome === 'accepted') {
-      setIsInstalled(true);
+      if (outcome === 'accepted') {
+        setIsInstalled(true);
+      }
+
+      setDeferredPrompt(null);
+    } catch (error) {
+      console.error('Install error:', error);
     }
-
-    setDeferredPrompt(null);
   };
 
   const handleSave = () => {
@@ -147,98 +166,38 @@ export function Settings() {
             </p>
           </div>
 
-          {/* Install App Section */}
-          {!isInstalled && (
-            <div 
-              className="dashboard-card" 
-              style={{ 
-                animationDelay: '0.1s', 
-                background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4))', 
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-            >
-              {/* Subtle background pattern */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                opacity: 0.1,
-                backgroundImage: 'radial-gradient(circle at 20% 50%, white 2px, transparent 2px), radial-gradient(circle at 80% 50%, white 2px, transparent 2px)',
-                backgroundSize: '50px 50px',
-                pointerEvents: 'none'
-              }}></div>
-
-              <div style={{ display: 'flex', alignItems: 'start', gap: '20px', position: 'relative', zIndex: 1 }}>
-                <div style={{ 
-                  padding: '16px', 
-                  background: 'rgba(255, 255, 255, 0.25)', 
-                  borderRadius: '16px',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                }}>
-                  {isIOS ? <Smartphone size={32} color="white" /> : <Download size={32} color="white" />}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '12px', color: 'white', textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-                    {isIOS ? '📱 Install on iPhone' : '💜 Install Sanctuary'}
-                  </h2>
-                  <p style={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.95)', marginBottom: '16px', lineHeight: '1.6' }}>
-                    {isIOS 
-                      ? 'Tap the Share button (square with arrow) in your browser, then scroll down and select "Add to Home Screen" to install Sanctuary as an app!'
-                      : deferredPrompt
-                        ? 'Click the button below to install Sanctuary as a native app. Works offline, loads faster, and lives on your home screen!'
-                        : 'To install Sanctuary, interact with the site (click around) and wait a few moments. Chrome will show an install prompt when ready.'
-                    }
-                  </p>
-                  {!isIOS && deferredPrompt && (
-                    <button
-                      onClick={handleInstall}
-                      style={{
-                        padding: '14px 28px',
-                        background: 'white',
-                        color: '#667eea',
-                        border: 'none',
-                        borderRadius: '12px',
-                        fontSize: '16px',
-                        fontWeight: '700',
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        boxShadow: '0 4px 20px rgba(255, 255, 255, 0.4)',
-                        transition: 'all 0.3s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 25px rgba(255, 255, 255, 0.5)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(255, 255, 255, 0.4)';
-                      }}
-                    >
-                      <Download size={20} />
-                      Install Sanctuary Now
-                    </button>
-                  )}
-                  {!isIOS && !deferredPrompt && (
-                    <div style={{
-                      padding: '12px 16px',
-                      background: 'rgba(255, 255, 255, 0.15)',
-                      borderRadius: '10px',
-                      fontSize: '13px',
-                      color: 'rgba(255, 255, 255, 0.9)',
-                      lineHeight: '1.5'
-                    }}>
-                      💡 <strong>Tip:</strong> Chrome requires user engagement before showing the install option. Scroll, click around, and check back in ~30 seconds!
-                    </div>
-                  )}
-                </div>
-              </div>
+          {/* Install App Section - Simple */}
+          {!isInstalled && deferredPrompt && (
+            <div className="dashboard-card" style={{ animationDelay: '0.1s', textAlign: 'center' }}>
+              <button
+                onClick={handleInstall}
+                style={{
+                  padding: '16px 40px',
+                  background: 'linear-gradient(135deg, #06b6d4, #0e7490)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  boxShadow: '0 8px 30px rgba(102, 126, 234, 0.4)',
+                  transition: 'all 0.3s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.6)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 8px 30px rgba(102, 126, 234, 0.4)';
+                }}
+              >
+                <Download size={24} />
+                Install Sanctuary
+              </button>
             </div>
           )}
 

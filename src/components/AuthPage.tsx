@@ -121,7 +121,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%)',
+      background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%)',
       padding: '20px',
       position: 'relative',
       overflow: 'hidden',
