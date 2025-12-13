@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install Soul Script</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(-45deg, #06b6d4, #0e7490, #14b8a6, #22d3ee);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            font-family: system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        h1 { color: #0e7490; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 30px; }
+        .btn {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #06b6d4, #0e7490);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.4);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(6, 182, 212, 0.6); }
+        .btn:active { transform: translateY(0); }
+        .status { margin-top: 20px; padding: 15px; border-radius: 10px; font-size: 14px; }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .waiting { background: #dbeafe; color: #1e40af; }
+        .hidden { display: none; }
+        .steps { text-align: left; margin-top: 20px; }
+        .steps li { margin: 10px 0; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Install Soul Script</h1>
+        <p>Add Soul Script to your home screen for the best experience</p>
+        
+        <button id="installBtn" class="btn hidden">Install Now</button>
+        <a href="/" class="btn" id="openApp">Open App</a>
+        
+        <div id="status" class="status hidden"></div>
+        
+        <div id="instructions" class="hidden">
+            <h3>Manual Installation:</h3>
+            <div class="steps">
+                <p><strong>Chrome/Edge (Android/Desktop):</strong></p>
+                <ol>
+                    <li>Click the ⋮ menu (three dots)</li>
+                    <li>Select "Install app" or "Add to Home screen"</li>
+                    <li>Confirm installation</li>
+                </ol>
+                
+                <p><strong>Safari (iPhone/iPad):</strong></p>
+                <ol>
+                    <li>Tap the Share button (📤)</li>
+                    <li>Scroll down and tap "Add to Home Screen"</li>
+                    <li>Tap "Add"</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        const openApp = document.getElementById('openApp');
+        const status = document.getElementById('status');
+        const instructions = document.getElementById('instructions');
+
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            status.textContent = '✅ Already installed! Opening app...';
+            status.className = 'status success';
+            setTimeout(() => window.location.href = '/', 1000);
+        }
+
+        // Listen for install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.classList.remove('hidden');
+            openApp.classList.add('hidden');
+            status.textContent = '✅ Install available!';
+            status.className = 'status success';
+            console.log('Install prompt ready');
+        });
+
+        // Install button click
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            installBtn.disabled = true;
+            installBtn.textContent = 'Installing...';
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                status.textContent = '🎉 Installed successfully!';
+                status.className = 'status success';
+                setTimeout(() => window.location.href = '/', 1500);
+            } else {
+                status.textContent = '❌ Installation cancelled';
+                status.className = 'status error';
+                installBtn.disabled = false;
+                installBtn.textContent = 'Install Now';
+            }
+            
+            deferredPrompt = null;
+        });
+
+        // Show manual instructions after 3 seconds
+        setTimeout(() => {
+            if (!deferredPrompt) {
+                instructions.classList.remove('hidden');
+                status.textContent = '💡 Use manual installation steps below';
+                status.className = 'status waiting';
+            }
+        }, 3000);
+
+        // App installed event
+        window.addEventListener('appinstalled', () => {
+            status.textContent = '🎉 App installed!';
+            status.className = 'status success';
+            setTimeout(() => window.location.href = '/', 1500);
+        });
+    </script>
+</body>
+</html>

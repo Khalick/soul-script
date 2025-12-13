@@ -63,21 +63,21 @@ export function Settings() {
       return;
     }
 
-    // Check if iOS (manual install only)
+    // Skip iOS (manual install only)
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    
     if (ios) return;
 
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
       setDeferredPrompt(e);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    console.log('👂 Listening for beforeinstallprompt event...');
 
     // Listen for app installed event
     const handleAppInstalled = () => {
+      console.log('✅ App installed!');
       setIsInstalled(true);
       setDeferredPrompt(null);
     };
@@ -164,7 +164,7 @@ export function Settings() {
             </p>
           </div>
 
-          {/* Install App Section - Simple */}
+          {/* Install App Button */}
           {!isInstalled && deferredPrompt && (
             <div className="dashboard-card" style={{ animationDelay: '0.1s', textAlign: 'center' }}>
               <button
