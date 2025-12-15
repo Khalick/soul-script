@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext } from 'react';
+import { useEffect, useState, createContext, useContext, lazy, Suspense } from 'react';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './stores/authStore';
 import { useJournalStore } from './stores/journalStore';
@@ -8,16 +8,18 @@ import AuthPage from './components/AuthPage';
 import { Dashboard } from './components/Dashboard';
 import EmotionCheckIn from './components/EmotionCheckIn';
 import JournalEditor from './components/JournalEditor';
-import EmotionalTimeline from './components/EmotionalTimeline';
-import { Settings } from './components/Settings';
-import LegacyMode from './components/LegacyMode';
-import { Analytics } from './components/Analytics';
-import { Community } from './components/Community';
 import { Navbar } from './components/Navbar';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import InstallPrompt from './components/InstallPrompt';
-import { MoodboardSelector } from './components/MoodboardSelector';
 import { Calendar, BarChart3, PlusCircle } from 'lucide-react';
+
+// Lazy load heavy components
+const EmotionalTimeline = lazy(() => import('./components/EmotionalTimeline'));
+const Settings = lazy(() => import('./components/Settings').then(m => ({ default: m.Settings })));
+const LegacyMode = lazy(() => import('./components/LegacyMode'));
+const Analytics = lazy(() => import('./components/Analytics').then(m => ({ default: m.Analytics })));
+const Community = lazy(() => import('./components/Community').then(m => ({ default: m.Community })));
+const MoodboardSelector = lazy(() => import('./components/MoodboardSelector').then(m => ({ default: m.MoodboardSelector })));
 
 type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy' | 'moodboard';
 
@@ -340,7 +342,9 @@ function App() {
         {currentView === 'checkin' && <EmotionCheckIn onComplete={handleCheckInComplete} />}
         
         {currentView === 'moodboard' && (
-          <MoodboardSelector onSelect={handleMoodboardSelect} />
+          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+            <MoodboardSelector onSelect={handleMoodboardSelect} />
+          </Suspense>
         )}
         
         {currentView === 'editor' && (
@@ -352,16 +356,34 @@ function App() {
         )}
         
         {currentView === 'timeline' && (
-          <EmotionalTimeline onEntryClick={handleEditEntry} />
+          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+            <EmotionalTimeline onEntryClick={handleEditEntry} />
+          </Suspense>
         )}
         
-        {currentView === 'settings' && <Settings />}
+        {currentView === 'settings' && (
+          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+            <Settings />
+          </Suspense>
+        )}
         
-        {currentView === 'legacy' && <LegacyMode />}
+        {currentView === 'legacy' && (
+          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+            <LegacyMode />
+          </Suspense>
+        )}
         
-        {currentView === 'analytics' && <Analytics />}
+        {currentView === 'analytics' && (
+          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+            <Analytics />
+          </Suspense>
+        )}
         
-        {currentView === 'community' && <Community />}
+        {currentView === 'community' && (
+          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+            <Community />
+          </Suspense>
+        )}
       </main>
 
       {/* Offline Indicator */}

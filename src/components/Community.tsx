@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Users, Heart, Hash, Lock, Sparkles, TrendingUp, Clock, Smile, Frown, Meh, Zap, MessageCircle, BookmarkPlus, Flag } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Users, Hash, Lock, Sparkles, TrendingUp, Clock, Smile, Frown, Meh, Zap, MessageCircle, BookmarkPlus, Flag, Radio } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsStore } from '../stores/settingsStore';
@@ -20,15 +20,16 @@ interface CommunityPost {
   user_echoed?: boolean;
 }
 
-const SUPPORTIVE_MESSAGES = [
-  "You're not alone in this 💜",
-  "Thank you for sharing 🌟",
-  "Sending strength your way 💪",
-  "We see you and we're here 🤗",
-  "Your feelings are valid ✨",
-  "One day at a time 🌈",
-  "You've got this! 🌟",
-  "Proud of you for sharing 💜"
+// One-word Whispers as per Soul Script specification
+const WHISPER_WORDS = [
+  "Hope",
+  "Peace",
+  "Ouch",
+  "Strength",
+  "Love",
+  "Courage",
+  "Grace",
+  "Healing"
 ];
 
 export function Community() {
@@ -60,11 +61,7 @@ export function Community() {
 
     return () => clearInterval(interval);
   }, []);
-  useEffect(() => {
-    fetchPosts();
-  }, [filter, searchHashtag]);
-
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setLoading(true);
     try {
       let query = supabase
@@ -114,9 +111,13 @@ export function Community() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, searchHashtag, moodFilter, user]);
 
-  const handleEcho = async (postId: string, currentlyEchoed: boolean) => {
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  const handleEcho = useCallback(async (postId: string, currentlyEchoed: boolean) => {
     if (!user) return;
 
     try {
@@ -148,7 +149,7 @@ export function Community() {
     } catch (error) {
       console.error('Error toggling echo:', error);
     }
-  };
+  }, [user, posts]);
 
   const toggleSavePost = (postId: string) => {
     setSavedPosts(prev => {
@@ -378,6 +379,61 @@ export function Community() {
           >
             <Sparkles size={16} /> Grateful
           </button>
+        </div>
+
+        {/* Emotional Hashtag Quick Filters */}
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          marginBottom: '8px',
+          flexWrap: 'wrap',
+          animation: 'fadeIn 0.6s ease-out',
+          animationDelay: '0.08s',
+          animationFillMode: 'both'
+        }}>
+          <div style={{ 
+            width: '100%', 
+            fontSize: '12px', 
+            color: 'rgba(255, 255, 255, 0.6)', 
+            marginBottom: '4px',
+            fontWeight: '600'
+          }}>
+            EMOTIONAL TAGS
+          </div>
+          {['Grief', 'Joy', 'Confused', 'Hope', 'Healing', 'Growth'].map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setSearchHashtag(searchHashtag === tag ? '' : tag)}
+              style={{
+                padding: '8px 16px',
+                background: searchHashtag === tag 
+                  ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
+                  : 'rgba(255, 255, 255, 0.1)',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '20px',
+                color: 'white',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                boxShadow: searchHashtag === tag ? `0 4px 15px ${favoriteColor}44` : 'none'
+              }}
+              onMouseEnter={(e) => {
+                if (searchHashtag !== tag) {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                }
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                if (searchHashtag !== tag) {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                }
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              #{tag}
+            </button>
+          ))}
         </div>
 
         {/* Hashtag Search */}
@@ -682,10 +738,12 @@ export function Community() {
                       e.currentTarget.style.transform = 'scale(1)';
                     }}
                   >
-                    <Heart
+                    <Radio
                       size={20}
-                      fill={post.user_echoed ? 'white' : 'none'}
-                      style={{ color: 'white' }}
+                      style={{ 
+                        color: 'white',
+                        strokeWidth: post.user_echoed ? 3 : 2
+                      }}
                     />
                     <span>
                       {post.echo_count} {post.echo_count === 1 ? 'Echo' : 'Echoes'}
@@ -848,46 +906,47 @@ export function Community() {
                         marginBottom: '20px',
                         textAlign: 'center'
                       }}>
-                        💜 Whisper Support
+                        💬 Whisper a Word
                       </h3>
                       <p style={{
                         color: 'rgba(255, 255, 255, 0.8)',
                         marginBottom: '20px',
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        fontSize: '14px'
                       }}>
-                        Choose a supportive message to send anonymously:
+                        Send one word of support, anonymously:
                       </p>
                       <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
                         gap: '10px'
                       }}>
-                        {SUPPORTIVE_MESSAGES.map((message, i) => (
+                        {WHISPER_WORDS.map((word, i) => (
                           <button
                             key={i}
-                            onClick={() => sendSupportMessage(post.id, message)}
+                            onClick={() => sendSupportMessage(post.id, word)}
                             style={{
-                              padding: '15px 20px',
+                              padding: '20px',
                               background: 'rgba(255, 255, 255, 0.15)',
                               border: '2px solid rgba(255, 255, 255, 0.3)',
                               borderRadius: '12px',
                               color: 'white',
-                              fontSize: '16px',
-                              fontWeight: '600',
+                              fontSize: '18px',
+                              fontWeight: '700',
                               cursor: 'pointer',
                               transition: 'all 0.3s',
-                              textAlign: 'left'
+                              textAlign: 'center'
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background = `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`;
-                              e.currentTarget.style.transform = 'translateX(10px)';
+                              e.currentTarget.style.transform = 'scale(1.05)';
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                              e.currentTarget.style.transform = 'translateX(0)';
+                              e.currentTarget.style.transform = 'scale(1)';
                             }}
                           >
-                            {message}
+                            {word}
                           </button>
                         ))}
                       </div>

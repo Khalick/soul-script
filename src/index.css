@@ -896,16 +896,7 @@ body {
   }
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Duplicate fadeInUp removed - using one at line 687 */
 
 @keyframes slideUp {
   from {
@@ -918,10 +909,7 @@ body {
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+/* Duplicate fadeIn removed - using one at line 183 */
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
@@ -1124,14 +1112,7 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
+/* Duplicate float removed - using one at line 820 */
 
 @keyframes shake {
   0%, 100% {
@@ -1566,6 +1547,34 @@ input[type="range"]::-moz-range-thumb:hover {
   .text-white {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
+
+  /* Touch-friendly button sizing (Apple guideline: 44px minimum) */
+  button,
+  .btn-primary,
+  .btn-secondary,
+  .dashboard-nav-icon,
+  .mobile-menu-button,
+  input[type="button"],
+  input[type="submit"],
+  .emotion-card,
+  .community-post button,
+  .timeline-entry button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  /* Touch target spacing */
+  .dashboard-nav-icons > * {
+    margin: 4px;
+  }
+
+  /* Prevent zoom on input focus */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
 }
+
 
 

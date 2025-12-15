@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Play, Pause } from 'lucide-react';
-import { useSettingsStore } from '../stores/settingsStore';
+import { Lock } from 'lucide-react';
 
 interface MoodboardSelectorProps {
   onSelect: (moodboard: string, ambience: string) => void;
@@ -9,116 +8,143 @@ interface MoodboardSelectorProps {
 const moodboards = [
   {
     id: 'dawn',
-    name: 'Dawn',
-    time: 'DAWN',
-    subtitle: 'Begin your day with gentle reflection',
-    gradient: 'linear-gradient(135deg, #FFE5B4 0%, #FFD4A3 50%, #C4A57B 100%)',
-    textColor: '#8B6F47',
-    icon: '🕯️',
-    themes: ['Mist', 'Whisper'],
+    name: 'DAWN',
+    title: 'DAWN JOURNALING',
+    subtitle: 'MOODBOARD',
+    gradient: 'linear-gradient(135deg, #E8D4D9 0%, #D4B5BD 50%, #9B8A8F 100%)',
+    textColor: '#6B5559',
+    titleColor: '#8B6F5F',
+    themes: [
+      { name: 'MIST', image: '/moodboard-dawn.jpeg' },
+      { name: 'WHISPER', image: '/moodboard-dawn.jpeg' }
+    ],
+    icons: ['🕯️', '🌊', '🪶'],
     ambiences: [
-      { name: 'Ambient Drones (low)', icon: '🎵', free: true },
-      { name: 'Nature (mist forest)', icon: '🌲', free: true },
-      { name: 'Ethereal Strings', icon: '🎻', free: false },
-      { name: 'CEO Hymn Layer', icon: '🎼', free: false }
+      { name: 'Ambient Drones (low)', free: true },
+      { name: 'Nature (mist forest)', free: true },
+      { name: 'Ethereal Strings', free: true },
+      { name: 'CEO Hymn Layer', free: false }
     ]
   },
   {
     id: 'morning',
-    name: 'Morning',
-    time: 'MORNING',
-    subtitle: 'Fresh perspectives for a new day',
-    gradient: 'linear-gradient(135deg, #FFE4B5 0%, #FFDAB9 50%, #F4A460 100%)',
-    textColor: '#8B4513',
-    icon: '☀️',
-    themes: ['Clarity', 'Energy'],
+    name: 'MORNING',
+    title: 'MORNING JOURNALING',
+    subtitle: 'MOODBOARD',
+    gradient: 'linear-gradient(180deg, #0a0e27 0%, #1a1340 25%, #2d1f5a 50%, #8b4513 75%, #cd853f 100%)',
+    textColor: '#d4a574',
+    titleColor: '#d4a574',
+    themes: [
+      { name: 'LIGHT BLOOM', image: '/moodboard-morning.jpeg' },
+      { name: 'AWAKENED PATH', image: '/moodboard-morning.jpeg' },
+      { name: 'AWAKEN PRESENCE', image: '/moodboard-morning.jpeg' }
+    ],
+    icons: ['☀️', '🏠', '✉️'],
     ambiences: [
-      { name: 'Morning Birds', icon: '🐦', free: true },
-      { name: 'Gentle Piano', icon: '🎹', free: true },
-      { name: 'Uplifting Strings', icon: '🎻', free: false },
-      { name: 'Light Choir', icon: '🎵', free: false }
+      { name: 'Gentle Ethno Strings', free: true },
+      { name: 'Morning Beds', free: true },
+      { name: 'Soft Piano', free: true }
     ]
   },
   {
     id: 'afternoon',
-    name: 'Afternoon',
-    time: 'AFTERNOON',
-    subtitle: 'Midday pause and presence',
-    gradient: 'linear-gradient(135deg, #87CEEB 0%, #4682B4 50%, #1E3A5F 100%)',
+    name: 'AFTERNOON',
+    title: 'AFTERNOON JOURNALING',
+    subtitle: 'MOODBOARD',
+    gradient: 'linear-gradient(135deg, #87CEEB 0%, #6BA3C9 50%, #4A7BA7 100%)',
     textColor: '#1E3A5F',
-    icon: '🌤️',
-    themes: ['Balance', 'Reflection'],
+    titleColor: '#2C4F6F',
+    themes: [
+      { name: 'CLEAR SKY', image: '/moodboard-afternoon.jpeg' },
+      { name: 'FOCUS', image: '/moodboard-afternoon.jpeg' }
+    ],
+    icons: ['☁️', '🌅', '📖'],
     ambiences: [
-      { name: 'Ocean Waves', icon: '🌊', free: true },
-      { name: 'Wind Chimes', icon: '🎐', free: true },
-      { name: 'Ambient Pads', icon: '🎹', free: false },
-      { name: 'Soft Vocals', icon: '🎤', free: false }
+      { name: 'Ocean Waves', free: true },
+      { name: 'Wind Chimes', free: true },
+      { name: 'Ambient Pads', free: true }
     ]
   },
   {
     id: 'mid-afternoon',
-    name: 'Mid-Afternoon',
-    time: 'MID-AFTERNOON',
-    subtitle: 'Sustaining momentum with grace',
+    name: 'MID-AFTERNOON',
+    title: 'MID-AFTERNOON JOURNALING',
+    subtitle: 'MOODBOARD',
     gradient: 'linear-gradient(135deg, #F0E68C 0%, #DAA520 50%, #B8860B 100%)',
     textColor: '#704214',
-    icon: '🌅',
-    themes: ['Focus', 'Renewal'],
+    titleColor: '#8B5A13',
+    themes: [
+      { name: 'GOLDEN HOUR', image: '/moodboard-afternoon.jpeg' }
+    ],
+    icons: ['🌤️', '☕', '📚'],
     ambiences: [
-      { name: 'Café Ambience', icon: '☕', free: true },
-      { name: 'Light Rain', icon: '🌧️', free: true },
-      { name: 'Acoustic Guitar', icon: '🎸', free: false },
-      { name: 'Warm Pads', icon: '🎵', free: false }
+      { name: 'Café Ambience', free: true },
+      { name: 'Light Rain', free: true },
+      { name: 'Acoustic Guitar', free: true }
     ]
   },
   {
-    id: 'mid-evening',
-    name: 'Mid-Evening',
-    time: 'MID-EVENING',
-    subtitle: 'Honoring your legacy',
-    gradient: 'linear-gradient(135deg, #191970 0%, #000080 50%, #00008B 100%)',
-    textColor: '#B8860B',
-    icon: '✨',
-    themes: ['Starfield', 'Echo'],
+    id: 'evening',
+    name: 'EVENING',
+    title: 'EVENING JOURNALING',
+    subtitle: 'MOODBOARD',
+    gradient: 'linear-gradient(135deg, #2a1810 0%, #3d2416 50%, #52301c 100%)',
+    textColor: '#D4A574',
+    titleColor: '#D4A574',
+    themes: [
+      { name: 'DUSK', image: '/moodboard-evening.jpeg' },
+      { name: 'GLOW', image: '/moodboard-evening.jpeg' }
+    ],
+    icons: ['🏮', '🌅', '✉️'],
     ambiences: [
-      { name: 'Invrighs Pads', icon: '🎹', free: true },
-      { name: 'Gemlo Palses', icon: '🔮', free: true },
-      { name: 'Revets Chamber', icon: '🎼', free: false },
-      { name: 'CEO Hymn Layer', icon: '🎵', free: false }
+      { name: 'Ambient Drones (low)', free: true },
+      { name: 'Nature (dusk forest)', free: true },
+      { name: 'Harmonic Strings', free: true },
+      { name: 'CEO Hymn Layer', free: false }
     ]
   },
   {
     id: 'night',
-    name: 'Night',
-    time: 'NIGHT',
-    subtitle: 'Deep rest and restoration',
-    gradient: 'linear-gradient(135deg, #191970 0%, #000033 50%, #000000 100%)',
-    textColor: '#E6E6FA',
-    icon: '🌙',
-    themes: ['Silence', 'Dreams'],
+    name: 'NIGHT',
+    title: 'NIGHT JOURNALING',
+    subtitle: 'MOODBOARD',
+    gradient: 'linear-gradient(135deg, #0f0a1e 0%, #1a0f2e 50%, #25143d 100%)',
+    textColor: '#C8B8D8',
+    titleColor: '#C8B8D8',
+    themes: [
+      { name: 'MOONLIGHT', image: '/moodboard-night.jpeg' },
+      { name: 'DREAMS', image: '/moodboard-night.jpeg' }
+    ],
+    icons: ['🌙', '⭐', '🕯️'],
     ambiences: [
-      { name: 'Night Crickets', icon: '🦗', free: true },
-      { name: 'Deep Meditation', icon: '🧘', free: true },
-      { name: 'Tibetan Bowls', icon: '🎵', free: false },
-      { name: 'Sleep Frequencies', icon: '💤', free: false }
+      { name: 'Night Crickets', free: true },
+      { name: 'Deep Meditation', free: true },
+      { name: 'Tibetan Bowls', free: true }
     ]
   }
 ];
 
-export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }) => {
-  const [selectedMoodboard, setSelectedMoodboard] = useState<string | null>(null);
-  const [selectedAmbience, setSelectedAmbience] = useState<string | null>(null);
-  const [previewingAudio, setPreviewingAudio] = useState<string | null>(null);
-  const { favoriteEmoji } = useSettingsStore();
+// Function to get current time-based moodboard
+const getCurrentTimeBasedMoodboard = (): string => {
+  const hour = new Date().getHours();
+  
+  if (hour >= 5 && hour < 7) return 'dawn';           // 5 AM - 7 AM
+  if (hour >= 7 && hour < 12) return 'morning';       // 7 AM - 12 PM
+  if (hour >= 12 && hour < 15) return 'afternoon';    // 12 PM - 3 PM
+  if (hour >= 15 && hour < 17) return 'mid-afternoon'; // 3 PM - 5 PM
+  if (hour >= 17 && hour < 21) return 'evening';      // 5 PM - 9 PM
+  return 'night';                                      // 9 PM - 5 AM
+};
 
-  const handleSelectMoodboard = (moodboardId: string) => {
-    setSelectedMoodboard(moodboardId);
-    setSelectedAmbience(null);
-  };
+export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }) => {
+  const [selectedMoodboard, setSelectedMoodboard] = useState<string>(getCurrentTimeBasedMoodboard());
+  const [selectedAmbience, setSelectedAmbience] = useState<string | null>(null);
+
+  const selectedBoard = moodboards.find(m => m.id === selectedMoodboard) || moodboards[1];
 
   const handleSelectAmbience = (ambienceName: string, isFree: boolean) => {
     if (!isFree) {
-      alert('🔒 Premium feature - Upgrade to unlock all ambient sounds');
+      alert('🔒 Premium feature - Upgrade to unlock');
       return;
     }
     setSelectedAmbience(ambienceName);
@@ -127,263 +153,365 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
   const handleBeginJournaling = () => {
     if (selectedMoodboard && selectedAmbience) {
       onSelect(selectedMoodboard, selectedAmbience);
+    } else {
+      alert('Please select an ambience first');
     }
   };
-
-  const selectedBoard = moodboards.find(m => m.id === selectedMoodboard);
 
   return (
     <div 
       style={{
         minHeight: '100vh',
-        background: selectedBoard?.gradient || 'linear-gradient(-45deg, #06b6d4, #0e7490, #14b8a6, #22d3ee)',
-        backgroundSize: '400% 400%',
-        animation: 'gradient 15s ease infinite',
+        background: selectedBoard.gradient,
         padding: '40px 20px',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        transition: 'background 0.5s ease'
       }}
     >
-      {/* Time Selector Arc */}
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <div style={{ 
-          position: 'relative', 
-          width: '100%', 
-          maxWidth: '600px',
-          margin: '0 auto 30px'
-        }}>
-          <svg viewBox="0 0 600 100" style={{ width: '100%', height: 'auto' }}>
-            <path
-              d="M 50 80 Q 300 -20, 550 80"
-              fill="none"
-              stroke={selectedBoard?.textColor || 'white'}
-              strokeWidth="2"
-              opacity="0.3"
-            />
-            {moodboards.map((board, index) => {
-              const angle = (index / (moodboards.length - 1)) * Math.PI;
-              const x = 50 + Math.cos(Math.PI - angle) * 250;
-              const y = 80 - Math.sin(angle) * 60;
-              
-              return (
-                <g key={board.id}>
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r="20"
-                    fill={selectedMoodboard === board.id ? (selectedBoard?.textColor || 'white') : 'rgba(255,255,255,0.3)'}
-                    style={{ cursor: 'pointer', transition: 'all 0.3s' }}
-                    onClick={() => handleSelectMoodboard(board.id)}
-                  />
-                  <text
-                    x={x}
-                    y={y - 30}
-                    textAnchor="middle"
-                    fill={selectedBoard?.textColor || 'white'}
-                    fontSize="12"
-                    fontWeight={selectedMoodboard === board.id ? '700' : '400'}
-                    style={{ cursor: 'pointer', userSelect: 'none' }}
-                    onClick={() => handleSelectMoodboard(board.id)}
-                  >
-                    {board.time}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-        </div>
-
-        <h1 style={{ 
-          fontSize: '48px', 
-          fontWeight: '700', 
-          color: selectedBoard?.textColor || 'white',
-          marginBottom: '10px',
-          textTransform: 'uppercase',
-          letterSpacing: '2px'
-        }}>
-          {selectedBoard?.time || 'Choose Your Time'}
-        </h1>
-        <h2 style={{ 
-          fontSize: '32px', 
-          fontWeight: '600', 
-          color: selectedBoard?.textColor || 'white',
-          opacity: 0.9
-        }}>
-          {selectedBoard?.name || ''} Journaling
-        </h2>
-        <p style={{ 
-          fontSize: '18px', 
-          color: selectedBoard?.textColor || 'white',
-          opacity: 0.8,
-          marginTop: '10px'
-        }}>
-          {selectedBoard?.subtitle || 'Select a time of day to begin'}
-        </p>
+      {/* Curved Time Navigation */}
+      <div style={{ 
+        width: '100%', 
+        maxWidth: '700px',
+        marginBottom: '40px',
+        position: 'relative'
+      }}>
+        <svg viewBox="0 0 700 120" style={{ width: '100%', height: 'auto' }}>
+          {/* Curve line */}
+          <path
+            d="M 50 100 Q 350 10, 650 100"
+            fill="none"
+            stroke={selectedBoard.textColor}
+            strokeWidth="2"
+            opacity="0.4"
+          />
+          
+          {/* Time points */}
+          {moodboards.map((board, index) => {
+            const totalBoards = moodboards.length;
+            const angle = (index / (totalBoards - 1)) * Math.PI;
+            const x = 50 + Math.cos(Math.PI - angle) * 300;
+            const y = 100 - Math.sin(angle) * 70;
+            const isSelected = selectedMoodboard === board.id;
+            
+            return (
+              <g key={board.id}>
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={isSelected ? "8" : "5"}
+                  fill={isSelected ? selectedBoard.textColor : 'rgba(255,255,255,0.4)'}
+                  style={{ cursor: 'pointer', transition: 'all 0.3s' }}
+                  onClick={() => {
+                    setSelectedMoodboard(board.id);
+                    setSelectedAmbience(null);
+                  }}
+                />
+                <text
+                  x={x}
+                  y={y - 20}
+                  textAnchor="middle"
+                  fill={selectedBoard.textColor}
+                  fontSize={isSelected ? "14" : "11"}
+                  fontWeight={isSelected ? "700" : "400"}
+                  style={{ 
+                    cursor: 'pointer', 
+                    userSelect: 'none',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px'
+                  }}
+                  onClick={() => {
+                    setSelectedMoodboard(board.id);
+                    setSelectedAmbience(null);
+                  }}
+                >
+                  {board.name}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
       </div>
 
-      {/* Moodboard Grid */}
-      {!selectedMoodboard ? (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '30px',
-          maxWidth: '1200px',
-          width: '100%'
+      {/* Title Section */}
+      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+        <div style={{ 
+          fontSize: '14px', 
+          fontWeight: '500',
+          color: selectedBoard.textColor,
+          letterSpacing: '3px',
+          marginBottom: '15px',
+          opacity: 0.8
         }}>
-          {moodboards.map(board => (
-            <div
-              key={board.id}
-              onClick={() => handleSelectMoodboard(board.id)}
-              style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                borderRadius: '20px',
-                padding: '30px',
-                cursor: 'pointer',
-                transition: 'all 0.3s',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)';
-                e.currentTarget.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
-              }}
-            >
-              <div style={{ fontSize: '48px', textAlign: 'center', marginBottom: '15px' }}>
-                {board.icon}
-              </div>
-              <h3 style={{ 
-                fontSize: '24px', 
-                fontWeight: '700', 
-                color: board.textColor,
-                textAlign: 'center',
-                marginBottom: '10px'
-              }}>
-                {board.time}
-              </h3>
-              <p style={{ 
-                fontSize: '14px', 
-                color: '#666',
-                textAlign: 'center'
-              }}>
-                {board.subtitle}
-              </p>
-            </div>
-          ))}
+          {selectedBoard.name}
         </div>
-      ) : (
-        <div style={{
-          maxWidth: '800px',
-          width: '100%',
-          background: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: '20px',
-          padding: '40px',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
+        <h1 style={{ 
+          fontSize: '56px', 
+          fontWeight: '700', 
+          color: selectedBoard.titleColor,
+          margin: 0,
+          marginBottom: '5px',
+          letterSpacing: '2px',
+          textTransform: 'uppercase',
+          textShadow: '0 2px 20px rgba(0,0,0,0.2)'
         }}>
-          <h3 style={{ 
-            fontSize: '24px', 
-            fontWeight: '700', 
-            color: selectedBoard.textColor,
-            marginBottom: '20px',
-            textAlign: 'center'
-          }}>
-            Choose Your Ambience
-          </h3>
+          {selectedBoard.name}
+        </h1>
+        <h1 style={{ 
+          fontSize: '56px', 
+          fontWeight: '700', 
+          color: selectedBoard.titleColor,
+          margin: 0,
+          marginBottom: '15px',
+          letterSpacing: '3px',
+          textTransform: 'uppercase',
+          textShadow: '0 2px 20px rgba(0,0,0,0.2)'
+        }}>
+          JOURNALING
+        </h1>
+        <div style={{ 
+          fontSize: '18px', 
+          fontWeight: '400',
+          color: selectedBoard.textColor,
+          letterSpacing: '4px',
+          opacity: 0.9
+        }}>
+          {selectedBoard.subtitle}
+        </div>
+      </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            {selectedBoard.ambiences.map(ambience => (
-              <div
-                key={ambience.name}
-                onClick={() => handleSelectAmbience(ambience.name, ambience.free)}
-                style={{
-                  padding: '20px',
-                  borderRadius: '12px',
-                  background: selectedAmbience === ambience.name 
-                    ? selectedBoard.gradient 
-                    : 'rgba(0, 0, 0, 0.05)',
-                  border: selectedAmbience === ambience.name
-                    ? `2px solid ${selectedBoard.textColor}`
-                    : '2px solid transparent',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  transition: 'all 0.3s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = selectedAmbience === ambience.name
-                    ? selectedBoard.gradient
-                    : 'rgba(0, 0, 0, 0.08)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = selectedAmbience === ambience.name
-                    ? selectedBoard.gradient
-                    : 'rgba(0, 0, 0, 0.05)';
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                  <span style={{ fontSize: '24px' }}>{ambience.icon}</span>
-                  <span style={{ 
-                    fontSize: '16px', 
-                    fontWeight: '600',
-                    color: selectedAmbience === ambience.name ? 'white' : selectedBoard.textColor
-                  }}>
-                    {ambience.name}
-                  </span>
-                </div>
-                {!ambience.free && (
-                  <Lock size={20} color={selectedAmbience === ambience.name ? 'white' : '#999'} />
-                )}
+      {/* Main Content Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '30px',
+        maxWidth: '900px',
+        width: '100%',
+        marginBottom: '40px'
+      }}>
+        {/* Left Column - Default Ambience */}
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.4)',
+          borderRadius: '12px',
+          padding: '40px 30px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '30px',
+          backdropFilter: 'blur(10px)'
+        }}>
+          {/* Icons */}
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '30px',
+            alignItems: 'center'
+          }}>
+            {selectedBoard.icons.map((icon, idx) => (
+              <div key={idx} style={{ 
+                fontSize: '60px',
+                filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.3))',
+                opacity: 0.8
+              }}>
+                {icon}
               </div>
             ))}
           </div>
 
+          {/* Divider */}
           <div style={{ 
-            display: 'flex', 
-            gap: '15px', 
-            marginTop: '30px',
-            justifyContent: 'center'
-          }}>
-            <button
-              onClick={() => setSelectedMoodboard(null)}
-              style={{
-                padding: '15px 30px',
-                background: '#e5e7eb',
-                color: '#374151',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}
-            >
-              ← Back
-            </button>
-            <button
-              onClick={handleBeginJournaling}
-              disabled={!selectedAmbience}
-              style={{
-                padding: '15px 40px',
-                background: selectedAmbience ? selectedBoard.gradient : '#ccc',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: selectedAmbience ? 'pointer' : 'not-allowed',
-                transition: 'all 0.3s',
-                opacity: selectedAmbience ? 1 : 0.5
-              }}
-            >
-              Begin Journaling
-            </button>
+            width: '80%', 
+            height: '2px', 
+            background: selectedBoard.textColor,
+            opacity: 0.3,
+            margin: '10px 0'
+          }}></div>
+
+          {/* Default Ambience Text */}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ 
+              fontSize: '16px', 
+              fontWeight: '600',
+              color: selectedBoard.textColor,
+              letterSpacing: '2px',
+              marginBottom: '20px',
+              textTransform: 'uppercase'
+            }}>
+              DEFAULT AMBIENCE
+            </div>
+
+            {/* Ambience List */}
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '12px',
+              alignItems: 'flex-start',
+              width: '100%'
+            }}>
+              {selectedBoard.ambiences.map((ambience, idx) => (
+                <div 
+                  key={idx}
+                  onClick={() => handleSelectAmbience(ambience.name, ambience.free)}
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontSize: '14px',
+                    color: selectedBoard.textColor,
+                    cursor: 'pointer',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    width: '100%',
+                    background: selectedAmbience === ambience.name 
+                      ? 'rgba(255,255,255,0.15)' 
+                      : 'transparent',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (ambience.free) {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = selectedAmbience === ambience.name 
+                      ? 'rgba(255,255,255,0.15)' 
+                      : 'transparent';
+                  }}
+                >
+                  <span style={{ fontSize: '10px' }}>○</span>
+                  <span>{ambience.name}</span>
+                  {!ambience.free && (
+                    <Lock size={14} style={{ marginLeft: 'auto' }} />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      )}
+
+        {/* Right Column - Theme Images */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px'
+        }}>
+          {selectedBoard.themes.map((theme, idx) => (
+            <div 
+              key={idx}
+              style={{
+                position: 'relative',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                height: selectedBoard.themes.length === 2 ? '220px' : '150px',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                cursor: 'pointer',
+                transition: 'transform 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.02)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <img 
+                src={theme.image} 
+                alt={theme.name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+              />
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: '20px',
+                background: 'rgba(0, 0, 0, 0.7)',
+                backdropFilter: 'blur(5px)',
+                color: selectedBoard.textColor,
+                fontSize: '15px',
+                fontWeight: '600',
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+                textAlign: 'center'
+              }}>
+                {theme.name}
+              </div>
+            </div>
+          ))}
+
+          {/* CEO Hymn Layer (if available) */}
+          {selectedBoard.ambiences.some(a => a.name.includes('CEO Hymn')) && (
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.6)',
+              borderRadius: '12px',
+              padding: '25px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              color: selectedBoard.textColor,
+              fontSize: '16px',
+              fontWeight: '600',
+              letterSpacing: '1px',
+              backdropFilter: 'blur(10px)',
+              flex: 1
+            }}>
+              <Lock size={20} />
+              <span>CEO Hymn Layer</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Begin Journaling Button */}
+      <button
+        onClick={handleBeginJournaling}
+        disabled={!selectedAmbience}
+        style={{
+          padding: '20px 60px',
+          fontSize: '18px',
+          fontWeight: '700',
+          color: 'white',
+          background: selectedAmbience 
+            ? `linear-gradient(135deg, ${selectedBoard.textColor}, ${selectedBoard.titleColor})` 
+            : 'rgba(0,0,0,0.3)',
+          border: 'none',
+          borderRadius: '50px',
+          cursor: selectedAmbience ? 'pointer' : 'not-allowed',
+          letterSpacing: '2px',
+          textTransform: 'uppercase',
+          boxShadow: selectedAmbience ? '0 8px 30px rgba(0,0,0,0.3)' : 'none',
+          transition: 'all 0.3s',
+          opacity: selectedAmbience ? 1 : 0.5
+        }}
+        onMouseEnter={(e) => {
+          if (selectedAmbience) {
+            e.currentTarget.style.transform = 'translateY(-3px)';
+            e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.4)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = selectedAmbience ? '0 8px 30px rgba(0,0,0,0.3)' : 'none';
+        }}
+      >
+        BEGIN JOURNALING
+      </button>
+
+      <style>{`
+        @media (max-width: 768px) {
+          div[style*="gridTemplateColumns: '1fr 1fr'"] {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
+
+export default MoodboardSelector;

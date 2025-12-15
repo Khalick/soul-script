@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useSubscriptionStore } from '../stores/subscriptionStore';
 import { useJournalStore } from '../stores/journalStore';
@@ -116,6 +116,8 @@ export function Settings() {
     setTimeout(() => setSaved(false), 3000);
   };
 
+  const gradientBackground = useMemo(() => getGradientBackground(favoriteColor), [favoriteColor]);
+
   const handleExport = () => {
     const exportData = {
       exportDate: new Date().toISOString(),
@@ -147,7 +149,7 @@ export function Settings() {
 
   return (
     <div className="dashboard-page" style={{
-      background: getGradientBackground(favoriteColor)
+      background: gradientBackground
     }}>
       <div className="dashboard-orb dashboard-orb1" style={{ background: `${favoriteColor}40` }}></div>
       <div className="dashboard-orb dashboard-orb2" style={{ background: `${favoriteColor}30` }}></div>
@@ -598,7 +600,7 @@ export function Settings() {
                 boxShadow: saved ? '0 10px 30px rgba(74, 222, 128, 0.5)' : undefined
               }}
             >
-              <span>{saved ? '✅ Settings Saved!' : '💾 Save Settings'}</span>
+              <span>{saved ? '✅ Boundaries Set!' : '💾 Set Boundaries'}</span>
             </button>
           </div>
         </div>

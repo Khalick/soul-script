@@ -24,7 +24,7 @@ interface JournalEditorProps {
 const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editingEntry }) => {
   const { currentEntry, addEntry, updateEntry } = useJournalStore();
   const { user } = useAuthStore();
-  const { favoriteColor, favoriteEmoji } = useSettingsStore();
+  const { favoriteColor, favoriteEmoji, dearPrompt } = useSettingsStore();
   const { customTemplates, addCustomTemplate } = useTemplateStore();
   const { isOnline, addOfflineEntry } = useOfflineStore();
   const { setMediaActive } = useMediaRecording();
@@ -660,6 +660,20 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
               onChange={(e) => setTitle(e.target.value)}
               style={{ width: '100%', padding: '15px 20px', background: 'rgba(255, 255, 255, 0.1)', border: '2px solid rgba(255, 255, 255, 0.2)', borderRadius: '12px', fontSize: '18px', fontWeight: '600', color: 'white', outline: 'none', marginBottom: '20px' }}
             />
+            
+            {/* Dear Prompt */}
+            <div style={{ 
+              fontSize: '18px', 
+              fontWeight: '600', 
+              color: favoriteColor,
+              marginBottom: '12px',
+              fontStyle: 'italic',
+              textAlign: 'left',
+              paddingLeft: '5px'
+            }}>
+              {dearPrompt},
+            </div>
+            
             <textarea
               placeholder="What's on your mind?"
               value={textContent}
@@ -767,11 +781,11 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
                 }}
               >
                 <FileText size={16} />
-                Save as Template
+                Hold as Template
               </button>
             )}
             <button onClick={handleSave} disabled={uploading} className="dashboard-new-entry-btn" style={{ fontSize: '16px', padding: '16px 50px' }}>
-              <span>{uploading ? '💾 Saving...' : '✨ Release'}</span>
+              <span>{uploading ? '💾 Releasing...' : '✨ Release'}</span>
             </button>
           </div>
         </div>

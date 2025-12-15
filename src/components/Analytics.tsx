@@ -175,10 +175,10 @@ export function Analytics() {
               marginBottom: '10px',
               animation: 'glow 3s ease-in-out infinite'
             }}>
-              {favoriteEmoji} Your Journey Insights
+              {favoriteEmoji} Inner Weather
             </h1>
             <p style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.9)' }}>
-              Discover patterns and celebrate your progress
+              Understanding your emotional patterns
             </p>
           </div>
 

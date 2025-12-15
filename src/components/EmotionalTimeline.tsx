@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns';
 import { useJournalStore, JournalEntry } from '../stores/journalStore';
 import { getMoodColor } from '../data/emotions';
@@ -33,15 +33,17 @@ const EmotionalTimeline: React.FC<EmotionalTimelineProps> = ({ onEntryClick }) =
     return () => clearInterval(interval);
   }, []);
 
-  const monthStart = startOfMonth(currentDate);
-  const monthEnd = endOfMonth(currentDate);
-  const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const daysInMonth = useMemo(() => {
+    const start = startOfMonth(currentDate);
+    const end = endOfMonth(currentDate);
+    return eachDayOfInterval({ start, end });
+  }, [currentDate]);
 
-  const getEntriesForDay = (day: Date) => {
+  const getEntriesForDay = useCallback((day: Date) => {
     return entries.filter((entry) =>
       isSameDay(new Date(entry.created_at), day)
     );
-  };
+  }, [entries]);
 
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
@@ -62,10 +64,10 @@ const EmotionalTimeline: React.FC<EmotionalTimelineProps> = ({ onEntryClick }) =
         <div className="max-w-6xl mx-auto px-4 py-12 space-y-8">
           <div className="text-center" style={{ animation: 'fadeIn 1s ease-out' }}>
             <h1 style={{ fontSize: '48px', fontWeight: '700', color: 'white', textShadow: '0 0 40px rgba(255, 255, 255, 0.5)', marginBottom: '15px', animation: 'glow 3s ease-in-out infinite' }}>
-              {favoriteEmoji} Your Emotional Journey
+              {favoriteEmoji} Echo Trails
             </h1>
             <p style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.9)' }}>
-              See how you've been feeling over time
+              Trace your emotional patterns over time
             </p>
           </div>
 

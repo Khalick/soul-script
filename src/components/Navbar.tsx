@@ -101,7 +101,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               boxShadow: currentView === 'timeline' ? `0 4px 15px ${favoriteColor}66` : 'none'
             }}
           >
-            📅 Timeline
+            📅 Echo Trails
           </button>
           
           <button
@@ -275,7 +275,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
                 boxShadow: currentView === 'timeline' ? `0 4px 15px ${favoriteColor}66` : 'none'
               }}
             >
-              📅 Timeline
+              📅 Echo Trails
             </button>
             
             <button

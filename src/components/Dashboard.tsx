@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useJournalStore } from '../stores/journalStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getGradientBackground } from '../lib/colorUtils';
@@ -69,9 +69,11 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
     }
   };
 
+  const gradientBackground = useMemo(() => getGradientBackground(favoriteColor), [favoriteColor]);
+
   return (
     <div className="dashboard-page" style={{
-      background: getGradientBackground(favoriteColor)
+      background: gradientBackground
     }}>
       {/* Floating orbs with dynamic color */}
       <div className="dashboard-orb dashboard-orb1" style={{ background: `${favoriteColor}40` }}></div>
@@ -93,13 +95,13 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
         {/* Hero Section */}
         <section className="dashboard-hero">
           <h1>{dearPrompt},</h1>
-          <p>How are you holding up today?</p>
+          <p>Ready to remember who you are?</p>
           <button className="dashboard-new-entry-btn" onClick={handleNewEntry} style={{
             background: `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`,
             boxShadow: `0 10px 30px ${favoriteColor}40`
           }}>
-            <span>➕</span>
-            <span>Begin</span>
+            <span>✨</span>
+            <span>Unfold</span>
           </button>
         </section>
 
@@ -114,7 +116,7 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
           <div className="dashboard-card" onClick={() => handleNavigate('timeline')}>
             <div className="dashboard-card-header">
               <div className="dashboard-card-icon">📅</div>
-              <h2>Your Timeline</h2>
+              <h2>Echo Trails</h2>
             </div>
             <p className="dashboard-card-description">See your emotional journey over time</p>
             <div className="dashboard-card-stat">{entries.length}</div>
@@ -124,8 +126,8 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
           {/* Insights Card */}
           <div className="dashboard-card" onClick={() => onNavigate?.('analytics')} style={{ cursor: 'pointer' }}>
             <div className="dashboard-card-header">
-              <div className="dashboard-card-icon">📊</div>
-              <h2>Insights</h2>
+              <div className="dashboard-card-icon">☁️</div>
+              <h2>Inner Weather</h2>
             </div>
             <p className="dashboard-card-description">Understand your emotional patterns</p>
             <div className="dashboard-card-stat">{entries.length > 0 ? '✨' : '💡'}</div>
