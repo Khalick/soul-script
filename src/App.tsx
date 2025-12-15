@@ -16,9 +16,10 @@ import { Community } from './components/Community';
 import { Navbar } from './components/Navbar';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import InstallPrompt from './components/InstallPrompt';
+import { MoodboardSelector } from './components/MoodboardSelector';
 import { Calendar, BarChart3, PlusCircle } from 'lucide-react';
 
-type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy';
+type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy' | 'moodboard';
 
 // Context for media recording state
 interface MediaRecordingContextType {
@@ -213,6 +214,12 @@ function App() {
 
   const handleNewEntry = () => {
     setEditingEntry(null);
+    navigateToView('moodboard');
+  };
+
+  const handleMoodboardSelect = (moodboard: string, ambience: string) => {
+    // Store moodboard selection in settingsStore or journalStore
+    console.log('Selected:', moodboard, ambience);
     navigateToView('checkin');
   };
 
@@ -331,6 +338,10 @@ function App() {
         )}
 
         {currentView === 'checkin' && <EmotionCheckIn onComplete={handleCheckInComplete} />}
+        
+        {currentView === 'moodboard' && (
+          <MoodboardSelector onSelect={handleMoodboardSelect} />
+        )}
         
         {currentView === 'editor' && (
           <JournalEditor
