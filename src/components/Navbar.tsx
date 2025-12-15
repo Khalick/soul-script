@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useSettingsStore } from '../stores/settingsStore';
+import { getCurrentTimeTheme } from '../lib/colorUtils';
 
 interface NavbarProps {
   currentView?: string;
@@ -11,6 +12,7 @@ interface NavbarProps {
 export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
   const { favoriteColor, favoriteEmoji } = useSettingsStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const theme = useMemo(() => getCurrentTimeTheme(), []);
 
   const handleNavigation = (view: 'home' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy') => {
     onNavigate(view);
@@ -34,15 +36,15 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        background: 'rgba(255, 255, 255, 0.1)',
+        background: theme.cardBg,
         backdropFilter: 'blur(20px)',
-        borderBottom: '2px solid rgba(255, 255, 255, 0.2)',
+        borderBottom: `2px solid ${theme.accentColor}30`,
         animation: 'fadeIn 0.6s ease-out'
       }}>
         <div style={{
           fontSize: '20px',
           fontWeight: '700',
-          color: 'white',
+          color: theme.textColor,
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
@@ -63,11 +65,11 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             style={{
               padding: '12px 20px',
               background: currentView === 'home' 
-                ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
-                : 'rgba(255, 255, 255, 0.15)',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
+                ? theme.cardBg
+                : 'rgba(255, 255, 255, 0.1)',
+              border: `2px solid ${theme.accentColor}40`,
               borderRadius: '12px',
-              color: 'white',
+              color: theme.textColor,
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
@@ -75,7 +77,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: currentView === 'home' ? `0 4px 15px ${favoriteColor}66` : 'none'
+              boxShadow: currentView === 'home' ? `0 4px 15px ${theme.accentColor}40` : 'none'
             }}
           >
             🏠 Sanctuary
@@ -86,11 +88,11 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             style={{
               padding: '12px 20px',
               background: currentView === 'timeline' 
-                ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
-                : 'rgba(255, 255, 255, 0.15)',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
+                ? theme.cardBg
+                : 'rgba(255, 255, 255, 0.1)',
+              border: `2px solid ${theme.accentColor}40`,
               borderRadius: '12px',
-              color: 'white',
+              color: theme.textColor,
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',

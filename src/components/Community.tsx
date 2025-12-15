@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Users, Hash, Lock, Sparkles, TrendingUp, Clock, Smile, Frown, Meh, Zap, MessageCircle, BookmarkPlus, Flag, Radio } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getMoodEmoji } from '../data/emotions';
-import { getGradientBackground } from '../lib/colorUtils';
+import { getCurrentTimeTheme } from '../lib/colorUtils';
 import { Constellations } from './Constellations';
 
 interface CommunityPost {
@@ -35,6 +35,7 @@ const WHISPER_WORDS = [
 export function Community() {
   const user = useAuthStore((state) => state.user);
   const { favoriteColor } = useSettingsStore();
+  const theme = useMemo(() => getCurrentTimeTheme(), []);
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'trending' | 'recent'>('recent');
@@ -204,14 +205,14 @@ export function Community() {
 
   return (
     <div className="dashboard-page" style={{
-      background: getGradientBackground(favoriteColor),
+      background: theme.gradient,
       minHeight: '100vh',
       paddingTop: '0px'
     }}>
-      {/* Floating orbs with dynamic color */}
-      <div className="dashboard-orb dashboard-orb1" style={{ background: `${favoriteColor}40` }}></div>
-      <div className="dashboard-orb dashboard-orb2" style={{ background: `${favoriteColor}30` }}></div>
-      <div className="dashboard-orb dashboard-orb3" style={{ background: `${favoriteColor}50` }}></div>
+      {/* Floating orbs with time-based colors */}
+      <div className="dashboard-orb dashboard-orb1" style={{ background: theme.orbColors[0] }}></div>
+      <div className="dashboard-orb dashboard-orb2" style={{ background: theme.orbColors[1] }}></div>
+      <div className="dashboard-orb dashboard-orb3" style={{ background: theme.orbColors[2] }}></div>
 
       <div className="max-w-4xl mx-auto px-4 md:px-6 pb-24" style={{ paddingTop: '0px', marginTop: '-45px' }}>
         {/* Filters */}
@@ -221,11 +222,11 @@ export function Community() {
             style={{
               padding: '15px 30px',
               background: filter === 'recent' && !moodFilter
-                ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
-                : 'rgba(255, 255, 255, 0.15)',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
+                ? theme.cardBg
+                : 'rgba(255, 255, 255, 0.1)',
+              border: `2px solid ${theme.accentColor}40`,
               borderRadius: '15px',
-              color: 'white',
+              color: theme.textColor,
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
