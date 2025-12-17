@@ -1639,6 +1639,16 @@ input[type="range"]::-moz-range-thumb:hover {
 
 /* Standalone Mode (Installed PWA) - Larger Fonts */
 @media (display-mode: standalone) {
+  /* Force mobile layout in installed app */
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-actions {
+    display: flex !important;
+  }
+
+  /* Increase base font size */
   body {
     font-size: 18px !important;
   }
@@ -1694,6 +1704,38 @@ input[type="range"]::-moz-range-thumb:hover {
 
   input, textarea, select {
     font-size: 1.125rem !important;
+  }
+
+  /* Mobile grid layout */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* Mobile spacing */
+  .dashboard-page {
+    padding: 20px 15px !important;
+  }
+
+  .dashboard-header {
+    padding: 10px 0 !important;
+  }
+
+  /* Mobile cards */
+  .emotion-card,
+  .invitation-card,
+  .stat-card {
+    padding: 20px !important;
+  }
+
+  /* Mobile timeline */
+  .timeline-entry {
+    padding: 20px !important;
+  }
+
+  /* Mobile community */
+  .community-post {
+    padding: 20px !important;
   }
 }
 
