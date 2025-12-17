@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Menu, X, Download } from 'lucide-react';
 import { useSettingsStore } from '../stores/settingsStore';
 
 interface NavbarProps {
@@ -11,6 +11,60 @@ interface NavbarProps {
 export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
   const { favoriteColor, favoriteEmoji } = useSettingsStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    // Check if already installed
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isIOSStandalone = (window.navigator as any).standalone === true;
+    
+    if (isStandalone || isIOSStandalone) {
+      setIsInstalled(true);
+      return;
+    }
+
+    // Listen for install prompt
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // Listen for app installed event
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) {
+      // iOS or already installed - do nothing
+      return;
+    }
+
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+
+      if (outcome === 'accepted') {
+        setIsInstalled(true);
+      }
+
+      setDeferredPrompt(null);
+    } catch (error) {
+      console.error('Install error:', error);
+    }
+  };
 
   const handleNavigation = (view: 'home' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy') => {
     onNavigate(view);
@@ -173,6 +227,37 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           >
             ⚙️ Boundaries
           </button>
+          
+          {!isInstalled && (
+            <button
+              onClick={handleInstall}
+              style={{
+                padding: '12px 20px',
+                background: 'linear-gradient(135deg, #06b6d4, #0e7490)',
+                border: '2px solid rgba(6, 182, 212, 0.5)',
+                borderRadius: '12px',
+                color: 'white',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 15px rgba(6, 182, 212, 0.4)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(6, 182, 212, 0.6)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 15px rgba(6, 182, 212, 0.4)';
+              }}
+            >
+              <Download size={18} /> Install App
+            </button>
+          )}
           
           <button
             onClick={onLogout}

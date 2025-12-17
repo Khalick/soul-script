@@ -5,6 +5,7 @@ import App from './App.tsx'
 import './index.css'
 
 // Register service worker with auto-update
+// Note: Service worker only works fully in production (HTTPS)
 const updateSW = registerSW({
   onNeedRefresh() {
     if (confirm('New content available! Reload to update?')) {
@@ -12,7 +13,10 @@ const updateSW = registerSW({
     }
   },
   onOfflineReady() {
-    console.log('App ready to work offline')
+    console.log('✅ App ready to work offline')
+  },
+  onRegisterError(error) {
+    console.log('⚠️ Service Worker registration failed (expected in dev mode):', error.message)
   },
   immediate: true,
 })
