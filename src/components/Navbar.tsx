@@ -1,7 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useSettingsStore } from '../stores/settingsStore';
-import { getCurrentTimeTheme } from '../lib/colorUtils';
 
 interface NavbarProps {
   currentView?: string;
@@ -12,7 +11,6 @@ interface NavbarProps {
 export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
   const { favoriteColor, favoriteEmoji } = useSettingsStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const theme = useMemo(() => getCurrentTimeTheme(), []);
 
   const handleNavigation = (view: 'home' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy') => {
     onNavigate(view);
@@ -36,19 +34,20 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        background: theme.cardBg,
+        background: 'rgba(10, 13, 46, 0.9)',
         backdropFilter: 'blur(20px)',
-        borderBottom: `2px solid ${theme.accentColor}30`,
+        borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.5)',
         animation: 'fadeIn 0.6s ease-out'
       }}>
         <div style={{
           fontSize: '20px',
           fontWeight: '700',
-          color: theme.textColor,
+          color: 'white',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+          textShadow: '0 2px 10px rgba(255, 255, 255, 0.3)'
         }}>
           <span style={{ fontSize: '24px' }}>{favoriteEmoji}</span>
           <span>Soul Script</span>
@@ -65,11 +64,11 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             style={{
               padding: '12px 20px',
               background: currentView === 'home' 
-                ? theme.cardBg
-                : 'rgba(255, 255, 255, 0.1)',
-              border: `2px solid ${theme.accentColor}40`,
+                ? 'rgba(255, 255, 255, 0.2)'
+                : 'rgba(255, 255, 255, 0.05)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '12px',
-              color: theme.textColor,
+              color: 'white',
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
@@ -77,7 +76,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: currentView === 'home' ? `0 4px 15px ${theme.accentColor}40` : 'none'
+              boxShadow: currentView === 'home' ? '0 4px 15px rgba(255, 255, 255, 0.2)' : 'none'
             }}
           >
             🏠 Sanctuary
@@ -88,11 +87,11 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             style={{
               padding: '12px 20px',
               background: currentView === 'timeline' 
-                ? theme.cardBg
-                : 'rgba(255, 255, 255, 0.1)',
-              border: `2px solid ${theme.accentColor}40`,
+                ? 'rgba(255, 255, 255, 0.2)'
+                : 'rgba(255, 255, 255, 0.05)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '12px',
-              color: theme.textColor,
+              color: 'white',
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
@@ -100,7 +99,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: currentView === 'timeline' ? `0 4px 15px ${favoriteColor}66` : 'none'
+              boxShadow: currentView === 'timeline' ? '0 4px 15px rgba(255, 255, 255, 0.2)' : 'none'
             }}
           >
             📅 Echo Trails

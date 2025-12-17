@@ -3,7 +3,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useSubscriptionStore } from '../stores/subscriptionStore';
 import { useJournalStore } from '../stores/journalStore';
 import { getGradientBackground } from '../lib/colorUtils';
-import { Crown, Volume2, Download, Smartphone, Package } from 'lucide-react';
+import { Crown, Volume2, Download, Smartphone, Package, Trash2 } from 'lucide-react';
 
 export function Settings() {
   const { theme, favoriteColor, favoriteEmoji, dearPrompt, backgroundAmbience, ambienceVolume, customMusicUrl, setTheme, setFavoriteColor, setFavoriteEmoji, setDearPrompt, setBackgroundAmbience, setAmbienceVolume, setCustomMusicUrl } = useSettingsStore();
@@ -104,6 +104,31 @@ export function Settings() {
       setDeferredPrompt(null);
     } catch (error) {
       console.error('Install error:', error);
+    }
+  };
+
+  const handleClearCache = async () => {
+    if (window.confirm('Are you sure you want to clear the app cache? This will refresh the app and may fix loading issues. Your data will be preserved if synced.')) {
+      try {
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (const registration of registrations) {
+            await registration.unregister();
+          }
+        }
+        
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          for (const key of keys) {
+            await caches.delete(key);
+          }
+        }
+        
+        window.location.reload();
+      } catch (error) {
+        console.error('Error clearing cache:', error);
+        alert('Failed to clear cache completely. Please try manually clearing browser data.');
+      }
     }
   };
 
@@ -586,6 +611,52 @@ export function Settings() {
             <p style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '12px' }}>
               Your entries will be saved as a JSON file. Media files are not included.
             </p>
+          </div>
+
+          {/* Clear Cache */}
+          <div className="dashboard-card" style={{ animationDelay: '0.85s' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+              <div style={{ 
+                padding: '12px', 
+                background: 'rgba(255, 255, 255, 0.2)', 
+                borderRadius: '12px'
+              }}>
+                <Trash2 size={24} color="white" />
+              </div>
+              <div style={{ flex: 1 }}>
+                <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '6px' }}>
+                  Clear Cache
+                </h2>
+                <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+                  Fix loading issues by resetting the application cache
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleClearCache}
+              style={{
+                padding: '15px 30px',
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '12px',
+                color: 'white',
+                fontSize: '16px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                transition: 'all 0.3s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
+            >
+              <Trash2 size={20} /> Clear App Cache
+            </button>
           </div>
 
           {/* Save Button */}

@@ -125,8 +125,14 @@ export function getCurrentTimeTheme(): TimeTheme {
   };
 }
 
-export function getGradientBackground(_favoriteColor?: string): string {
-  // Use time-based theme instead of user color for main gradient
-  const theme = getCurrentTimeTheme();
-  return theme.gradient;
+export function getGradientBackground(favoriteColor?: string): string {
+  // Always use dark starfield background consistent with the design
+  if (favoriteColor) {
+    const [color1] = getColorGradient(favoriteColor);
+    const rgb = hexToRgb(color1);
+    // Add subtle tint of favorite color to the starfield
+    return `radial-gradient(ellipse at top, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12) 0%, rgb(10, 13, 46) 50%, rgb(8, 10, 38) 100%)`;
+  }
+  // Default dark starfield
+  return 'radial-gradient(ellipse at top, rgba(15, 20, 60, 0.8) 0%, rgb(10, 13, 46) 50%, rgb(8, 10, 38) 100%)';
 }

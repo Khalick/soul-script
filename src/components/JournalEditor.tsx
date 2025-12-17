@@ -72,6 +72,72 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     return () => clearInterval(interval);
   }, []);
 
+  // Image compression utility
+  const compressImage = async (file: File, maxSizeMB: number = 1): Promise<File> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.createElement('img');
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Calculate new dimensions (max 1920x1080)
+          const maxWidth = 1920;
+          const maxHeight = 1080;
+          
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Start with quality 0.9 and reduce if needed
+          let quality = 0.9;
+          const tryCompress = () => {
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  resolve(file);
+                  return;
+                }
+                
+                const sizeMB = blob.size / (1024 * 1024);
+                if (sizeMB <= maxSizeMB || quality <= 0.3) {
+                  const compressedFile = new File([blob], file.name, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                  });
+                  console.log(`✅ Compressed ${file.name}: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${sizeMB.toFixed(2)}MB`);
+                  resolve(compressedFile);
+                } else {
+                  quality -= 0.1;
+                  tryCompress();
+                }
+              },
+              'image/jpeg',
+              quality
+            );
+          };
+          
+          tryCompress();
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -114,9 +180,26 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     }
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setMediaFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
+      const files = Array.from(e.target.files);
+      const compressedFiles: File[] = [];
+      
+      for (const file of files) {
+        if (file.type.startsWith('image/')) {
+          try {
+            const compressed = await compressImage(file);
+            compressedFiles.push(compressed);
+          } catch (error) {
+            console.error('Compression failed, using original:', error);
+            compressedFiles.push(file);
+          }
+        } else {
+          compressedFiles.push(file);
+        }
+      }
+      
+      setMediaFiles((prev) => [...prev, ...compressedFiles]);
     }
   };
 

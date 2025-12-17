@@ -216,7 +216,7 @@ function App() {
 
   const handleNewEntry = () => {
     setEditingEntry(null);
-    navigateToView('moodboard');
+    navigateToView('editor');
   };
 
   const handleMoodboardSelect = (moodboard: string, ambience: string) => {
