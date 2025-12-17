@@ -107,6 +107,55 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           <span>Soul Script</span>
         </div>
         
+        {/* Mobile Actions Container */}
+        <div style={{
+          display: 'flex',
+          gap: '10px',
+          alignItems: 'center'
+        }} className="mobile-actions">
+          {/* Install Button - Mobile */}
+          {!isInstalled && (
+            <button
+              onClick={handleInstall}
+              style={{
+                padding: '10px',
+                background: 'linear-gradient(135deg, #06b6d4, #0e7490)',
+                border: '2px solid rgba(6, 182, 212, 0.5)',
+                borderRadius: '10px',
+                color: 'white',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '14px',
+                fontWeight: '600'
+              }}
+            >
+              <Download size={18} />
+              <span className="install-text">Install</span>
+            </button>
+          )}
+
+          {/* Mobile Hamburger Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="mobile-menu-button"
+            style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '10px',
+              padding: '10px',
+              color: 'white',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+        
         {/* Desktop Navigation */}
         <div style={{ 
           display: 'none',
@@ -279,24 +328,6 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             ↗️ Logout
           </button>
         </div>
-
-        {/* Mobile Hamburger Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="mobile-menu-button"
-          style={{
-            display: 'none',
-            background: 'rgba(255, 255, 255, 0.15)',
-            border: '2px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '10px',
-            padding: '10px',
-            color: 'white',
-            cursor: 'pointer',
-            transition: 'all 0.3s'
-          }}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
       </header>
 
       {/* Mobile Menu Overlay */}

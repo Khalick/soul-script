@@ -1220,6 +1220,11 @@ input[type="range"]::-moz-range-thumb:hover {
   }
 }
 
+/* Base Navbar Styles */
+.mobile-actions {
+  display: none;
+}
+
 /* ==========================================
    MOBILE RESPONSIVE STYLES
    ========================================== */
@@ -1229,6 +1234,10 @@ input[type="range"]::-moz-range-thumb:hover {
   /* Navbar Mobile Styles */
   .desktop-nav {
     display: none !important;
+  }
+  
+  .mobile-actions {
+    display: flex !important;
   }
   
   .mobile-menu-button {
@@ -1539,6 +1548,10 @@ input[type="range"]::-moz-range-thumb:hover {
     display: flex !important;
   }
 
+  .mobile-actions {
+    display: none !important;
+  }
+
   .mobile-menu-button {
     display: none !important;
   }
@@ -1621,6 +1634,66 @@ input[type="range"]::-moz-range-thumb:hover {
   textarea,
   select {
     font-size: 16px !important;
+  }
+}
+
+/* Standalone Mode (Installed PWA) - Larger Fonts */
+@media (display-mode: standalone) {
+  body {
+    font-size: 18px !important;
+  }
+
+  h1 {
+    font-size: 3rem !important;
+  }
+
+  h2 {
+    font-size: 2.5rem !important;
+  }
+
+  h3 {
+    font-size: 2rem !important;
+  }
+
+  p, span, div {
+    font-size: 1.125rem !important;
+  }
+
+  button {
+    font-size: 1.125rem !important;
+    padding: 14px 24px !important;
+  }
+
+  .auth-title {
+    font-size: 3rem !important;
+  }
+
+  .auth-subtitle {
+    font-size: 1.25rem !important;
+  }
+
+  .dashboard-greeting h1 {
+    font-size: 3rem !important;
+  }
+
+  .dashboard-subtitle {
+    font-size: 1.25rem !important;
+  }
+
+  .emotion-label {
+    font-size: 1.125rem !important;
+  }
+
+  .timeline-entry h3 {
+    font-size: 1.5rem !important;
+  }
+
+  .settings-section h2 {
+    font-size: 2rem !important;
+  }
+
+  input, textarea, select {
+    font-size: 1.125rem !important;
   }
 }
 
