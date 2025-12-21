@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Sparkles } from 'lucide-react';
+import { useMemo, useRef } from 'react';
+import { Sparkles, Download } from 'lucide-react';
 import { useSettingsStore } from '../stores/settingsStore';
 
 interface ConstellationsProps {
@@ -18,6 +18,7 @@ interface Constellation {
 
 export function Constellations({ posts, onConstellationClick }: ConstellationsProps) {
   const { favoriteColor } = useSettingsStore();
+  const constellationRef = useRef<HTMLDivElement>(null);
 
   const constellations = useMemo((): Constellation[] => {
     if (posts.length === 0) return [];
@@ -126,23 +127,85 @@ export function Constellations({ posts, onConstellationClick }: ConstellationsPr
     return results;
   }, [posts]);
 
+  const exportToImage = async () => {
+    if (!constellationRef.current) return;
+
+    try {
+      // Dynamically import html2canvas
+      const html2canvas = (await import('html2canvas')).default;
+      
+      const canvas = await html2canvas(constellationRef.current, {
+        backgroundColor: '#0a0d2e',
+        scale: 2, // Higher quality
+        logging: false,
+      });
+
+      // Convert to blob and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `soul-script-constellations-${new Date().getTime()}.png`;
+          link.href = url;
+          link.click();
+          URL.revokeObjectURL(url);
+        }
+      });
+    } catch (error) {
+      console.error('Error exporting constellation:', error);
+      alert('Could not export image. Please try again.');
+    }
+  };
+
   if (constellations.length === 0) {
     return null;
   }
 
   return (
     <div
+      ref={constellationRef}
       className="dashboard-card"
       style={{
         marginBottom: '30px',
         animation: 'fadeIn 1s ease-out',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-        <Sparkles size={24} color={favoriteColor} />
-        <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'white', margin: 0 }}>
-          Constellations
-        </h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Sparkles size={24} color={favoriteColor} />
+          <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'white', margin: 0 }}>
+            Constellations
+          </h2>
+        </div>
+        <button
+          onClick={exportToImage}
+          style={{
+            padding: '10px 20px',
+            background: 'linear-gradient(135deg, #06b6d4, #0e7490)',
+            border: '2px solid rgba(6, 182, 212, 0.5)',
+            borderRadius: '12px',
+            color: 'white',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 15px rgba(6, 182, 212, 0.3)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(6, 182, 212, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(6, 182, 212, 0.3)';
+          }}
+        >
+          <Download size={16} />
+          Export
+        </button>
       </div>
       <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '24px' }}>
         Emotional themes connecting The Quiet

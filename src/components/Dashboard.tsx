@@ -3,6 +3,7 @@ import { useJournalStore } from '../stores/journalStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getGradientBackground, getCurrentTimeTheme } from '../lib/colorUtils';
 import { TodaysInvitation } from './TodaysInvitation';
+import { OnThisDay } from './OnThisDay';
 
 interface DashboardProps {
   onNavigate?: (view: 'home' | 'checkin' | 'timeline' | 'analytics' | 'community' | 'settings') => void;
@@ -125,6 +126,7 @@ export function Dashboard({ onNavigate, onNewEntry, onLogout }: DashboardProps =
         {/* A Gentle Nudge */}
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px' }}>
           <TodaysInvitation />
+          <OnThisDay />
         </div>
 
         {/* Dashboard Grid */}

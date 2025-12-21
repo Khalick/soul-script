@@ -14,6 +14,7 @@ export interface JournalEntry {
   is_public: boolean;
   is_crisis_moment: boolean;
   is_breakthrough: boolean;
+  ephemeral_until?: string | null; // For "Burn After Writing" feature
   media?: MediaAttachment[];
 }
 
@@ -38,6 +39,7 @@ interface JournalState {
   deleteEntry: (id: string) => void;
   setCurrentEntry: (entry: Partial<JournalEntry> | null) => void;
   setLoading: (loading: boolean) => void;
+  cleanupEphemeralEntries: () => void;
 }
 
 export const useJournalStore = create<JournalState>()(
@@ -56,6 +58,15 @@ export const useJournalStore = create<JournalState>()(
         set((state) => ({ entries: state.entries.filter((e) => e.id !== id) })),
       setCurrentEntry: (entry) => set({ currentEntry: entry }),
       setLoading: (loading) => set({ isLoading: loading }),
+      cleanupEphemeralEntries: () =>
+        set((state) => ({
+          entries: state.entries.filter((e) => {
+            if (!e.ephemeral_until) return true;
+            const now = new Date();
+            const expiryDate = new Date(e.ephemeral_until);
+            return expiryDate > now;
+          }),
+        })),
     }),
     {
       name: 'soul-script-journal',

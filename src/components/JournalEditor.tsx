@@ -45,6 +45,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
   const [saveNotification, setSaveNotification] = useState<{ type: 'offline' | 'error'; message: string } | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [savedEntryForSharing, setSavedEntryForSharing] = useState<any>(null);
+  const [burnAfterWriting, setBurnAfterWriting] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -430,6 +431,11 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
         // Creating a new entry
         if (!currentEntry) return;
         
+        // Calculate ephemeral_until if burn after writing is enabled (24 hours from now)
+        const ephemeralUntil = burnAfterWriting 
+          ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+          : null;
+        
         const { data: entry, error: entryError } = await supabase
           .from('journal_entries')
           .insert({
@@ -440,6 +446,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
             text_content: textContent || undefined,
             tags: currentEntry.tags || [],
             is_public: false,
+            ephemeral_until: ephemeralUntil,
           })
           .select()
           .single();
@@ -830,7 +837,69 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeIn 1s ease-out 0.7s backwards' }}>
+
+          {/* Burn After Writing Toggle */}
+          {!editingEntry && (
+            <div 
+              style={{
+                marginTop: '20px',
+                padding: '20px',
+                background: burnAfterWriting ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                border: `2px solid ${burnAfterWriting ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255, 255, 255, 0.2)'}`,
+                borderRadius: '16px',
+                animation: 'fadeIn 0.8s ease-out',
+                transition: 'all 0.3s'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px' }}>
+                <div style={{ flex: 1, minWidth: '200px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '24px' }}>🔥</span>
+                    <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: burnAfterWriting ? '#fca5a5' : 'white' }}>
+                      Burn After Writing
+                    </h4>
+                  </div>
+                  <p style={{ 
+                    margin: 0, 
+                    fontSize: '14px', 
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    lineHeight: '1.5'
+                  }}>
+                    {burnAfterWriting 
+                      ? '⚠️ This entry will automatically delete in 24 hours. Write freely, without fear of permanence.'
+                      : 'Enable to automatically delete this entry after 24 hours. Perfect for cathartic venting.'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setBurnAfterWriting(!burnAfterWriting)}
+                  style={{
+                    padding: '12px 30px',
+                    background: burnAfterWriting 
+                      ? 'linear-gradient(135deg, #ef4444, #dc2626)' 
+                      : 'rgba(255, 255, 255, 0.15)',
+                    border: `2px solid ${burnAfterWriting ? '#ef4444' : 'rgba(255, 255, 255, 0.3)'}`,
+                    borderRadius: '12px',
+                    color: 'white',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    boxShadow: burnAfterWriting ? '0 4px 20px rgba(239, 68, 68, 0.4)' : 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  {burnAfterWriting ? '🔥 Enabled' : 'Enable'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap', animation: 'fadeIn 1s ease-out 0.7s backwards', marginTop: '20px' }}>
             <button onClick={onCancel} style={{ padding: '16px 40px', background: 'rgba(255, 255, 255, 0.15)', border: '2px solid rgba(255, 255, 255, 0.3)', borderRadius: '50px', color: 'white', fontSize: '16px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.3s' }}>
               Cancel
             </button>

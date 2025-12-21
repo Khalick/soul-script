@@ -1,12 +1,29 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useJournalStore } from '../stores/journalStore';
 import { useSettingsStore } from '../stores/settingsStore';
-import { Cloud, Sun, CloudRain, Wind, Zap } from 'lucide-react';
+import { Cloud, Sun, CloudRain, Wind, Zap, MapPin } from 'lucide-react';
 import { getMoodEmoji } from '../data/emotions';
+import { getCurrentWeather, getUserLocation, analyzeWeatherCorrelation, getWeatherEmoji } from '../lib/weatherApi';
 
 export function InnerWeather() {
   const { entries } = useJournalStore();
   const { favoriteColor } = useSettingsStore();
+  const [outerWeather, setOuterWeather] = useState<any>(null);
+  const [loadingWeather, setLoadingWeather] = useState(true);
+
+  // Fetch actual weather on component mount
+  useEffect(() => {
+    const fetchWeather = async () => {
+      const location = await getUserLocation();
+      if (location) {
+        const weather = await getCurrentWeather(location.lat, location.lon);
+        setOuterWeather(weather);
+      }
+      setLoadingWeather(false);
+    };
+
+    fetchWeather();
+  }, []);
 
   const currentWeather = useMemo(() => {
     // Get entries from last 7 days
@@ -72,6 +89,12 @@ export function InnerWeather() {
       emoji: getMoodEmoji(dominantMood),
     };
   }, [entries]);
+
+  // Analyze correlation between inner and outer weather
+  const correlation = useMemo(() => {
+    if (!outerWeather || !currentWeather.mood) return null;
+    return analyzeWeatherCorrelation(currentWeather.mood, outerWeather.condition);
+  }, [outerWeather, currentWeather]);
 
   const WeatherIcon = currentWeather.icon;
 
@@ -152,6 +175,98 @@ export function InnerWeather() {
           💭 <strong>Remember:</strong> All weather passes. This is just where you are right now, not where you'll always be.
         </p>
       </div>
+
+      {/* Weather Correlation */}
+      {outerWeather && correlation && (
+        <div
+          style={{
+            marginTop: '20px',
+            padding: '20px',
+            background: correlation.correlation === 'matches' 
+              ? 'rgba(6, 182, 212, 0.1)' 
+              : 'rgba(139, 92, 246, 0.1)',
+            border: `2px solid ${correlation.correlation === 'matches' ? '#06b6d4' : '#8b5cf6'}40`,
+            borderRadius: '16px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+            <MapPin size={20} color={correlation.correlation === 'matches' ? '#06b6d4' : '#8b5cf6'} />
+            <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600', color: 'white' }}>
+              Weather Check
+            </h4>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '32px', marginBottom: '4px' }}>
+                {getWeatherEmoji(outerWeather.condition)}
+              </div>
+              <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>
+                Outside
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: '600', color: 'white' }}>
+                {outerWeather.temperature}°C
+              </div>
+            </div>
+
+            <div style={{ 
+              flex: 1, 
+              height: '2px', 
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                background: correlation.correlation === 'matches' ? '#06b6d4' : '#8b5cf6',
+                borderRadius: '50%',
+                padding: '6px',
+                fontSize: '16px'
+              }}>
+                {correlation.correlation === 'matches' ? '🔗' : '✨'}
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '32px', marginBottom: '4px' }}>
+                {currentWeather.mood ? getMoodEmoji(currentWeather.mood) : '☁️'}
+              </div>
+              <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>
+                Inside
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: '600', color: 'white' }}>
+                {currentWeather.mood || 'Calm'}
+              </div>
+            </div>
+          </div>
+
+          <p style={{ 
+            fontSize: '13px', 
+            color: 'rgba(255, 255, 255, 0.8)', 
+            margin: 0,
+            fontStyle: 'italic',
+            textAlign: 'center'
+          }}>
+            {correlation.insight}
+          </p>
+        </div>
+      )}
+
+      {loadingWeather && !outerWeather && (
+        <div style={{
+          marginTop: '20px',
+          padding: '16px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          borderRadius: '12px',
+          textAlign: 'center',
+          fontSize: '14px',
+          color: 'rgba(255, 255, 255, 0.6)'
+        }}>
+          ☁️ Checking local weather...
+        </div>
+      )}
     </div>
   );
 }

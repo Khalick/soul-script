@@ -40,7 +40,7 @@ export const useMediaRecording = () => {
 
 function App() {
   const { user, isAuthenticated, setUser, logout } = useAuthStore();
-  const { entries, setEntries } = useJournalStore();
+  const { entries, setEntries, cleanupEphemeralEntries } = useJournalStore();
   const [currentView, setCurrentView] = useState<View>('home');
   const [viewHistory, setViewHistory] = useState<View[]>(['home']);
   const [loading, setLoading] = useState(true);
@@ -126,6 +126,8 @@ function App() {
                 ...entry,
                 media: entry.media_attachments,
               })));
+              // Clean up expired ephemeral entries locally
+              cleanupEphemeralEntries();
             }
           });
 
