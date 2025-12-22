@@ -12,6 +12,7 @@ export const syncOfflineEntries = async (userId: string) => {
     return { success: true, synced: 0 };
   }
 
+  console.log(`🔄 Syncing ${unsyncedEntries.length} offline entries...`);
   setSyncInProgress(true);
 
   let syncedCount = 0;
@@ -43,6 +44,7 @@ export const syncOfflineEntries = async (userId: string) => {
       removeOfflineEntry(entry.tempId);
       
       syncedCount++;
+      console.log(`✅ Synced entry: ${entry.tempId}`);
     } catch (error: any) {
       console.error('Failed to sync entry:', entry.tempId, error);
       errors.push(entry.tempId);
@@ -50,6 +52,8 @@ export const syncOfflineEntries = async (userId: string) => {
   }
 
   setSyncInProgress(false);
+
+  console.log(`✅ Sync complete: ${syncedCount} synced, ${errors.length} failed`);
 
   return {
     success: errors.length === 0,
@@ -63,16 +67,21 @@ export const setupOnlineListener = () => {
   const { setOnlineStatus } = useOfflineStore.getState();
 
   const updateOnlineStatus = () => {
-    setOnlineStatus(navigator.onLine);
+    const online = navigator.onLine;
+    setOnlineStatus(online);
     
-    if (navigator.onLine) {
+    if (online) {
+      console.log('🌐 Connection restored - starting auto-sync...');
       // Auto-sync when coming back online
       const userId = localStorage.getItem('supabase.auth.user')?.split('"id":"')[1]?.split('"')[0];
       if (userId) {
-        syncOfflineEntries(userId);
+        setTimeout(() => syncOfflineEntries(userId), 1000); // Wait 1s for connection to stabilize
       }
     }
   };
+
+  // Set initial status
+  updateOnlineStatus();
 
   window.addEventListener('online', updateOnlineStatus);
   window.addEventListener('offline', updateOnlineStatus);

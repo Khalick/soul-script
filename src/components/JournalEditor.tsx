@@ -335,8 +335,11 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     setUploading(true);
     
     try {
-      // Check if offline
-      if (!isOnline || !navigator.onLine) {
+      // Check if offline - check both store state and navigator
+      const currentlyOffline = !isOnline || !navigator.onLine;
+      
+      if (currentlyOffline) {
+        console.log('📵 Offline mode detected - saving locally');
         // Save offline
         if (!editingEntry && currentEntry && currentEntry.mood && currentEntry.intensity) {
           const tempId = `temp-${Date.now()}`;

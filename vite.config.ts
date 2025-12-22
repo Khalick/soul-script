@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'favicon.svg', 'favicon-96x96.png', 'web-app-manifest-192x192.png', 'web-app-manifest-512x512.png'],
       
@@ -82,6 +82,10 @@ export default defineConfig({
       
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,jpg,jpeg}'],
+        
+        // Offline fallback page
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api/],
         
         // Cache strategies for different resource types
         runtimeCaching: [

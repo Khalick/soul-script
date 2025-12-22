@@ -31,10 +31,11 @@ export const useOfflineStore = create<OfflineState>()(
   persist(
     (set, get) => ({
       offlineEntries: [],
-      isOnline: navigator.onLine,
+      isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
       syncInProgress: false,
 
       addOfflineEntry: (entry) => {
+        console.log('💾 Adding offline entry:', entry.tempId);
         set((state) => ({
           offlineEntries: [...state.offlineEntries, entry],
         }));
@@ -55,6 +56,7 @@ export const useOfflineStore = create<OfflineState>()(
       },
 
       setOnlineStatus: (status) => {
+        console.log(status ? '🟢 Online' : '🔴 Offline');
         set({ isOnline: status });
       },
 

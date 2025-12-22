@@ -66,10 +66,18 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
             data: {
               full_name: fullName,
             },
+            emailRedirectTo: window.location.origin,
           },
         });
 
         if (signUpError) throw signUpError;
+
+        // Check if email confirmation is required
+        if (data.user && !data.session) {
+          setError('✉️ Please check your email to confirm your account. Check spam folder if needed.');
+          setLoading(false);
+          return;
+        }
 
         if (data.user) {
           setUser({
