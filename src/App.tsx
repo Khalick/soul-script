@@ -61,10 +61,17 @@ function App() {
   const { setMediaActive } = useAutoLogout({
     timeout: 20 * 60 * 1000, // 20 minutes
     onLogout: async () => {
-      if (isAuthenticated) {
+      // Force logout - don't check isAuthenticated (race condition on page load)
+      // Clear all auth state immediately
+      console.log('🚪 Force logout triggered');
+      try {
         await supabase.auth.signOut();
-        logout();
+      } catch (e) {
+        // Ignore errors - session may already be invalid
       }
+      logout();
+      // Force redirect to auth page
+      window.location.reload();
     },
   });
 
@@ -142,6 +149,29 @@ function App() {
   useEffect(() => {
     const cleanup = setupOnlineListener();
     return cleanup;
+  }, []);
+
+  // CRITICAL: ALWAYS logout on page refresh/reload
+  // This runs BEFORE auth check - if page was refreshed, force logout
+  useEffect(() => {
+    const REFRESH_KEY = 'soul-script-page-loaded';
+    const wasPageLoaded = sessionStorage.getItem(REFRESH_KEY);
+    
+    if (wasPageLoaded) {
+      // Page was already loaded before = this is a REFRESH
+      console.log('🚪 Page refresh detected - forcing logout');
+      sessionStorage.removeItem(REFRESH_KEY);
+      sessionStorage.removeItem('soul-script-session-activity');
+      // Force sign out
+      supabase.auth.signOut().finally(() => {
+        logout();
+        setLoading(false);
+      });
+      return;
+    }
+    
+    // First load of this tab - mark it
+    sessionStorage.setItem(REFRESH_KEY, 'true');
   }, []);
 
   useEffect(() => {
@@ -226,15 +256,13 @@ function App() {
     // Detect screenshot attempts (keyboard shortcuts)
     const handleKeyDown = (e: KeyboardEvent) => {
       // Prevent PrintScreen, Cmd+Shift+3/4/5 (Mac), Windows+Shift+S, Cmd+Ctrl+Shift+3/4 (Mac screenshot to clipboard)
+      // NOTE: F12 and dev tools are ALLOWED for development
       if (
         e.key === 'PrintScreen' ||
         e.key === 'Print' ||
         (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key)) ||
         (e.metaKey && e.ctrlKey && e.shiftKey && ['3', '4'].includes(e.key)) ||
-        (e.ctrlKey && e.shiftKey && e.key === 'S') ||
-        (e.key === 'F12') || // Developer tools
-        (e.ctrlKey && e.shiftKey && e.key === 'I') || // Inspect element
-        (e.metaKey && e.altKey && e.key === 'I') // Mac inspect
+        (e.ctrlKey && e.shiftKey && e.key === 'S')
       ) {
         e.preventDefault();
         e.stopPropagation();
@@ -273,21 +301,6 @@ function App() {
       }
     };
 
-    // Block developer tools
-    const blockDevTools = () => {
-      // Detect if dev tools are open
-      const threshold = 160;
-      const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-      const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-      
-      if (widthThreshold || heightThreshold) {
-        document.body.style.filter = 'blur(20px)';
-        console.log('🔒 Developer tools detected - Content hidden for security');
-      } else {
-        document.body.style.filter = 'none';
-      }
-    };
-
     // Disable text selection and copy for sensitive content
     const handleCopy = (e: ClipboardEvent) => {
       const target = e.target as HTMLElement;
@@ -312,13 +325,9 @@ function App() {
     document.addEventListener('copy', handleCopy);
     document.addEventListener('dragstart', handleDragStart);
     
-    // Check for dev tools every 500ms
-    const devToolsInterval = setInterval(blockDevTools, 500);
-    
     // Prevent canvas capture
     preventCanvasCapture();
     const canvasInterval = setInterval(preventCanvasCapture, 1000);
-    document.addEventListener('copy', handleCopy);
 
     // Add CSS to prevent text selection on sensitive areas
     const style = document.createElement('style');
@@ -340,7 +349,6 @@ function App() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       document.removeEventListener('copy', handleCopy);
       document.removeEventListener('dragstart', handleDragStart);
-      clearInterval(devToolsInterval);
       clearInterval(canvasInterval);
       document.head.removeChild(style);
       document.body.style.filter = 'none';

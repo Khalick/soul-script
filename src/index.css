@@ -1775,11 +1775,115 @@ input[type="range"]::-moz-range-thumb:hover {
 
 @media (max-width: 768px), (display-mode: standalone) {
   
+  /* Override ALL CSS variables for mobile high-visibility */
+  :root {
+    --morning-bg-start: #000000 !important;
+    --morning-bg-end: #000000 !important;
+    --afternoon-bg-start: #000000 !important;
+    --afternoon-bg-end: #000000 !important;
+    --evening-bg-start: #000000 !important;
+    --evening-bg-end: #000000 !important;
+    --night-bg-start: #000000 !important;
+    --night-bg-end: #000000 !important;
+    --current-bg-start: #000000 !important;
+    --current-bg-end: #000000 !important;
+  }
+  
   /* Adjust content for bottom nav */
   body {
     padding-bottom: 80px;
     font-size: 18px; /* Larger base font for mobile */
     -webkit-text-size-adjust: 100%; /* Match device font scaling */
+  }
+  
+  /* MAXIMUM CONTRAST for sunlight visibility */
+  /* Using yellow/orange on pure black - highest visibility in bright light */
+  
+  * {
+    --tw-text-opacity: 1 !important;
+  }
+  
+  html, body {
+    background: #000000 !important;
+    background-image: none !important;
+  }
+  
+  .auth-page,
+  .dashboard-page,
+  .journal-editor,
+  .timeline-container,
+  .analytics-container,
+  .settings-container,
+  .community-container {
+    background: #000000 !important;
+    background-image: none !important;
+  }
+  
+  /* Override all pseudo-elements that add gradients */
+  .auth-page::before,
+  .auth-page::after,
+  .dashboard-page::before,
+  .dashboard-page::after {
+    display: none !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #FFD700 !important; /* Gold - most visible in sunlight */
+    font-weight: 700 !important;
+    text-shadow: 
+      -2px -2px 0 #000,
+      2px -2px 0 #000,
+      -2px 2px 0 #000,
+      2px 2px 0 #000,
+      0 0 8px rgba(0, 0, 0, 0.9) !important;
+  }
+  
+  p, span, label, div {
+    color: #FFA500 !important; /* Orange - high visibility */
+    font-weight: 600 !important;
+    text-shadow: 
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000 !important;
+  }
+  
+  /* Cards with pure black background */
+  .dashboard-card {
+    background: #000000 !important;
+    border: 3px solid #FFD700 !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
+  }
+  
+  /* Buttons with high contrast */
+  button {
+    background: #000000 !important;
+    border: 3px solid #FFA500 !important;
+    color: #FFD700 !important;
+    font-weight: 700 !important;
+    text-shadow: 
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000 !important;
+  }
+  
+  button:hover {
+    background: #1a1a1a !important;
+    border-color: #FFD700 !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5) !important;
+  }
+  
+  /* Input fields */
+  input, textarea, select {
+    background: #0a0a0a !important;
+    border: 2px solid #FFA500 !important;
+    color: #FFD700 !important;
+    font-weight: 600 !important;
+  }
+  
+  input::placeholder, textarea::placeholder {
+    color: #FF8C00 !important; /* Dark orange */
   }
   
   /* Increase all text sizes for mobile */
