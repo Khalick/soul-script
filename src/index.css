@@ -1775,70 +1775,9 @@ input[type="range"]::-moz-range-thumb:hover {
 
 @media (max-width: 768px), (display-mode: standalone) {
   
-  /* High contrast for sunlight visibility */
+  /* Adjust content for bottom nav */
   body {
     padding-bottom: 80px;
-  }
-  
-  * {
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-  }
-  
-  /* Modern gradient backgrounds with time-based themes */
-  .auth-page,
-  .dashboard-page {
-    background: linear-gradient(135deg, var(--afternoon-bg-start) 0%, var(--afternoon-bg-end) 100%) !important;
-  }
-  
-  /* Rounded, glowing cards */
-  .dashboard-card,
-  .auth-card {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(40px) !important;
-    border: 2px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 30px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  }
-  
-  /* High visibility text */
-  h1, h2, h3, h4, h5, h6 {
-    color: #ffffff !important;
-    font-weight: 700 !important;
-  }
-  
-  p, span, label {
-    color: #ffffff !important;
-    font-weight: 600 !important;
-  }
-  
-  /* Input fields with solid backgrounds */
-  input, textarea, select {
-    background: rgba(15, 20, 50, 0.95) !important;
-    border: 2px solid rgba(255, 255, 255, 0.25) !important;
-    color: #ffffff !important;
-    font-weight: 600 !important;
-    border-radius: 20px !important;
-  }
-  
-  input::placeholder,
-  textarea::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-weight: 500 !important;
-  }
-  
-  /* Glowing buttons */
-  button:not(.mobile-nav-item) {
-    background: linear-gradient(135deg, var(--afternoon-accent), #6366f1) !important;
-    border: none !important;
-    border-radius: 25px !important;
-    font-weight: 700 !important;
-    color: white !important;
-    box-shadow: 0 8px 24px var(--afternoon-glow), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-  }
-  
-  button:hover:not(.mobile-nav-item) {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 12px 32px var(--afternoon-glow), 0 6px 16px rgba(0, 0, 0, 0.5) !important;
   }
   
   /* Bottom Navigation Bar */
@@ -1868,55 +1807,17 @@ input[type="range"]::-moz-range-thumb:hover {
     padding: 8px 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    border-radius: 15px;
+    border-radius: 12px;
     min-width: 60px;
-    background: transparent;
-    border: none;
-    box-shadow: none !important;
-  }
-  
-  .mobile-nav-item svg {
-    width: 24px;
-    height: 24px;
-    color: rgba(255, 255, 255, 0.6);
-    transition: all 0.3s ease;
+    color: white;
   }
   
   .mobile-nav-item span {
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    color: rgba(255, 255, 255, 0.6) !important;
-    text-shadow: none !important;
-  }
-  
-  .mobile-nav-item.active {
-    background: rgba(74, 158, 255, 0.15) !important;
-  }
-  
-  .mobile-nav-item.active svg,
-  .mobile-nav-item.active span {
-    color: var(--afternoon-accent) !important;
+    color: white;
   }
   
   .mobile-nav-item:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
-    transform: none !important;
-  }
-  
-  /* Center add button */
-  .mobile-nav-item.add-button {
-    position: relative;
-    top: -10px;
-  }
-  
-  .mobile-nav-item.add-button svg {
-    width: 32px;
-    height: 32px;
-    color: white !important;
-    background: linear-gradient(135deg, var(--afternoon-accent), #6366f1);
-    padding: 8px;
-    border-radius: 50%;
-    box-shadow: 0 4px 20px var(--afternoon-glow);
+    background: rgba(255, 255, 255, 0.1);
   }
   
   /* Hide desktop nav on mobile */

@@ -93,7 +93,8 @@ export const useSecurityStore = create<SecurityState>()(
         biometricEnabled: state.biometricEnabled,
         deviceFingerprint: state.deviceFingerprint,
         autoLockTimeout: state.autoLockTimeout,
-        // Don't persist isLocked or lastActivity
+        lastActivity: state.lastActivity, // MUST persist to check on reload
+        // Don't persist isLocked - always start unlocked, let useAutoLock lock if needed
       }),
     }
   )

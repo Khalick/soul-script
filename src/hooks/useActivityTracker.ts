@@ -1,36 +1,30 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSecurityStore } from '../stores/securityStore';
 import { useAuthStore } from '../stores/authStore';
 import { updateLastActivity } from '../lib/pinAuth';
 
-// Throttle function to prevent too many updates
-const throttle = (func: Function, delay: number) => {
-  let lastCall = 0;
-  return (...args: any[]) => {
-    const now = Date.now();
-    if (now - lastCall >= delay) {
-      lastCall = now;
-      func(...args);
-    }
-  };
-};
-
 export const useActivityTracker = () => {
   const { updateActivity, isPWA, pinEnabled } = useSecurityStore();
   const { user } = useAuthStore();
+  const lastUpdateRef = useRef<number>(0);
 
-  const handleActivity = useCallback(
-    throttle(() => {
-      if (isPWA && pinEnabled) {
-        updateActivity();
-        // Update server periodically
-        if (user) {
-          updateLastActivity(user.id);
-        }
+  // Create stable throttled handler using ref
+  const handleActivity = () => {
+    const now = Date.now();
+    if (now - lastUpdateRef.current < 1000) {
+      return; // Throttle to once per second
+    }
+    
+    lastUpdateRef.current = now;
+    
+    if (isPWA && pinEnabled) {
+      updateActivity();
+      // Update server periodically
+      if (user) {
+        updateLastActivity(user.id);
       }
-    }, 1000), // Only fire once per second max
-    [isPWA, pinEnabled, user]
-  );
+    }
+  };
 
   useEffect(() => {
     if (!isPWA || !pinEnabled) {

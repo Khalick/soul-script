@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Download, Home, Calendar, PlusCircle, Users, Settings } from 'lucide-react';
+import { Menu, X, Download } from 'lucide-react';
 import { useSettingsStore } from '../stores/settingsStore';
 
 interface NavbarProps {
@@ -493,43 +493,71 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
         <button 
           className={`mobile-nav-item ${currentView === 'home' ? 'active' : ''}`}
           onClick={() => handleNavigation('home')}
+          style={{
+            background: currentView === 'home' 
+              ? 'rgba(255, 255, 255, 0.2)'
+              : 'rgba(255, 255, 255, 0.05)',
+            border: '2px solid rgba(255, 255, 255, 0.2)',
+          }}
         >
-          <Home />
-          <span>Home</span>
+          <span style={{ fontSize: '20px' }}>🏠</span>
+          <span style={{ fontSize: '11px', fontWeight: '600' }}>Sanctuary</span>
         </button>
         
         <button 
           className={`mobile-nav-item ${currentView === 'timeline' ? 'active' : ''}`}
           onClick={() => handleNavigation('timeline')}
+          style={{
+            background: currentView === 'timeline' 
+              ? 'rgba(255, 255, 255, 0.2)'
+              : 'rgba(255, 255, 255, 0.05)',
+            border: '2px solid rgba(255, 255, 255, 0.2)',
+          }}
         >
-          <Calendar />
-          <span>Timeline</span>
+          <span style={{ fontSize: '20px' }}>📅</span>
+          <span style={{ fontSize: '11px', fontWeight: '600' }}>Echo Trails</span>
         </button>
         
         <button 
-          className="mobile-nav-item add-button"
-          onClick={() => {
-            // Trigger new entry - you'll need to handle this in App.tsx
-            window.dispatchEvent(new CustomEvent('start-new-entry'));
+          className={`mobile-nav-item ${currentView === 'analytics' ? 'active' : ''}`}
+          onClick={() => handleNavigation('analytics')}
+          style={{
+            background: currentView === 'analytics' 
+              ? 'rgba(255, 255, 255, 0.2)'
+              : 'rgba(255, 255, 255, 0.05)',
+            border: '2px solid rgba(255, 255, 255, 0.2)',
           }}
         >
-          <PlusCircle />
+          <span style={{ fontSize: '20px' }}>📊</span>
+          <span style={{ fontSize: '11px', fontWeight: '600' }}>Insights</span>
         </button>
         
         <button 
           className={`mobile-nav-item ${currentView === 'community' ? 'active' : ''}`}
           onClick={() => handleNavigation('community')}
+          style={{
+            background: currentView === 'community' 
+              ? 'rgba(255, 255, 255, 0.2)'
+              : 'rgba(255, 255, 255, 0.05)',
+            border: '2px solid rgba(255, 255, 255, 0.2)',
+          }}
         >
-          <Users />
-          <span>Community</span>
+          <span style={{ fontSize: '20px' }}>👥</span>
+          <span style={{ fontSize: '11px', fontWeight: '600' }}>The Quiet</span>
         </button>
         
         <button 
           className={`mobile-nav-item ${currentView === 'settings' ? 'active' : ''}`}
           onClick={() => handleNavigation('settings')}
+          style={{
+            background: currentView === 'settings' 
+              ? 'rgba(255, 255, 255, 0.2)'
+              : 'rgba(255, 255, 255, 0.05)',
+            border: '2px solid rgba(255, 255, 255, 0.2)',
+          }}
         >
-          <Settings />
-          <span>Settings</span>
+          <span style={{ fontSize: '20px' }}>⚙️</span>
+          <span style={{ fontSize: '11px', fontWeight: '600' }}>Boundaries</span>
         </button>
       </nav>
     </>
