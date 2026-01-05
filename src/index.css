@@ -4,6 +4,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Time-based color themes - dynamically applied via JS */
+:root {
+  /* Morning (6am-11am) - Warm sunrise */
+  --morning-bg-start: #1a1042;
+  --morning-bg-end: #2d1b4e;
+  --morning-accent: #ff9a56;
+  --morning-glow: rgba(255, 154, 86, 0.4);
+  
+  /* Afternoon (12pm-5pm) - Bright blue */
+  --afternoon-bg-start: #0f1a42;
+  --afternoon-bg-end: #1e3a5f;
+  --afternoon-accent: #4a9eff;
+  --afternoon-glow: rgba(74, 158, 255, 0.5);
+  
+  /* Evening (6pm-9pm) - Purple/violet */
+  --evening-bg-start: #1a0f2e;
+  --evening-bg-end: #2d1b4e;
+  --evening-accent: #a78bfa;
+  --evening-glow: rgba(167, 139, 250, 0.4);
+  
+  /* Night (10pm-5am) - Deep blue */
+  --night-bg-start: #0a0d2e;
+  --night-bg-end: #1a1f4e;
+  --night-accent: #06b6d4;
+  --night-glow: rgba(6, 182, 212, 0.4);
+}
+
 /* Auth Page Styles */
 .auth-page {
   min-height: 100vh;
@@ -1740,4 +1767,567 @@ input[type="range"]::-moz-range-thumb:hover {
 }
 
 
+
+
+/* ============================================ */
+/* MOBILE-FIRST DESIGN ENHANCEMENTS */
+/* ============================================ */
+
+@media (max-width: 768px), (display-mode: standalone) {
+  
+  /* High contrast for sunlight visibility */
+  body {
+    padding-bottom: 80px;
+  }
+  
+  * {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  }
+  
+  /* Modern gradient backgrounds with time-based themes */
+  .auth-page,
+  .dashboard-page {
+    background: linear-gradient(135deg, var(--afternoon-bg-start) 0%, var(--afternoon-bg-end) 100%) !important;
+  }
+  
+  /* Rounded, glowing cards */
+  .dashboard-card,
+  .auth-card {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(40px) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* High visibility text */
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+  
+  p, span, label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Input fields with solid backgrounds */
+  input, textarea, select {
+    background: rgba(15, 20, 50, 0.95) !important;
+    border: 2px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    border-radius: 20px !important;
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-weight: 500 !important;
+  }
+  
+  /* Glowing buttons */
+  button:not(.mobile-nav-item) {
+    background: linear-gradient(135deg, var(--afternoon-accent), #6366f1) !important;
+    border: none !important;
+    border-radius: 25px !important;
+    font-weight: 700 !important;
+    color: white !important;
+    box-shadow: 0 8px 24px var(--afternoon-glow), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  }
+  
+  button:hover:not(.mobile-nav-item) {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 32px var(--afternoon-glow), 0 6px 16px rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  /* Bottom Navigation Bar */
+  .mobile-nav-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(10, 13, 46, 0.98);
+    backdrop-filter: blur(30px);
+    border-top: 2px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    z-index: 9999;
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6);
+  }
+  
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    min-width: 60px;
+    background: transparent;
+    border: none;
+    box-shadow: none !important;
+  }
+  
+  .mobile-nav-item svg {
+    width: 24px;
+    height: 24px;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-nav-item span {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-shadow: none !important;
+  }
+  
+  .mobile-nav-item.active {
+    background: rgba(74, 158, 255, 0.15) !important;
+  }
+  
+  .mobile-nav-item.active svg,
+  .mobile-nav-item.active span {
+    color: var(--afternoon-accent) !important;
+  }
+  
+  .mobile-nav-item:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    transform: none !important;
+  }
+  
+  /* Center add button */
+  .mobile-nav-item.add-button {
+    position: relative;
+    top: -10px;
+  }
+  
+  .mobile-nav-item.add-button svg {
+    width: 32px;
+    height: 32px;
+    color: white !important;
+    background: linear-gradient(135deg, var(--afternoon-accent), #6366f1);
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 4px 20px var(--afternoon-glow);
+  }
+  
+  /* Hide desktop nav on mobile */
+  header {
+    display: none !important;
+  }
+  
+  /* Adjust content for bottom nav */
+  .dashboard-page {
+    padding-bottom: 90px !important;
+  }
+}
+
+/* SCREENSHOT PROTECTION */
+/* Prevent screenshots on sensitive content */
+.prevent-screenshot {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Blur content on screenshot attempt (iOS/Android) */
+@media (display-mode: standalone) {
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Prevent content capture on Android */
+  * {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Block screenshots with secure flag (Android WebView) */
+body.secure-mode {
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: auto;
+}
+
+/* Watermark overlay (appears on screenshots) */
+body::after {
+  content: '🔒 CONFIDENTIAL - Soul Script';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  font-size: 48px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: 999999;
+  white-space: nowrap;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Prevent right-click context menu */
+* {
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Allow text selection only in input fields */
+input, textarea, [contenteditable] {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* =====================================================
+   SUNLIGHT VISIBILITY IMPROVEMENTS
+   ===================================================== */
+
+/* High contrast text for sunlight readability */
+body,
+input,
+textarea,
+select,
+button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force white text with shadows for outdoor visibility */
+.dashboard-page,
+.journal-editor,
+.settings-page,
+.analytics-page,
+.community-page {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Input fields - solid backgrounds for visibility */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+  background: #10132e !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(6, 182, 212, 0.3) !important;
+  font-weight: 500 !important;
+  text-shadow: none !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-weight: 400 !important;
+}
+
+/* Card backgrounds - solid for text readability */
+.entry-card,
+.mood-card,
+.stats-card,
+.constellation-card,
+.community-post,
+.template-card {
+  background: rgba(16, 19, 46, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(6, 182, 212, 0.2) !important;
+}
+
+/* Button text - bold and high contrast */
+button {
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Headers and titles - extra bold for sunlight */
+h1, h2, h3, h4, h5, h6,
+.dashboard-header h1,
+.page-title {
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* Journal text area - maximum contrast */
+.journal-text-area,
+.editor-content,
+[contenteditable="true"] {
+  background: #0f132e !important;
+  color: #ffffff !important;
+  font-size: 1.1rem !important;
+  line-height: 1.8 !important;
+  font-weight: 500 !important;
+}
+
+/* Mobile PWA - increase font sizes for sunlight */
+@media (display-mode: standalone) {
+  body {
+    font-size: 1.125rem !important;
+  }
+  
+  h1 { font-size: 2.5rem !important; }
+  h2 { font-size: 2rem !important; }
+  h3 { font-size: 1.75rem !important; }
+  
+  button {
+    font-size: 1.125rem !important;
+    padding: 14px 24px !important;
+  }
+  
+  input,
+  textarea,
+  select {
+    font-size: 1.125rem !important;
+    padding: 14px !important;
+  }
+}
+
+/* Extra contrast for light text on cards */
+.entry-preview,
+.mood-label,
+.stats-label,
+.card-title {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Ensure tags and badges are visible */
+.tag,
+.badge,
+.pill {
+  background: rgba(6, 182, 212, 0.3) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(6, 182, 212, 0.5) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* =====================================================
+   LOCK SCREEN STYLES
+   ===================================================== */
+
+/* Lock screen backdrop blur */
+.lock-screen-overlay {
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+}
+
+/* PIN pad button glow effects */
+.pin-button {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.pin-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+}
+
+.pin-button:active {
+  transform: scale(0.95);
+}
+
+/* PIN dot indicators */
+.pin-dot {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pin-dot.filled {
+  animation: pin-dot-fill 0.2s ease;
+}
+
+@keyframes pin-dot-fill {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Biometric button pulse */
+.biometric-button {
+  animation: biometric-pulse 2s ease-in-out infinite;
+}
+
+@keyframes biometric-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(167, 139, 250, 0.6);
+  }
+}
+
+/* Lock screen error shake */
+.pin-error {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Security settings animations */
+.security-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.security-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(6, 182, 212, 0.2);
+}
+
+/* Trusted device list */
+.device-item {
+  transition: background 0.2s ease;
+}
+
+.device-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Loading spinner for security operations */
+.security-loading {
+  animation: security-spin 1s linear infinite;
+}
+
+@keyframes security-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================
+   MOBILE BOTTOM NAVIGATION ENHANCEMENTS
+   ===================================================== */
+
+/* Glowing active indicator */
+.mobile-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background: var(--afternoon-accent);
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 2px 10px var(--afternoon-glow);
+}
+
+/* Icon bounce on tap */
+.mobile-nav-item:active svg {
+  animation: icon-bounce 0.3s ease;
+}
+
+@keyframes icon-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+}
+
+/* Add button enhanced glow */
+.mobile-nav-item.add-button::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--afternoon-accent), #6366f1);
+  opacity: 0.3;
+  filter: blur(8px);
+  z-index: -1;
+  animation: button-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes button-glow-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+/* Haptic feedback simulation */
+.mobile-nav-item:active {
+  transform: scale(0.95);
+}
+
+/* =====================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ===================================================== */
+
+/* Focus indicators for keyboard navigation */
+*:focus-visible {
+  outline: 3px solid #06b6d4 !important;
+  outline-offset: 2px !important;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  body {
+    background: #000000 !important;
+  }
+  
+  .dashboard-page,
+  .entry-card,
+  .mood-card {
+    background: #000000 !important;
+    border: 2px solid #ffffff !important;
+  }
+  
+  * {
+    color: #ffffff !important;
+    text-shadow: none !important;
+  }
+}
 

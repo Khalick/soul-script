@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
+import { PINSetup } from './PINSetup';
+import { BiometricSetup } from './BiometricSetup';
 
 interface AuthPageProps {
   onSuccess: () => void;
@@ -13,6 +15,8 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPinSetup, setShowPinSetup] = useState(false);
+  const [showBiometricSetup, setShowBiometricSetup] = useState(false);
   const { setUser } = useAuthStore();
 
   // Create floating particles
@@ -87,7 +91,8 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
             subscription_tier: 'free',
             storage_used: 0,
           });
-          onSuccess();
+          // Show PIN setup for new users
+          setShowPinSetup(true);
         }
       } else {
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -542,6 +547,34 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
           color: rgba(255, 255, 255, 0.5);
         }
       `}</style>
+
+      {/* PIN Setup Modal */}
+      {showPinSetup && (
+        <PINSetup
+          onComplete={() => {
+            setShowPinSetup(false);
+            setShowBiometricSetup(true);
+          }}
+          onSkip={() => {
+            setShowPinSetup(false);
+            onSuccess();
+          }}
+        />
+      )}
+
+      {/* Biometric Setup Modal */}
+      {showBiometricSetup && (
+        <BiometricSetup
+          onComplete={() => {
+            setShowBiometricSetup(false);
+            onSuccess();
+          }}
+          onSkip={() => {
+            setShowBiometricSetup(false);
+            onSuccess();
+          }}
+        />
+      )}
     </div>
   );
 };

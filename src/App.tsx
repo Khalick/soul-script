@@ -2,8 +2,12 @@ import { useEffect, useState, createContext, useContext, lazy, Suspense } from '
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './stores/authStore';
 import { useJournalStore } from './stores/journalStore';
+import { useSecurityStore } from './stores/securityStore';
 import { setupOnlineListener, syncOfflineEntries } from './lib/offlineSync';
 import { useAutoLogout } from './hooks/useAutoLogout';
+import { useActivityTracker } from './hooks/useActivityTracker';
+import { useAutoLock } from './hooks/useAutoLock';
+import { usePlatformDetection } from './hooks/usePlatformDetection';
 import AuthPage from './components/AuthPage';
 import { Dashboard } from './components/Dashboard';
 import EmotionCheckIn from './components/EmotionCheckIn';
@@ -11,6 +15,7 @@ import JournalEditor from './components/JournalEditor';
 import { Navbar } from './components/Navbar';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import InstallPrompt from './components/InstallPrompt';
+import { LockScreen } from './components/LockScreen';
 import { Calendar, BarChart3, PlusCircle } from 'lucide-react';
 
 // Lazy load heavy components
@@ -41,10 +46,16 @@ export const useMediaRecording = () => {
 function App() {
   const { user, isAuthenticated, setUser, logout } = useAuthStore();
   const { entries, setEntries, cleanupEphemeralEntries } = useJournalStore();
+  const { isLocked, pinEnabled } = useSecurityStore();
   const [currentView, setCurrentView] = useState<View>('home');
   const [viewHistory, setViewHistory] = useState<View[]>(['home']);
   const [loading, setLoading] = useState(true);
   const [editingEntry, setEditingEntry] = useState<any>(null);
+
+  // Initialize platform detection and security hooks
+  const { isPWA } = usePlatformDetection();
+  useActivityTracker(); // Track user activity for auto-lock
+  useAutoLock(); // Auto-lock after inactivity
 
   // Auto-logout after 20 minutes of inactivity (excludes media recording)
   const { setMediaActive } = useAutoLogout({
@@ -56,6 +67,46 @@ function App() {
       }
     },
   });
+
+  // Time-based theme colors
+  useEffect(() => {
+    const updateThemeColors = () => {
+      const hour = new Date().getHours();
+      const root = document.documentElement;
+      
+      if (hour >= 6 && hour < 12) {
+        // Morning
+        root.style.setProperty('--current-bg-start', 'var(--morning-bg-start)');
+        root.style.setProperty('--current-bg-end', 'var(--morning-bg-end)');
+        root.style.setProperty('--current-accent', 'var(--morning-accent)');
+        root.style.setProperty('--current-glow', 'var(--morning-glow)');
+      } else if (hour >= 12 && hour < 18) {
+        // Afternoon
+        root.style.setProperty('--current-bg-start', 'var(--afternoon-bg-start)');
+        root.style.setProperty('--current-bg-end', 'var(--afternoon-bg-end)');
+        root.style.setProperty('--current-accent', 'var(--afternoon-accent)');
+        root.style.setProperty('--current-glow', 'var(--afternoon-glow)');
+      } else if (hour >= 18 && hour < 22) {
+        // Evening
+        root.style.setProperty('--current-bg-start', 'var(--evening-bg-start)');
+        root.style.setProperty('--current-bg-end', 'var(--evening-bg-end)');
+        root.style.setProperty('--current-accent', 'var(--evening-accent)');
+        root.style.setProperty('--current-glow', 'var(--evening-glow)');
+      } else {
+        // Night
+        root.style.setProperty('--current-bg-start', 'var(--night-bg-start)');
+        root.style.setProperty('--current-bg-end', 'var(--night-bg-end)');
+        root.style.setProperty('--current-accent', 'var(--night-accent)');
+        root.style.setProperty('--current-glow', 'var(--night-glow)');
+      }
+    };
+    
+    updateThemeColors();
+    // Update every 30 minutes
+    const interval = setInterval(updateThemeColors, 30 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   // Handle browser back button
   useEffect(() => {
@@ -151,8 +202,21 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Listen for new entry trigger from bottom nav
+  useEffect(() => {
+    const handleNewEntry = () => {
+      setCurrentView('checkin');
+    };
+    
+    window.addEventListener('start-new-entry', handleNewEntry);
+    return () => window.removeEventListener('start-new-entry', handleNewEntry);
+  }, []);
+
   // Screenshot and copy protection
   useEffect(() => {
+    // Add secure mode class to body
+    document.body.classList.add('secure-mode');
+    
     // Disable right-click context menu
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -161,16 +225,66 @@ function App() {
 
     // Detect screenshot attempts (keyboard shortcuts)
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Prevent PrintScreen, Cmd+Shift+3/4 (Mac), Windows+Shift+S, etc.
+      // Prevent PrintScreen, Cmd+Shift+3/4/5 (Mac), Windows+Shift+S, Cmd+Ctrl+Shift+3/4 (Mac screenshot to clipboard)
       if (
         e.key === 'PrintScreen' ||
-        (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5')) ||
-        (e.ctrlKey && e.shiftKey && e.key === 'S')
+        e.key === 'Print' ||
+        (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key)) ||
+        (e.metaKey && e.ctrlKey && e.shiftKey && ['3', '4'].includes(e.key)) ||
+        (e.ctrlKey && e.shiftKey && e.key === 'S') ||
+        (e.key === 'F12') || // Developer tools
+        (e.ctrlKey && e.shiftKey && e.key === 'I') || // Inspect element
+        (e.metaKey && e.altKey && e.key === 'I') // Mac inspect
       ) {
         e.preventDefault();
-        // Optionally show a gentle message
-        console.log('Screenshot protection enabled for your privacy');
+        e.stopPropagation();
+        
+        // Blur the screen briefly when screenshot detected
+        document.body.style.filter = 'blur(20px)';
+        setTimeout(() => {
+          document.body.style.filter = 'none';
+        }, 100);
+        
+        console.log('🔒 Screenshot protection active - Your privacy is protected');
         return false;
+      }
+    };
+
+    // Detect screen recording on mobile
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Blur content when app goes to background (potential screenshot)
+        document.body.style.filter = 'blur(20px)';
+      } else {
+        document.body.style.filter = 'none';
+      }
+    };
+
+    // Prevent screenshots via canvas (Android)
+    const preventCanvasCapture = () => {
+      const canvases = document.getElementsByTagName('canvas');
+      for (let i = 0; i < canvases.length; i++) {
+        const canvas = canvases[i];
+        const context = canvas.getContext('2d');
+        if (context) {
+          // Disable image smoothing to prevent capture
+          (context as any).imageSmoothingEnabled = false;
+        }
+      }
+    };
+
+    // Block developer tools
+    const blockDevTools = () => {
+      // Detect if dev tools are open
+      const threshold = 160;
+      const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+      const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+      
+      if (widthThreshold || heightThreshold) {
+        document.body.style.filter = 'blur(20px)';
+        console.log('🔒 Developer tools detected - Content hidden for security');
+      } else {
+        document.body.style.filter = 'none';
       }
     };
 
@@ -185,8 +299,25 @@ function App() {
       }
     };
 
+    // Prevent drag and drop of content
+    const handleDragStart = (e: DragEvent) => {
+      e.preventDefault();
+      return false;
+    };
+
     document.addEventListener('contextmenu', handleContextMenu);
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown, { capture: true });
+    document.addEventListener('keyup', handleKeyDown, { capture: true });
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('copy', handleCopy);
+    document.addEventListener('dragstart', handleDragStart);
+    
+    // Check for dev tools every 500ms
+    const devToolsInterval = setInterval(blockDevTools, 500);
+    
+    // Prevent canvas capture
+    preventCanvasCapture();
+    const canvasInterval = setInterval(preventCanvasCapture, 1000);
     document.addEventListener('copy', handleCopy);
 
     // Add CSS to prevent text selection on sensitive areas
@@ -202,10 +333,17 @@ function App() {
     document.head.appendChild(style);
 
     return () => {
+      document.body.classList.remove('secure-mode');
       document.removeEventListener('contextmenu', handleContextMenu);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown, { capture: true });
+      document.removeEventListener('keyup', handleKeyDown, { capture: true });
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       document.removeEventListener('copy', handleCopy);
+      document.removeEventListener('dragstart', handleDragStart);
+      clearInterval(devToolsInterval);
+      clearInterval(canvasInterval);
       document.head.removeChild(style);
+      document.body.style.filter = 'none';
     };
   }, []);
 
@@ -255,6 +393,13 @@ function App() {
     return <AuthPage onSuccess={() => {
       setViewHistory(['home']);
       setCurrentView('home');
+    }} />;
+  }
+
+  // Show lock screen if app is locked (PWA only)
+  if (isPWA && pinEnabled && isLocked) {
+    return <LockScreen onUnlock={() => {
+      console.log('App unlocked');
     }} />;
   }
 

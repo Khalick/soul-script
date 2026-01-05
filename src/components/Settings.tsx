@@ -4,6 +4,7 @@ import { useSubscriptionStore } from '../stores/subscriptionStore';
 import { useJournalStore } from '../stores/journalStore';
 import { getGradientBackground } from '../lib/colorUtils';
 import { Crown, Volume2, Download, Smartphone, Package, Trash2 } from 'lucide-react';
+import { SecuritySettings } from './SecuritySettings';
 
 export function Settings() {
   const { theme, favoriteColor, favoriteEmoji, dearPrompt, backgroundAmbience, ambienceVolume, customMusicUrl, setTheme, setFavoriteColor, setFavoriteEmoji, setDearPrompt, setBackgroundAmbience, setAmbienceVolume, setCustomMusicUrl } = useSettingsStore();
@@ -657,6 +658,11 @@ export function Settings() {
             >
               <Trash2 size={20} /> Clear App Cache
             </button>
+          </div>
+
+          {/* Security Settings */}
+          <div className="dashboard-card" style={{ animationDelay: '0.7s' }}>
+            <SecuritySettings />
           </div>
 
           {/* Save Button */}

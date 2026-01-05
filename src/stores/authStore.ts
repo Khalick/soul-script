@@ -8,6 +8,9 @@ interface User {
   avatar_url?: string;
   subscription_tier: 'free' | 'premium';
   storage_used: number;
+  pin_enabled?: boolean;
+  biometric_enabled?: boolean;
+  biometric_credential_id?: string | null;
 }
 
 interface AuthState {

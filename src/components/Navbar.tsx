@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Download } from 'lucide-react';
+import { Menu, X, Download, Home, Calendar, PlusCircle, Users, Settings } from 'lucide-react';
 import { useSettingsStore } from '../stores/settingsStore';
 
 interface NavbarProps {
@@ -487,6 +487,51 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           </div>
         </div>
       )}
+      
+      {/* Bottom Navigation for Mobile/PWA */}
+      <nav className="mobile-nav-bottom">
+        <button 
+          className={`mobile-nav-item ${currentView === 'home' ? 'active' : ''}`}
+          onClick={() => handleNavigation('home')}
+        >
+          <Home />
+          <span>Home</span>
+        </button>
+        
+        <button 
+          className={`mobile-nav-item ${currentView === 'timeline' ? 'active' : ''}`}
+          onClick={() => handleNavigation('timeline')}
+        >
+          <Calendar />
+          <span>Timeline</span>
+        </button>
+        
+        <button 
+          className="mobile-nav-item add-button"
+          onClick={() => {
+            // Trigger new entry - you'll need to handle this in App.tsx
+            window.dispatchEvent(new CustomEvent('start-new-entry'));
+          }}
+        >
+          <PlusCircle />
+        </button>
+        
+        <button 
+          className={`mobile-nav-item ${currentView === 'community' ? 'active' : ''}`}
+          onClick={() => handleNavigation('community')}
+        >
+          <Users />
+          <span>Community</span>
+        </button>
+        
+        <button 
+          className={`mobile-nav-item ${currentView === 'settings' ? 'active' : ''}`}
+          onClick={() => handleNavigation('settings')}
+        >
+          <Settings />
+          <span>Settings</span>
+        </button>
+      </nav>
     </>
   );
 }
