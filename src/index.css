@@ -1778,6 +1778,54 @@ input[type="range"]::-moz-range-thumb:hover {
   /* Adjust content for bottom nav */
   body {
     padding-bottom: 80px;
+    font-size: 18px; /* Larger base font for mobile */
+    -webkit-text-size-adjust: 100%; /* Match device font scaling */
+  }
+  
+  /* Increase all text sizes for mobile */
+  h1 {
+    font-size: 2.5rem !important; /* 40px */
+  }
+  
+  h2 {
+    font-size: 2rem !important; /* 32px */
+  }
+  
+  h3 {
+    font-size: 1.5rem !important; /* 24px */
+  }
+  
+  h4 {
+    font-size: 1.25rem !important; /* 20px */
+  }
+  
+  p, span, label, div {
+    font-size: 1.125rem !important; /* 18px */
+  }
+  
+  button {
+    font-size: 1.125rem !important; /* 18px */
+  }
+  
+  input, textarea, select {
+    font-size: 1.125rem !important; /* 18px */
+  }
+  
+  /* Dashboard specific */
+  .dashboard-card h2 {
+    font-size: 1.75rem !important; /* 28px */
+  }
+  
+  .dashboard-card p {
+    font-size: 1.125rem !important; /* 18px */
+  }
+  
+  .dashboard-card-stat {
+    font-size: 3rem !important; /* 48px */
+  }
+  
+  .dashboard-card-label {
+    font-size: 1rem !important; /* 16px */
   }
   
   /* Bottom Navigation Bar */
@@ -1786,7 +1834,7 @@ input[type="range"]::-moz-range-thumb:hover {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 70px;
+    height: 80px; /* Increased from 70px */
     background: rgba(10, 13, 46, 0.98);
     backdrop-filter: blur(30px);
     border-top: 2px solid rgba(255, 255, 255, 0.12);
@@ -1804,16 +1852,17 @@ input[type="range"]::-moz-range-thumb:hover {
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     cursor: pointer;
     transition: all 0.3s ease;
     border-radius: 12px;
-    min-width: 60px;
+    min-width: 65px;
     color: white;
   }
   
   .mobile-nav-item span {
     color: white;
+    font-size: 0.875rem !important; /* 14px for nav labels */
   }
   
   .mobile-nav-item:hover {
@@ -1827,7 +1876,7 @@ input[type="range"]::-moz-range-thumb:hover {
   
   /* Adjust content for bottom nav */
   .dashboard-page {
-    padding-bottom: 90px !important;
+    padding-bottom: 100px !important;
   }
 }
 
