@@ -8,17 +8,17 @@ import { useAutoLogout } from './hooks/useAutoLogout';
 import { useActivityTracker } from './hooks/useActivityTracker';
 import { useAutoLock } from './hooks/useAutoLock';
 import { usePlatformDetection } from './hooks/usePlatformDetection';
-import AuthPage from './components/AuthPage';
-import { Dashboard } from './components/Dashboard';
-import EmotionCheckIn from './components/EmotionCheckIn';
-import JournalEditor from './components/JournalEditor';
 import { Navbar } from './components/Navbar';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import InstallPrompt from './components/InstallPrompt';
-import { LockScreen } from './components/LockScreen';
 import { Calendar, BarChart3, PlusCircle } from 'lucide-react';
 
-// Lazy load heavy components
+// Lazy load ALL heavy components for faster initial load
+const AuthPage = lazy(() => import('./components/AuthPage'));
+const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
+const EmotionCheckIn = lazy(() => import('./components/EmotionCheckIn'));
+const JournalEditor = lazy(() => import('./components/JournalEditor'));
+const LockScreen = lazy(() => import('./components/LockScreen').then(m => ({ default: m.LockScreen })));
 const EmotionalTimeline = lazy(() => import('./components/EmotionalTimeline'));
 const Settings = lazy(() => import('./components/Settings').then(m => ({ default: m.Settings })));
 const LegacyMode = lazy(() => import('./components/LegacyMode'));
@@ -27,6 +27,16 @@ const Community = lazy(() => import('./components/Community').then(m => ({ defau
 const MoodboardSelector = lazy(() => import('./components/MoodboardSelector').then(m => ({ default: m.MoodboardSelector })));
 
 type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy' | 'moodboard';
+
+// Loading spinner for lazy-loaded components
+const LoadingSpinner = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+    <div className="text-center">
+      <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-white/70">Loading...</p>
+    </div>
+  </div>
+);
 
 // Context for media recording state
 interface MediaRecordingContextType {
@@ -398,39 +408,50 @@ function App() {
   }
 
   if (!isAuthenticated) {
-    return <AuthPage onSuccess={() => {
-      setViewHistory(['home']);
-      setCurrentView('home');
-    }} />;
+    return (
+      <Suspense fallback={<LoadingSpinner />}>
+        <AuthPage onSuccess={() => {
+          setViewHistory(['home']);
+          setCurrentView('home');
+        }} />
+      </Suspense>
+    );
   }
 
   // Show lock screen if app is locked (PWA only)
   if (isPWA && pinEnabled && isLocked) {
-    return <LockScreen onUnlock={() => {
-      console.log('App unlocked');
-    }} />;
+    return (
+      <Suspense fallback={<LoadingSpinner />}>
+        <LockScreen onUnlock={() => {
+          console.log('App unlocked');
+        }} />
+      </Suspense>
+    );
   }
 
   // Show beautiful dashboard for home view
   if (currentView === 'home') {
     return (
       <MediaRecordingContext.Provider value={{ setMediaActive }}>
-        <Navbar 
-          currentView="home"
-          onNavigate={navigateToView}
-          onLogout={handleLogout}
-        />
-        <Dashboard 
-          onNavigate={navigateToView}
-          onNewEntry={handleNewEntry}
-          onLogout={handleLogout}
-        />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Navbar 
+            currentView="home"
+            onNavigate={navigateToView}
+            onLogout={handleLogout}
+          />
+          <Dashboard 
+            onNavigate={navigateToView}
+            onNewEntry={handleNewEntry}
+            onLogout={handleLogout}
+          />
+        </Suspense>
       </MediaRecordingContext.Provider>
     );
   }
 
   return (
     <MediaRecordingContext.Provider value={{ setMediaActive }}>
+      <Suspense fallback={<LoadingSpinner />}>
       <div className="min-h-screen" style={{ paddingTop: '80px' }}>
         {/* Navigation */}
         <Navbar 
@@ -555,6 +576,7 @@ function App() {
         <PlusCircle className="w-8 h-8" />
       </button>
     </div>
+    </Suspense>
     </MediaRecordingContext.Provider>
   );
 }

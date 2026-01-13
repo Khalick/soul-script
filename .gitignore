@@ -43,3 +43,4 @@ public/sw.js
 *.tmp
 *.temp
 .cache
+test-supabase.js
