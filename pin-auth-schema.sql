@@ -85,6 +85,10 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Enable RLS policies for security functions
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist, then recreate
+DROP POLICY IF EXISTS "Users can update own security settings" ON users;
+DROP POLICY IF EXISTS "Users can read own security settings" ON users;
+
 -- Policy: Users can only update their own security settings
 CREATE POLICY "Users can update own security settings"
 ON users FOR UPDATE

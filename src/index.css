@@ -1775,18 +1775,23 @@ input[type="range"]::-moz-range-thumb:hover {
 
 @media (max-width: 768px), (display-mode: standalone) {
   
-  /* Override ALL CSS variables for mobile high-visibility */
+  /* =====================================================
+     BOOK/PAPER THEME - Optimized for Sunlight Visibility
+     High brightness backgrounds cut through screen glare
+     ===================================================== */
+  
+  /* Override ALL CSS variables for mobile paper theme */
   :root {
-    --morning-bg-start: #000000 !important;
-    --morning-bg-end: #000000 !important;
-    --afternoon-bg-start: #000000 !important;
-    --afternoon-bg-end: #000000 !important;
-    --evening-bg-start: #000000 !important;
-    --evening-bg-end: #000000 !important;
-    --night-bg-start: #000000 !important;
-    --night-bg-end: #000000 !important;
-    --current-bg-start: #000000 !important;
-    --current-bg-end: #000000 !important;
+    --morning-bg-start: #F9F7F2 !important;
+    --morning-bg-end: #F9F7F2 !important;
+    --afternoon-bg-start: #F9F7F2 !important;
+    --afternoon-bg-end: #F9F7F2 !important;
+    --evening-bg-start: #F9F7F2 !important;
+    --evening-bg-end: #F9F7F2 !important;
+    --night-bg-start: #F9F7F2 !important;
+    --night-bg-end: #F9F7F2 !important;
+    --current-bg-start: #F9F7F2 !important;
+    --current-bg-end: #F9F7F2 !important;
   }
   
   /* Adjust content for bottom nav */
@@ -1796,16 +1801,16 @@ input[type="range"]::-moz-range-thumb:hover {
     -webkit-text-size-adjust: 100%; /* Match device font scaling */
   }
   
-  /* MAXIMUM CONTRAST for sunlight visibility */
-  /* Using yellow/orange on pure black - highest visibility in bright light */
+  /* PAPER/BOOK THEME - Cream background like a real book */
   
   * {
     --tw-text-opacity: 1 !important;
   }
   
   html, body {
-    background: #000000 !important;
+    background: #F9F7F2 !important; /* Cream/Off-white - paper color */
     background-image: none !important;
+    color: #2D2D2D !important; /* Deep charcoal - ink color */
   }
   
   .auth-page,
@@ -1815,7 +1820,7 @@ input[type="range"]::-moz-range-thumb:hover {
   .analytics-container,
   .settings-container,
   .community-container {
-    background: #000000 !important;
+    background: #F9F7F2 !important; /* Cream paper background */
     background-image: none !important;
   }
   
@@ -1827,63 +1832,96 @@ input[type="range"]::-moz-range-thumb:hover {
     display: none !important;
   }
   
+  /* Headings - Deep charcoal ink */
   h1, h2, h3, h4, h5, h6 {
-    color: #FFD700 !important; /* Gold - most visible in sunlight */
+    color: #2D2D2D !important; /* Deep charcoal - not pure black */
     font-weight: 700 !important;
-    text-shadow: 
-      -2px -2px 0 #000,
-      2px -2px 0 #000,
-      -2px 2px 0 #000,
-      2px 2px 0 #000,
-      0 0 8px rgba(0, 0, 0, 0.9) !important;
+    text-shadow: none !important;
   }
   
+  /* Body text - Deep charcoal ink */
   p, span, label, div {
-    color: #FFA500 !important; /* Orange - high visibility */
-    font-weight: 600 !important;
-    text-shadow: 
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000 !important;
+    color: #333333 !important; /* Slightly lighter charcoal for body */
+    font-weight: 500 !important;
+    text-shadow: none !important;
   }
   
-  /* Cards with pure black background */
+  /* Cards - White with subtle shadow for depth */
   .dashboard-card {
-    background: #000000 !important;
-    border: 3px solid #FFD700 !important;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
+    background: #FFFFFF !important;
+    border: 2px solid #E0E0E0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06) !important;
+    border-radius: 12px !important;
   }
   
-  /* Buttons with high contrast */
+  .dashboard-card h2,
+  .dashboard-card h3 {
+    color: #2D2D2D !important;
+  }
+  
+  .dashboard-card p,
+  .dashboard-card span {
+    color: #333333 !important;
+  }
+  
+  /* Accent colors - Burnt Orange/Goldenrod for buttons and highlights */
   button {
-    background: #000000 !important;
-    border: 3px solid #FFA500 !important;
-    color: #FFD700 !important;
-    font-weight: 700 !important;
-    text-shadow: 
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000 !important;
+    background: #E65100 !important; /* Burnt Orange */
+    border: 2px solid #E65100 !important;
+    color: #FFFFFF !important; /* White text on orange */
+    font-weight: 600 !important;
+    text-shadow: none !important;
+    border-radius: 8px !important;
   }
   
   button:hover {
-    background: #1a1a1a !important;
-    border-color: #FFD700 !important;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5) !important;
+    background: #BF4300 !important; /* Darker orange on hover */
+    border-color: #BF4300 !important;
+    box-shadow: 0 4px 12px rgba(230, 81, 0, 0.3) !important;
   }
   
-  /* Input fields */
+  /* Secondary/outline buttons */
+  button.secondary,
+  button[class*="outline"],
+  button[class*="ghost"] {
+    background: transparent !important;
+    border: 2px solid #D4AF37 !important; /* Goldenrod border */
+    color: #D4AF37 !important;
+  }
+  
+  button.secondary:hover,
+  button[class*="outline"]:hover,
+  button[class*="ghost"]:hover {
+    background: #D4AF37 !important;
+    color: #FFFFFF !important;
+  }
+  
+  /* Input fields - White with subtle border */
   input, textarea, select {
-    background: #0a0a0a !important;
-    border: 2px solid #FFA500 !important;
-    color: #FFD700 !important;
-    font-weight: 600 !important;
+    background: #FFFFFF !important;
+    border: 2px solid #D4AF37 !important; /* Goldenrod border */
+    color: #2D2D2D !important; /* Deep charcoal text */
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+  }
+  
+  input:focus, textarea:focus, select:focus {
+    border-color: #E65100 !important; /* Burnt orange on focus */
+    box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.2) !important;
+    outline: none !important;
   }
   
   input::placeholder, textarea::placeholder {
-    color: #FF8C00 !important; /* Dark orange */
+    color: #888888 !important; /* Medium grey placeholder */
+  }
+  
+  /* Links and interactive elements */
+  a {
+    color: #E65100 !important; /* Burnt orange links */
+  }
+  
+  a:hover {
+    color: #BF4300 !important;
   }
   
   /* Increase all text sizes for mobile */
@@ -1932,22 +1970,22 @@ input[type="range"]::-moz-range-thumb:hover {
     font-size: 1rem !important; /* 16px */
   }
   
-  /* Bottom Navigation Bar */
+  /* Bottom Navigation Bar - Paper theme */
   .mobile-nav-bottom {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     height: 80px; /* Increased from 70px */
-    background: rgba(10, 13, 46, 0.98);
-    backdrop-filter: blur(30px);
-    border-top: 2px solid rgba(255, 255, 255, 0.12);
+    background: #FFFFFF !important; /* White background */
+    backdrop-filter: none;
+    border-top: 2px solid #E0E0E0 !important;
     display: flex;
     justify-content: space-around;
     align-items: center;
     padding: 0 10px;
     z-index: 9999;
-    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
   }
   
   .mobile-nav-item {
@@ -1961,16 +1999,25 @@ input[type="range"]::-moz-range-thumb:hover {
     transition: all 0.3s ease;
     border-radius: 12px;
     min-width: 65px;
-    color: white;
+    color: #2D2D2D !important; /* Charcoal text */
   }
   
   .mobile-nav-item span {
-    color: white;
+    color: #333333 !important;
     font-size: 0.875rem !important; /* 14px for nav labels */
   }
   
   .mobile-nav-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(230, 81, 0, 0.1) !important; /* Burnt orange tint */
+  }
+  
+  .mobile-nav-item.active {
+    background: rgba(230, 81, 0, 0.15) !important;
+    color: #E65100 !important;
+  }
+  
+  .mobile-nav-item.active span {
+    color: #E65100 !important;
   }
   
   /* Hide desktop nav on mobile */
