@@ -28,12 +28,12 @@ const MoodboardSelector = lazy(() => import('./components/MoodboardSelector').th
 
 type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy' | 'moodboard';
 
-// Loading spinner for lazy-loaded components
+// Loading spinner for lazy-loaded components - Warm Dusk theme
 const LoadingSpinner = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+  <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1A1A2E 0%, #2D2A3E 100%)' }}>
     <div className="text-center">
-      <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p className="text-white/70">Loading...</p>
+      <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-secondary-300">Loading...</p>
     </div>
   </div>
 );

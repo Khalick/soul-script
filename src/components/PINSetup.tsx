@@ -114,11 +114,11 @@ export const PINSetup: React.FC<PINSetupProps> = ({ onComplete, onSkip }) => {
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 max-w-md w-full border border-cyan-500/20 shadow-2xl">
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 max-w-md w-full border border-primary-500/20 shadow-2xl">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center">
-              <Lock className="w-6 h-6 text-cyan-400" />
+            <div className="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center">
+              <Lock className="w-6 h-6 text-primary-400" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Secure Your Journal</h2>
@@ -143,7 +143,7 @@ export const PINSetup: React.FC<PINSetupProps> = ({ onComplete, onSkip }) => {
               key={i}
               className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${
                 i < currentPin.length
-                  ? 'bg-cyan-400 border-cyan-400 scale-110'
+                  ? 'bg-primary-400 border-primary-400 scale-110'
                   : 'border-gray-600'
               }`}
             />
@@ -159,8 +159,8 @@ export const PINSetup: React.FC<PINSetupProps> = ({ onComplete, onSkip }) => {
 
         {/* Loading */}
         {loading && (
-          <div className="mb-4 p-3 bg-cyan-500/20 border border-cyan-500/50 rounded-lg text-cyan-400 text-sm text-center flex items-center justify-center gap-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-cyan-400 border-t-transparent" />
+          <div className="mb-4 p-3 bg-primary-500/20 border border-primary-500/50 rounded-lg text-primary-400 text-sm text-center flex items-center justify-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-400 border-t-transparent" />
             Setting up your PIN...
           </div>
         )}

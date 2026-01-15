@@ -113,26 +113,26 @@ export function getCurrentTimeTheme(): TimeTheme {
     };
   }
   
-  // Night: 9 PM - 5 AM (Deep purple/indigo)
+  // Night: 9 PM - 5 AM (Deep charcoal with coral hints - Warm Dusk theme)
   return {
     id: 'night',
     name: 'NIGHT',
-    gradient: 'linear-gradient(180deg, #0a0a1a 0%, #1a1a3e 30%, #2d2d5a 60%, #3d3d7a 100%)',
-    textColor: '#B8A9C9',
-    accentColor: '#9B87F5',
-    cardBg: 'rgba(26, 26, 62, 0.85)',
-    orbColors: ['#9B87F540', '#B8A9C930', '#3d3d7a50']
+    gradient: 'linear-gradient(180deg, #12121D 0%, #1A1A2E 30%, #2D2A3E 60%, #3D2A25 100%)',
+    textColor: '#F2CC8F',
+    accentColor: '#E07A5F',
+    cardBg: 'rgba(26, 26, 46, 0.85)',
+    orbColors: ['#E07A5F40', '#F2CC8F30', '#81B29A50']
   };
 }
 
 export function getGradientBackground(favoriteColor?: string): string {
-  // Always use dark starfield background consistent with the design
+  // Warm Dusk theme - charcoal with terracotta warmth
   if (favoriteColor) {
     const [color1] = getColorGradient(favoriteColor);
     const rgb = hexToRgb(color1);
-    // Add subtle tint of favorite color to the starfield
-    return `radial-gradient(ellipse at top, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12) 0%, rgb(10, 13, 46) 50%, rgb(8, 10, 38) 100%)`;
+    // Add subtle tint of favorite color to the charcoal background
+    return `radial-gradient(ellipse at top, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12) 0%, #1A1A2E 50%, #12121D 100%)`;
   }
-  // Default dark starfield
-  return 'radial-gradient(ellipse at top, rgba(15, 20, 60, 0.8) 0%, rgb(10, 13, 46) 50%, rgb(8, 10, 38) 100%)';
+  // Default Warm Dusk charcoal with coral hint
+  return 'radial-gradient(ellipse at top, rgba(224, 122, 95, 0.08) 0%, #1A1A2E 50%, #12121D 100%)';
 }

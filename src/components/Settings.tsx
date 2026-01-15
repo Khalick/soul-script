@@ -199,7 +199,7 @@ export function Settings() {
                 onClick={handleInstall}
                 style={{
                   padding: '16px 40px',
-                  background: 'linear-gradient(135deg, #06b6d4, #0e7490)',
+                  background: 'linear-gradient(135deg, #E07A5F, #C9624A)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '12px',
@@ -209,16 +209,16 @@ export function Settings() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '12px',
-                  boxShadow: '0 8px 30px rgba(102, 126, 234, 0.4)',
+                  boxShadow: '0 8px 30px rgba(224, 122, 95, 0.4)',
                   transition: 'all 0.3s'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.6)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(224, 122, 95, 0.6)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 8px 30px rgba(102, 126, 234, 0.4)';
+                  e.currentTarget.style.boxShadow = '0 8px 30px rgba(224, 122, 95, 0.4)';
                 }}
               >
                 <Download size={24} />

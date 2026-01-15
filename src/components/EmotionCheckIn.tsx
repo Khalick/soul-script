@@ -98,7 +98,7 @@ const EmotionCheckIn: React.FC<EmotionCheckInProps> = ({ onComplete }) => {
               <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '20px', color: 'white' }}>🏷️ Quick tags (optional)</h2>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                 {quickTags.map((tag) => (
-                  <button key={tag} onClick={() => handleTagToggle(tag)} style={{ padding: '12px 24px', borderRadius: '25px', fontSize: '15px', fontWeight: '600', border: 'none', cursor: 'pointer', transition: 'all 0.3s', background: selectedTags.includes(tag) ? 'linear-gradient(135deg, #06b6d4, #0e7490)' : 'rgba(255, 255, 255, 0.15)', color: 'white', boxShadow: selectedTags.includes(tag) ? '0 8px 20px rgba(14, 116, 144, 0.4)' : 'none', transform: selectedTags.includes(tag) ? 'scale(1.05)' : 'scale(1)' }}>
+                  <button key={tag} onClick={() => handleTagToggle(tag)} style={{ padding: '12px 24px', borderRadius: '25px', fontSize: '15px', fontWeight: '600', border: 'none', cursor: 'pointer', transition: 'all 0.3s', background: selectedTags.includes(tag) ? 'linear-gradient(135deg, #E07A5F, #C9624A)' : 'rgba(255, 255, 255, 0.15)', color: 'white', boxShadow: selectedTags.includes(tag) ? '0 8px 20px rgba(224, 122, 95, 0.4)' : 'none', transform: selectedTags.includes(tag) ? 'scale(1.05)' : 'scale(1)' }}>
                     {tag}
                   </button>
                 ))}

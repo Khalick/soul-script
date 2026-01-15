@@ -135,7 +135,7 @@ export function Constellations({ posts, onConstellationClick }: ConstellationsPr
       const html2canvas = (await import('html2canvas')).default;
       
       const canvas = await html2canvas(constellationRef.current, {
-        backgroundColor: '#0a0d2e',
+        backgroundColor: '#1A1A2E',
         scale: 2, // Higher quality
         logging: false,
       });
@@ -181,8 +181,8 @@ export function Constellations({ posts, onConstellationClick }: ConstellationsPr
           onClick={exportToImage}
           style={{
             padding: '10px 20px',
-            background: 'linear-gradient(135deg, #06b6d4, #0e7490)',
-            border: '2px solid rgba(6, 182, 212, 0.5)',
+            background: 'linear-gradient(135deg, #E07A5F, #C9624A)',
+            border: '2px solid rgba(224, 122, 95, 0.5)',
             borderRadius: '12px',
             color: 'white',
             fontSize: '14px',
@@ -192,15 +192,15 @@ export function Constellations({ posts, onConstellationClick }: ConstellationsPr
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: '0 4px 15px rgba(6, 182, 212, 0.3)'
+            boxShadow: '0 4px 15px rgba(224, 122, 95, 0.3)'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 6px 20px rgba(6, 182, 212, 0.4)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(224, 122, 95, 0.4)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 4px 15px rgba(6, 182, 212, 0.3)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(224, 122, 95, 0.3)';
           }}
         >
           <Download size={16} />

@@ -58,11 +58,11 @@ export const BiometricSetup: React.FC<BiometricSetupProps> = ({ onComplete, onSk
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 max-w-md w-full border border-purple-500/20 shadow-2xl">
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 max-w-md w-full border border-accent-400/20 shadow-2xl">
         <div className="flex justify-between items-start mb-6">
           <div className="flex-1">
-            <div className="w-16 h-16 mx-auto rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
-              <Fingerprint className="w-8 h-8 text-purple-400" />
+            <div className="w-16 h-16 mx-auto rounded-full bg-accent-400/20 flex items-center justify-center mb-4">
+              <Fingerprint className="w-8 h-8 text-accent-400" />
             </div>
             <h2 className="text-2xl font-bold text-white text-center mb-2">
               Enable Biometric Unlock
@@ -115,16 +115,16 @@ export const BiometricSetup: React.FC<BiometricSetupProps> = ({ onComplete, onSk
 
         {/* Checking Status */}
         {checking && (
-          <div className="mb-4 p-4 bg-purple-500/20 border border-purple-500/50 rounded-lg text-purple-400 text-sm flex items-center justify-center gap-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-400 border-t-transparent" />
+          <div className="mb-4 p-4 bg-accent-400/20 border border-accent-400/50 rounded-lg text-accent-400 text-sm flex items-center justify-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-accent-400 border-t-transparent" />
             Checking device compatibility...
           </div>
         )}
 
         {/* Loading Status */}
         {loading && !checking && (
-          <div className="mb-4 p-4 bg-purple-500/20 border border-purple-500/50 rounded-lg text-purple-400 text-sm flex items-center justify-center gap-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-400 border-t-transparent" />
+          <div className="mb-4 p-4 bg-accent-400/20 border border-accent-400/50 rounded-lg text-accent-400 text-sm flex items-center justify-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-accent-400 border-t-transparent" />
             Please authenticate with your device...
           </div>
         )}
@@ -141,7 +141,7 @@ export const BiometricSetup: React.FC<BiometricSetupProps> = ({ onComplete, onSk
           <button
             onClick={handleEnableBiometric}
             disabled={loading || checking}
-            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading || checking ? (
               <>

@@ -7,29 +7,50 @@ export default {
   theme: {
     extend: {
       colors: {
+        /* Warm Dusk Theme - Soul Script Brand */
+        soul: {
+          coral: '#E07A5F',      /* Primary accent */
+          gold: '#F2CC8F',       /* Secondary accent */
+          sage: '#81B29A',       /* Tertiary accent */
+          cream: '#FAF7F2',      /* Light background */
+          charcoal: '#1A1A2E',   /* Dark background */
+          text: '#3D3D3D',       /* Primary text */
+        },
         primary: {
-          50: '#fef2f3',
-          100: '#fde6e7',
-          200: '#fbd0d5',
-          300: '#f7aab2',
-          400: '#f27a8a',
-          500: '#e74c63',
-          600: '#d42d51',
-          700: '#b22045',
-          800: '#941d40',
-          900: '#7e1b3c',
+          50: '#fdf5f3',
+          100: '#fbeae6',
+          200: '#f7d5cc',
+          300: '#f0b5a6',
+          400: '#e8907b',
+          500: '#E07A5F',        /* Main coral */
+          600: '#c9624a',
+          700: '#a84e3b',
+          800: '#8a4234',
+          900: '#723b30',
         },
         secondary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+          50: '#fdfcf8',
+          100: '#faf6eb',
+          200: '#f5edd7',
+          300: '#f2cc8f',        /* Main gold */
+          400: '#e9b86a',
+          500: '#dea04b',
+          600: '#c98538',
+          700: '#a6682f',
+          800: '#87542c',
+          900: '#6e4527',
+        },
+        accent: {
+          50: '#f3f8f5',
+          100: '#e3efe8',
+          200: '#c8dfd2',
+          300: '#a1c9b4',
+          400: '#81B29A',        /* Main sage */
+          500: '#5a9578',
+          600: '#477862',
+          700: '#3b6151',
+          800: '#334f44',
+          900: '#2c4239',
         },
       },
       fontFamily: {

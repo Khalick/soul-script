@@ -162,16 +162,16 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
   return (
     <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[9999] flex items-center justify-center p-4">
-      {/* Blurred Background Pattern */}
+      {/* Blurred Background Pattern - Warm Dusk */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-500 rounded-full filter blur-[150px]" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full filter blur-[150px]" />
+        <div className="absolute top-0 left-0 w-96 h-96 bg-primary-500 rounded-full filter blur-[150px]" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary-300 rounded-full filter blur-[150px]" />
       </div>
 
       <div className="relative bg-gray-900/90 backdrop-blur-sm rounded-3xl p-8 max-w-md w-full border border-gray-700 shadow-2xl">
         {/* Lock Icon */}
-        <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center mb-6 border-2 border-cyan-500/30">
-          <Lock className="w-10 h-10 text-cyan-400" />
+        <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-primary-500/20 to-secondary-300/20 flex items-center justify-center mb-6 border-2 border-primary-500/30">
+          <Lock className="w-10 h-10 text-primary-400" />
         </div>
 
         {/* Title */}
@@ -191,7 +191,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                   key={i}
                   className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${
                     i < pin.length
-                      ? 'bg-cyan-400 border-cyan-400 scale-125 shadow-lg shadow-cyan-400/50'
+                      ? 'bg-primary-400 border-primary-400 scale-125 shadow-lg shadow-primary-400/50'
                       : 'border-gray-600'
                   }`}
                 />
@@ -220,7 +220,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                   key={num}
                   onClick={() => handlePinInput(num.toString())}
                   disabled={loading || attempts >= MAX_ATTEMPTS}
-                  className="h-16 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-cyan-500/50 text-white text-2xl font-bold transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  className="h-16 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-primary-500/50 text-white text-2xl font-bold transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                 >
                   {num}
                 </button>
@@ -235,7 +235,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
               <button
                 onClick={() => handlePinInput('0')}
                 disabled={loading || attempts >= MAX_ATTEMPTS}
-                className="h-16 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-cyan-500/50 text-white text-2xl font-bold transition-all hover:scale-105 active:scale-95 disabled:opacity-50 shadow-lg"
+                className="h-16 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-primary-500/50 text-white text-2xl font-bold transition-all hover:scale-105 active:scale-95 disabled:opacity-50 shadow-lg"
               >
                 0
               </button>
@@ -243,9 +243,9 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                 <button
                   onClick={handleBiometricAuth}
                   disabled={loading || attempts >= MAX_ATTEMPTS}
-                  className="h-16 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-500/50 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center justify-center"
+                  className="h-16 rounded-xl bg-gradient-to-r from-accent-400/20 to-secondary-300/20 hover:from-accent-400/30 hover:to-secondary-300/30 border border-accent-400/50 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center justify-center"
                 >
-                  <Fingerprint className="w-7 h-7 text-purple-400" />
+                  <Fingerprint className="w-7 h-7 text-accent-400" />
                 </button>
               ) : (
                 <div className="h-16" />
@@ -255,7 +255,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
             {/* Use Password Link */}
             <button
               onClick={() => setShowPasswordLogin(true)}
-              className="w-full py-3 text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3 text-primary-400 hover:text-primary-300 text-sm font-medium transition-colors flex items-center justify-center gap-2"
             >
               <Key className="w-4 h-4" />
               Use Password Instead
@@ -278,7 +278,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                 name="password"
                 required
                 autoFocus
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
                 placeholder="Enter your password"
               />
             </div>
@@ -286,7 +286,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-300 hover:from-primary-600 hover:to-secondary-400 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

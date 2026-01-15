@@ -88,9 +88,9 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        background: 'rgba(10, 13, 46, 0.9)',
+        background: 'rgba(26, 26, 46, 0.95)',
         backdropFilter: 'blur(20px)',
-        borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
+        borderBottom: '2px solid rgba(224, 122, 95, 0.2)',
         boxShadow: '0 4px 30px rgba(0, 0, 0, 0.5)',
         animation: 'fadeIn 0.6s ease-out'
       }}>
@@ -119,8 +119,8 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               onClick={handleInstall}
               style={{
                 padding: '10px',
-                background: 'linear-gradient(135deg, #06b6d4, #0e7490)',
-                border: '2px solid rgba(6, 182, 212, 0.5)',
+                background: 'linear-gradient(135deg, #E07A5F, #C9624A)',
+                border: '2px solid rgba(224, 122, 95, 0.5)',
                 borderRadius: '10px',
                 color: 'white',
                 cursor: 'pointer',
@@ -282,8 +282,8 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               onClick={handleInstall}
               style={{
                 padding: '12px 20px',
-                background: 'linear-gradient(135deg, #06b6d4, #0e7490)',
-                border: '2px solid rgba(6, 182, 212, 0.5)',
+                background: 'linear-gradient(135deg, #E07A5F, #C9624A)',
+                border: '2px solid rgba(224, 122, 95, 0.5)',
                 borderRadius: '12px',
                 color: 'white',
                 fontSize: '16px',
@@ -293,15 +293,15 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: '0 4px 15px rgba(6, 182, 212, 0.4)'
+                boxShadow: '0 4px 15px rgba(224, 122, 95, 0.4)'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(6, 182, 212, 0.6)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(224, 122, 95, 0.6)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 15px rgba(6, 182, 212, 0.4)';
+                e.currentTarget.style.boxShadow = '0 4px 15px rgba(224, 122, 95, 0.4)';
               }}
             >
               <Download size={18} /> Install App

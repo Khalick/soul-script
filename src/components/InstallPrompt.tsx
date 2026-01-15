@@ -191,7 +191,7 @@ export default function InstallPrompt() {
               className="w-full py-3 px-6 rounded-xl font-semibold transition-all"
               style={{
                 background: 'rgba(255, 255, 255, 0.95)',
-                color: '#06b6d4',
+                color: '#E07A5F',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 1)';
@@ -222,7 +222,7 @@ export default function InstallPrompt() {
         <div 
           className="relative rounded-2xl shadow-2xl overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, #06b6d4 0%, #0e7490 100%)',
+            background: 'linear-gradient(135deg, #E07A5F 0%, #C9624A 100%)',
           }}
         >
           {/* Close button */}
@@ -259,7 +259,7 @@ export default function InstallPrompt() {
                 className="flex-1 py-3 px-6 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
                 style={{
                   background: 'rgba(255, 255, 255, 0.95)',
-                  color: '#06b6d4',
+                  color: '#E07A5F',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 1)';

@@ -5,33 +5,43 @@
 @tailwind utilities;
 
 /* Time-based color themes - dynamically applied via JS */
+/* WARM DUSK THEME - Terracotta, Gold, Sage */
 :root {
-  /* Morning (6am-11am) - Warm sunrise */
-  --morning-bg-start: #1a1042;
-  --morning-bg-end: #2d1b4e;
-  --morning-accent: #ff9a56;
-  --morning-glow: rgba(255, 154, 86, 0.4);
+  /* Soul Script Brand Colors */
+  --soul-coral: #E07A5F;      /* Primary - Warm Coral/Terracotta */
+  --soul-gold: #F2CC8F;       /* Secondary - Soft Gold */
+  --soul-sage: #81B29A;       /* Accent - Muted Sage */
+  --soul-cream: #FAF7F2;      /* Light Background */
+  --soul-charcoal: #1A1A2E;   /* Dark Background */
+  --soul-text: #3D3D3D;       /* Primary Text */
+  --soul-text-light: #6B6B6B; /* Secondary Text */
   
-  /* Afternoon (12pm-5pm) - Bright blue */
-  --afternoon-bg-start: #0f1a42;
-  --afternoon-bg-end: #1e3a5f;
-  --afternoon-accent: #4a9eff;
-  --afternoon-glow: rgba(74, 158, 255, 0.5);
+  /* Morning (6am-11am) - Warm sunrise with terracotta */
+  --morning-bg-start: #1A1A2E;
+  --morning-bg-end: #2D2A3E;
+  --morning-accent: #E07A5F;
+  --morning-glow: rgba(224, 122, 95, 0.4);
   
-  /* Evening (6pm-9pm) - Purple/violet */
-  --evening-bg-start: #1a0f2e;
-  --evening-bg-end: #2d1b4e;
-  --evening-accent: #a78bfa;
-  --evening-glow: rgba(167, 139, 250, 0.4);
+  /* Afternoon (12pm-5pm) - Sage green tones */
+  --afternoon-bg-start: #1A2420;
+  --afternoon-bg-end: #2A3830;
+  --afternoon-accent: #81B29A;
+  --afternoon-glow: rgba(129, 178, 154, 0.5);
   
-  /* Night (10pm-5am) - Deep blue */
-  --night-bg-start: #0a0d2e;
-  --night-bg-end: #1a1f4e;
-  --night-accent: #06b6d4;
-  --night-glow: rgba(6, 182, 212, 0.4);
+  /* Evening (6pm-9pm) - Golden hour warmth */
+  --evening-bg-start: #1A1A2E;
+  --evening-bg-end: #2D2838;
+  --evening-accent: #F2CC8F;
+  --evening-glow: rgba(242, 204, 143, 0.4);
+  
+  /* Night (10pm-5am) - Deep charcoal with coral hints */
+  --night-bg-start: #12121D;
+  --night-bg-end: #1A1A2E;
+  --night-accent: #E07A5F;
+  --night-glow: rgba(224, 122, 95, 0.3);
 }
 
-/* Auth Page Styles */
+/* Auth Page Styles - Warm Dusk Theme */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -40,7 +50,7 @@
   padding: 20px;
   position: relative;
   overflow: hidden;
-  background: rgb(10, 13, 46);
+  background: #1A1A2E; /* Soul Charcoal */
 }
 
 .auth-page::before {
@@ -50,7 +60,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(ellipse at center, rgba(15, 20, 60, 0.8) 0%, rgb(10, 13, 46) 100%);
+  background: radial-gradient(ellipse at center, rgba(45, 42, 62, 0.8) 0%, #1A1A2E 100%);
   z-index: 0;
 }
 
@@ -116,7 +126,7 @@
 .auth-orb1 {
   width: 300px;
   height: 300px;
-  background: rgba(102, 126, 234, 0.6);
+  background: rgba(224, 122, 95, 0.6); /* Soul Coral */
   top: -100px;
   right: -100px;
   animation-delay: 0s;
@@ -125,7 +135,7 @@
 .auth-orb2 {
   width: 250px;
   height: 250px;
-  background: rgba(240, 147, 251, 0.6);
+  background: rgba(242, 204, 143, 0.6); /* Soul Gold */
   bottom: -100px;
   left: -100px;
   animation-delay: 5s;
@@ -134,7 +144,7 @@
 .auth-orb3 {
   width: 200px;
   height: 200px;
-  background: rgba(79, 172, 254, 0.6);
+  background: rgba(129, 178, 154, 0.6); /* Soul Sage */
   top: 50%;
   left: 50%;
   animation-delay: 10s;
@@ -189,7 +199,7 @@
   fill: none;
   stroke: #fff;
   stroke-width: 2;
-  filter: drop-shadow(0 0 20px rgba(240, 147, 251, 0.8));
+  filter: drop-shadow(0 0 20px rgba(224, 122, 95, 0.8)); /* Soul Coral glow */
   animation: heartbeat 2s ease-in-out infinite;
   margin: 0 auto;
 }
@@ -208,10 +218,10 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    filter: drop-shadow(0 0 20px rgba(240, 147, 251, 0.6));
+    filter: drop-shadow(0 0 20px rgba(224, 122, 95, 0.6)); /* Soul Coral */
   }
   50% {
-    filter: drop-shadow(0 0 40px rgba(240, 147, 251, 1));
+    filter: drop-shadow(0 0 40px rgba(242, 204, 143, 1)); /* Soul Gold */
   }
 }
 
@@ -1776,22 +1786,27 @@ input[type="range"]::-moz-range-thumb:hover {
 @media (max-width: 768px), (display-mode: standalone) {
   
   /* =====================================================
-     BOOK/PAPER THEME - Optimized for Sunlight Visibility
-     High brightness backgrounds cut through screen glare
+     WARM DUSK THEME - Optimized for Sunlight Visibility
+     Terracotta, Gold, Sage - Soul Script Brand
      ===================================================== */
   
-  /* Override ALL CSS variables for mobile paper theme */
+  /* Override ALL CSS variables for mobile Warm Dusk theme */
   :root {
-    --morning-bg-start: #F9F7F2 !important;
-    --morning-bg-end: #F9F7F2 !important;
-    --afternoon-bg-start: #F9F7F2 !important;
-    --afternoon-bg-end: #F9F7F2 !important;
-    --evening-bg-start: #F9F7F2 !important;
-    --evening-bg-end: #F9F7F2 !important;
-    --night-bg-start: #F9F7F2 !important;
-    --night-bg-end: #F9F7F2 !important;
-    --current-bg-start: #F9F7F2 !important;
-    --current-bg-end: #F9F7F2 !important;
+    --morning-bg-start: #FAF7F2 !important;
+    --morning-bg-end: #FAF7F2 !important;
+    --afternoon-bg-start: #FAF7F2 !important;
+    --afternoon-bg-end: #FAF7F2 !important;
+    --evening-bg-start: #FAF7F2 !important;
+    --evening-bg-end: #FAF7F2 !important;
+    --night-bg-start: #FAF7F2 !important;
+    --night-bg-end: #FAF7F2 !important;
+    --current-bg-start: #FAF7F2 !important;
+    --current-bg-end: #FAF7F2 !important;
+    
+    /* Soul Script Brand Colors */
+    --soul-coral: #E07A5F !important;
+    --soul-gold: #F2CC8F !important;
+    --soul-sage: #81B29A !important;
   }
   
   /* Adjust content for bottom nav */
@@ -1801,16 +1816,16 @@ input[type="range"]::-moz-range-thumb:hover {
     -webkit-text-size-adjust: 100%; /* Match device font scaling */
   }
   
-  /* PAPER/BOOK THEME - Cream background like a real book */
+  /* WARM DUSK THEME - Cream background with terracotta accents */
   
   * {
     --tw-text-opacity: 1 !important;
   }
   
   html, body {
-    background: #F9F7F2 !important; /* Cream/Off-white - paper color */
+    background: #FAF7F2 !important; /* Soul cream - warm paper color */
     background-image: none !important;
-    color: #2D2D2D !important; /* Deep charcoal - ink color */
+    color: #3D3D3D !important; /* Warm charcoal - softer than black */
   }
   
   .auth-page,
@@ -1864,64 +1879,64 @@ input[type="range"]::-moz-range-thumb:hover {
     color: #333333 !important;
   }
   
-  /* Accent colors - Burnt Orange/Goldenrod for buttons and highlights */
+  /* Accent colors - Warm Dusk Coral/Terracotta for buttons */
   button {
-    background: #E65100 !important; /* Burnt Orange */
-    border: 2px solid #E65100 !important;
-    color: #FFFFFF !important; /* White text on orange */
+    background: #E07A5F !important; /* Soul Coral - Terracotta */
+    border: 2px solid #E07A5F !important;
+    color: #FFFFFF !important; /* White text on coral */
     font-weight: 600 !important;
     text-shadow: none !important;
     border-radius: 8px !important;
   }
   
   button:hover {
-    background: #BF4300 !important; /* Darker orange on hover */
-    border-color: #BF4300 !important;
-    box-shadow: 0 4px 12px rgba(230, 81, 0, 0.3) !important;
+    background: #C9624A !important; /* Darker coral on hover */
+    border-color: #C9624A !important;
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.3) !important;
   }
   
-  /* Secondary/outline buttons */
+  /* Secondary/outline buttons - Soul Gold */
   button.secondary,
   button[class*="outline"],
   button[class*="ghost"] {
     background: transparent !important;
-    border: 2px solid #D4AF37 !important; /* Goldenrod border */
-    color: #D4AF37 !important;
+    border: 2px solid #F2CC8F !important; /* Soul Gold border */
+    color: #C98538 !important; /* Darker gold for readability */
   }
   
   button.secondary:hover,
   button[class*="outline"]:hover,
   button[class*="ghost"]:hover {
-    background: #D4AF37 !important;
-    color: #FFFFFF !important;
+    background: #F2CC8F !important;
+    color: #3D3D3D !important; /* Dark text on gold */
   }
   
   /* Input fields - White with subtle border */
   input, textarea, select {
     background: #FFFFFF !important;
-    border: 2px solid #D4AF37 !important; /* Goldenrod border */
-    color: #2D2D2D !important; /* Deep charcoal text */
+    border: 2px solid #81B29A !important; /* Soul Sage border */
+    color: #3D3D3D !important; /* Soul text color */
     font-weight: 500 !important;
     border-radius: 8px !important;
   }
   
   input:focus, textarea:focus, select:focus {
-    border-color: #E65100 !important; /* Burnt orange on focus */
-    box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.2) !important;
+    border-color: #E07A5F !important; /* Soul Coral on focus */
+    box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.2) !important;
     outline: none !important;
   }
   
   input::placeholder, textarea::placeholder {
-    color: #888888 !important; /* Medium grey placeholder */
+    color: #6B6B6B !important; /* Soul text light placeholder */
   }
   
   /* Links and interactive elements */
   a {
-    color: #E65100 !important; /* Burnt orange links */
+    color: #E07A5F !important; /* Soul Coral links */
   }
   
   a:hover {
-    color: #BF4300 !important;
+    color: #C9624A !important;
   }
   
   /* Increase all text sizes for mobile */
@@ -2008,16 +2023,16 @@ input[type="range"]::-moz-range-thumb:hover {
   }
   
   .mobile-nav-item:hover {
-    background: rgba(230, 81, 0, 0.1) !important; /* Burnt orange tint */
+    background: rgba(224, 122, 95, 0.1) !important; /* Soul Coral tint */
   }
   
   .mobile-nav-item.active {
-    background: rgba(230, 81, 0, 0.15) !important;
-    color: #E65100 !important;
+    background: rgba(224, 122, 95, 0.15) !important;
+    color: #E07A5F !important;
   }
   
   .mobile-nav-item.active span {
-    color: #E65100 !important;
+    color: #E07A5F !important;
   }
   
   /* Hide desktop nav on mobile */

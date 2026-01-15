@@ -133,8 +133,8 @@ export const SecuritySettings: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center border-2 border-cyan-500/30">
-          <Shield className="w-6 h-6 text-cyan-400" />
+        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500/20 to-secondary-300/20 flex items-center justify-center border-2 border-primary-500/30">
+          <Shield className="w-6 h-6 text-primary-400" />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white">Security & Privacy</h2>
@@ -158,7 +158,7 @@ export const SecuritySettings: React.FC = () => {
       <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-3">
-            <Lock className="w-6 h-6 text-cyan-400 mt-1" />
+            <Lock className="w-6 h-6 text-primary-400 mt-1" />
             <div>
               <h3 className="text-xl font-semibold text-white">PIN Protection</h3>
               <p className="text-gray-400 text-sm mt-1">
@@ -192,7 +192,7 @@ export const SecuritySettings: React.FC = () => {
         ) : (
           <button
             onClick={() => setShowPinSetup(true)}
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold transition-all"
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-300 hover:from-primary-600 hover:to-secondary-400 text-white font-semibold transition-all"
           >
             Enable PIN Protection
           </button>
@@ -203,7 +203,7 @@ export const SecuritySettings: React.FC = () => {
       <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-3">
-            <Fingerprint className="w-6 h-6 text-purple-400 mt-1" />
+            <Fingerprint className="w-6 h-6 text-accent-400 mt-1" />
             <div>
               <h3 className="text-xl font-semibold text-white">Biometric Unlock</h3>
               <p className="text-gray-400 text-sm mt-1">
@@ -233,7 +233,7 @@ export const SecuritySettings: React.FC = () => {
           <button
             onClick={() => setShowBiometricSetup(true)}
             disabled={!biometricAvailable || !pinEnabled}
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {!pinEnabled ? 'Enable PIN First' : 'Enable Biometric'}
           </button>
@@ -243,7 +243,7 @@ export const SecuritySettings: React.FC = () => {
       {/* Auto-Lock Timeout */}
       <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
         <div className="flex items-start gap-3 mb-4">
-          <Clock className="w-6 h-6 text-cyan-400 mt-1" />
+          <Clock className="w-6 h-6 text-secondary-300 mt-1" />
           <div className="flex-1">
             <h3 className="text-xl font-semibold text-white">Auto-Lock Timeout</h3>
             <p className="text-gray-400 text-sm mt-1">
@@ -256,7 +256,7 @@ export const SecuritySettings: React.FC = () => {
           value={autoLockTimeout}
           onChange={(e) => handleTimeoutChange(Number(e.target.value))}
           disabled={loading || !pinEnabled}
-          className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-colors disabled:opacity-50"
+          className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-primary-500 transition-colors disabled:opacity-50"
         >
           <option value={5}>5 minutes</option>
           <option value={10}>10 minutes</option>
@@ -269,7 +269,7 @@ export const SecuritySettings: React.FC = () => {
       {/* Trusted Devices */}
       <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
         <div className="flex items-start gap-3 mb-4">
-          <Smartphone className="w-6 h-6 text-cyan-400 mt-1" />
+          <Smartphone className="w-6 h-6 text-secondary-300 mt-1" />
           <div>
             <h3 className="text-xl font-semibold text-white">Trusted Devices</h3>
             <p className="text-gray-400 text-sm mt-1">

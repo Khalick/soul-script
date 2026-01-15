@@ -47,35 +47,35 @@ export function OnThisDay() {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-        <Clock size={24} style={{ color: '#06b6d4' }} />
+        <Clock size={24} style={{ color: '#E07A5F' }} />
         <h3 style={{ margin: 0, fontSize: '20px', fontWeight: '600', color: 'white' }}>
           On This Day
         </h3>
-        <Sparkles size={20} style={{ color: '#fbbf24' }} />
+        <Sparkles size={20} style={{ color: '#F2CC8F' }} />
       </div>
 
       {pastEntries.map(({ entry, yearsAgo }) => (
         <div
           key={entry.id}
           style={{
-            background: 'rgba(6, 182, 212, 0.1)',
+            background: 'rgba(224, 122, 95, 0.1)',
             borderRadius: '12px',
             padding: '16px',
             marginBottom: '12px',
-            border: '1px solid rgba(6, 182, 212, 0.3)',
+            border: '1px solid rgba(224, 122, 95, 0.3)',
             transition: 'all 0.3s'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(6, 182, 212, 0.2)';
+            e.currentTarget.style.background = 'rgba(224, 122, 95, 0.2)';
             e.currentTarget.style.transform = 'translateX(4px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(6, 182, 212, 0.1)';
+            e.currentTarget.style.background = 'rgba(224, 122, 95, 0.1)';
             e.currentTarget.style.transform = 'translateX(0)';
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: '#06b6d4' }}>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: '#E07A5F' }}>
               {yearsAgo} year{yearsAgo !== 1 ? 's' : ''} ago
             </span>
             <span style={{ fontSize: '24px' }}>{getMoodEmoji(entry.mood)}</span>
