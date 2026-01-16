@@ -1780,52 +1780,33 @@ input[type="range"]::-moz-range-thumb:hover {
 
 
 /* ============================================ */
-/* MOBILE-FIRST DESIGN ENHANCEMENTS */
+/* MOBILE-FIRST DESIGN - MOODBOARD INSPIRED */
+/* Matches Morning/Evening Journaling Moodboards */
 /* ============================================ */
 
 @media (max-width: 768px), (display-mode: standalone) {
   
   /* =====================================================
-     WARM DUSK THEME - Optimized for Sunlight Visibility
-     Terracotta, Gold, Sage - Soul Script Brand
+     MOODBOARD THEME - Dark gradient with warm metallic text
+     Navy → Terracotta gradient, Gold/Copper text
      ===================================================== */
-  
-  /* Override ALL CSS variables for mobile Warm Dusk theme */
-  :root {
-    --morning-bg-start: #FAF7F2 !important;
-    --morning-bg-end: #FAF7F2 !important;
-    --afternoon-bg-start: #FAF7F2 !important;
-    --afternoon-bg-end: #FAF7F2 !important;
-    --evening-bg-start: #FAF7F2 !important;
-    --evening-bg-end: #FAF7F2 !important;
-    --night-bg-start: #FAF7F2 !important;
-    --night-bg-end: #FAF7F2 !important;
-    --current-bg-start: #FAF7F2 !important;
-    --current-bg-end: #FAF7F2 !important;
-    
-    /* Soul Script Brand Colors */
-    --soul-coral: #E07A5F !important;
-    --soul-gold: #F2CC8F !important;
-    --soul-sage: #81B29A !important;
-  }
   
   /* Adjust content for bottom nav */
   body {
     padding-bottom: 80px;
-    font-size: 18px; /* Larger base font for mobile */
-    -webkit-text-size-adjust: 100%; /* Match device font scaling */
+    font-size: 18px;
+    -webkit-text-size-adjust: 100%;
   }
-  
-  /* WARM DUSK THEME - Cream background with terracotta accents */
   
   * {
     --tw-text-opacity: 1 !important;
   }
   
+  /* MOODBOARD GRADIENT BACKGROUNDS */
   html, body {
-    background: #FAF7F2 !important; /* Soul cream - warm paper color */
-    background-image: none !important;
-    color: #3D3D3D !important; /* Warm charcoal - softer than black */
+    background: linear-gradient(180deg, #1a1a2e 0%, #2D2A3E 40%, #4a2511 75%, #C67B4E 100%) !important;
+    background-attachment: fixed !important;
+    min-height: 100vh;
   }
   
   .auth-page,
@@ -1835,172 +1816,162 @@ input[type="range"]::-moz-range-thumb:hover {
   .analytics-container,
   .settings-container,
   .community-container {
-    background: #F9F7F2 !important; /* Cream paper background */
-    background-image: none !important;
+    background: linear-gradient(180deg, #1a1a2e 0%, #2D2A3E 40%, #4a2511 75%, #C67B4E 100%) !important;
+    background-attachment: fixed !important;
+    min-height: 100vh;
   }
   
-  /* Override all pseudo-elements that add gradients */
+  /* Keep subtle star effects */
   .auth-page::before,
+  .dashboard-page::before {
+    display: block !important;
+    opacity: 0.3;
+  }
+  
+  /* Hide overly bright after effects */
   .auth-page::after,
-  .dashboard-page::before,
   .dashboard-page::after {
-    display: none !important;
+    opacity: 0.2 !important;
   }
   
-  /* Headings - Deep charcoal ink */
+  /* WARM METALLIC TYPOGRAPHY - Gold/Copper tones */
   h1, h2, h3, h4, h5, h6 {
-    color: #2D2D2D !important; /* Deep charcoal - not pure black */
+    color: #E8C09B !important; /* Warm gold - matches moodboard */
     font-weight: 700 !important;
-    text-shadow: none !important;
+    text-shadow: 0 2px 10px rgba(232, 192, 155, 0.3) !important;
   }
   
-  /* Body text - Deep charcoal ink */
-  p, span, label, div {
-    color: #333333 !important; /* Slightly lighter charcoal for body */
+  /* Body text - Lighter gold/cream */
+  p, span, label {
+    color: #D4B896 !important; /* Lighter warm tone */
     font-weight: 500 !important;
     text-shadow: none !important;
   }
   
-  /* Cards - White with subtle shadow for depth */
+  /* Fix div color inheritance */
+  div {
+    color: inherit !important;
+  }
+  
+  /* CARDS - Dark translucent with subtle border (moodboard style) */
   .dashboard-card {
-    background: #FFFFFF !important;
-    border: 2px solid #E0E0E0 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06) !important;
-    border-radius: 12px !important;
+    background: rgba(26, 26, 46, 0.85) !important; /* Dark navy translucent */
+    border: 1px solid rgba(232, 192, 155, 0.2) !important; /* Gold border */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(10px) !important;
   }
   
   .dashboard-card h2,
   .dashboard-card h3 {
-    color: #2D2D2D !important;
+    color: #E8C09B !important; /* Warm gold */
   }
   
   .dashboard-card p,
   .dashboard-card span {
-    color: #333333 !important;
+    color: #D4B896 !important; /* Lighter gold */
   }
   
-  /* Accent colors - Warm Dusk Coral/Terracotta for buttons */
+  .dashboard-card-stat {
+    color: #F2CC8F !important; /* Bright gold for stats */
+  }
+  
+  .dashboard-card-label {
+    color: #C4A882 !important; /* Muted gold */
+  }
+  
+  /* BUTTONS - Coral/Terracotta gradient (moodboard style) */
   button {
-    background: #E07A5F !important; /* Soul Coral - Terracotta */
-    border: 2px solid #E07A5F !important;
-    color: #FFFFFF !important; /* White text on coral */
+    background: linear-gradient(135deg, #C67B4E 0%, #A85D3A 100%) !important;
+    border: 1px solid rgba(198, 123, 78, 0.5) !important;
+    color: #FFFFFF !important;
     font-weight: 600 !important;
-    text-shadow: none !important;
-    border-radius: 8px !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(198, 123, 78, 0.3) !important;
   }
   
-  button:hover {
-    background: #C9624A !important; /* Darker coral on hover */
-    border-color: #C9624A !important;
-    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.3) !important;
+  button:hover, button:active {
+    background: linear-gradient(135deg, #D88B5E 0%, #B86D4A 100%) !important;
+    box-shadow: 0 6px 20px rgba(198, 123, 78, 0.4) !important;
   }
   
-  /* Secondary/outline buttons - Soul Gold */
+  /* Secondary buttons - Gold outline */
   button.secondary,
   button[class*="outline"],
   button[class*="ghost"] {
     background: transparent !important;
-    border: 2px solid #F2CC8F !important; /* Soul Gold border */
-    color: #C98538 !important; /* Darker gold for readability */
+    border: 2px solid #E8C09B !important;
+    color: #E8C09B !important;
+    box-shadow: none !important;
   }
   
   button.secondary:hover,
   button[class*="outline"]:hover,
   button[class*="ghost"]:hover {
-    background: #F2CC8F !important;
-    color: #3D3D3D !important; /* Dark text on gold */
+    background: rgba(232, 192, 155, 0.15) !important;
+    color: #F2CC8F !important;
   }
   
-  /* Input fields - White with subtle border */
+  /* INPUT FIELDS - Dark with gold border */
   input, textarea, select {
-    background: #FFFFFF !important;
-    border: 2px solid #81B29A !important; /* Soul Sage border */
-    color: #3D3D3D !important; /* Soul text color */
+    background: rgba(26, 26, 46, 0.9) !important;
+    border: 1px solid rgba(232, 192, 155, 0.3) !important;
+    color: #E8C09B !important;
     font-weight: 500 !important;
-    border-radius: 8px !important;
+    border-radius: 12px !important;
   }
   
   input:focus, textarea:focus, select:focus {
-    border-color: #E07A5F !important; /* Soul Coral on focus */
-    box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.2) !important;
+    border-color: #C67B4E !important;
+    box-shadow: 0 0 0 3px rgba(198, 123, 78, 0.2) !important;
     outline: none !important;
   }
   
   input::placeholder, textarea::placeholder {
-    color: #6B6B6B !important; /* Soul text light placeholder */
+    color: rgba(232, 192, 155, 0.5) !important;
   }
   
-  /* Links and interactive elements */
+  /* Links - Gold */
   a {
-    color: #E07A5F !important; /* Soul Coral links */
+    color: #E8C09B !important;
   }
   
   a:hover {
-    color: #C9624A !important;
+    color: #F2CC8F !important;
   }
   
-  /* Increase all text sizes for mobile */
-  h1 {
-    font-size: 2.5rem !important; /* 40px */
-  }
+  /* Mobile text sizes */
+  h1 { font-size: 2.25rem !important; }
+  h2 { font-size: 1.75rem !important; }
+  h3 { font-size: 1.375rem !important; }
+  h4 { font-size: 1.125rem !important; }
+  p, span, label { font-size: 1rem !important; }
+  button { font-size: 1rem !important; }
+  input, textarea, select { font-size: 1rem !important; }
   
-  h2 {
-    font-size: 2rem !important; /* 32px */
-  }
+  /* Dashboard card sizes */
+  .dashboard-card h2 { font-size: 1.5rem !important; }
+  .dashboard-card p { font-size: 1rem !important; }
+  .dashboard-card-stat { font-size: 2.5rem !important; }
+  .dashboard-card-label { font-size: 0.875rem !important; }
   
-  h3 {
-    font-size: 1.5rem !important; /* 24px */
-  }
-  
-  h4 {
-    font-size: 1.25rem !important; /* 20px */
-  }
-  
-  p, span, label, div {
-    font-size: 1.125rem !important; /* 18px */
-  }
-  
-  button {
-    font-size: 1.125rem !important; /* 18px */
-  }
-  
-  input, textarea, select {
-    font-size: 1.125rem !important; /* 18px */
-  }
-  
-  /* Dashboard specific */
-  .dashboard-card h2 {
-    font-size: 1.75rem !important; /* 28px */
-  }
-  
-  .dashboard-card p {
-    font-size: 1.125rem !important; /* 18px */
-  }
-  
-  .dashboard-card-stat {
-    font-size: 3rem !important; /* 48px */
-  }
-  
-  .dashboard-card-label {
-    font-size: 1rem !important; /* 16px */
-  }
-  
-  /* Bottom Navigation Bar - Paper theme */
+  /* BOTTOM NAV - Dark with gold accents (moodboard style) */
   .mobile-nav-bottom {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 80px; /* Increased from 70px */
-    background: #FFFFFF !important; /* White background */
-    backdrop-filter: none;
-    border-top: 2px solid #E0E0E0 !important;
+    height: 75px;
+    background: rgba(26, 26, 46, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(232, 192, 155, 0.2) !important;
     display: flex;
     justify-content: space-around;
     align-items: center;
     padding: 0 10px;
     z-index: 9999;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
   }
   
   .mobile-nav-item {
@@ -2013,26 +1984,26 @@ input[type="range"]::-moz-range-thumb:hover {
     cursor: pointer;
     transition: all 0.3s ease;
     border-radius: 12px;
-    min-width: 65px;
-    color: #2D2D2D !important; /* Charcoal text */
+    min-width: 60px;
+    color: #D4B896 !important;
   }
   
   .mobile-nav-item span {
-    color: #333333 !important;
-    font-size: 0.875rem !important; /* 14px for nav labels */
+    color: #D4B896 !important;
+    font-size: 0.75rem !important;
   }
   
   .mobile-nav-item:hover {
-    background: rgba(224, 122, 95, 0.1) !important; /* Soul Coral tint */
+    background: rgba(198, 123, 78, 0.2) !important;
   }
   
   .mobile-nav-item.active {
-    background: rgba(224, 122, 95, 0.15) !important;
-    color: #E07A5F !important;
+    background: rgba(198, 123, 78, 0.25) !important;
+    color: #E8C09B !important;
   }
   
   .mobile-nav-item.active span {
-    color: #E07A5F !important;
+    color: #E8C09B !important;
   }
   
   /* Hide desktop nav on mobile */
@@ -2040,9 +2011,30 @@ input[type="range"]::-moz-range-thumb:hover {
     display: none !important;
   }
   
-  /* Adjust content for bottom nav */
+  /* Content padding for bottom nav */
   .dashboard-page {
     padding-bottom: 100px !important;
+  }
+  
+  /* Floating orbs - Warm tones */
+  .dashboard-orb,
+  .auth-orb {
+    opacity: 0.4 !important;
+  }
+  
+  .dashboard-orb1,
+  .auth-orb1 {
+    background: rgba(198, 123, 78, 0.5) !important; /* Terracotta */
+  }
+  
+  .dashboard-orb2,
+  .auth-orb2 {
+    background: rgba(232, 192, 155, 0.5) !important; /* Gold */
+  }
+  
+  .dashboard-orb3,
+  .auth-orb3 {
+    background: rgba(74, 37, 17, 0.5) !important; /* Deep brown */
   }
 }
 

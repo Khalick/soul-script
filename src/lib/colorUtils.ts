@@ -48,91 +48,98 @@ export interface TimeTheme {
 export function getCurrentTimeTheme(): TimeTheme {
   const hour = new Date().getHours();
   
-  // Dawn: 5 AM - 7 AM (Pink/mauve misty theme)
+  // Dawn: 5 AM - 7 AM (Soft pink/mauve awakening)
   if (hour >= 5 && hour < 7) {
     return {
       id: 'dawn',
       name: 'DAWN',
-      gradient: 'linear-gradient(180deg, #E8D4D9 0%, #D4B5BD 30%, #9B8A8F 70%, #6B5559 100%)',
-      textColor: '#6B5559',
-      accentColor: '#8B6F5F',
-      cardBg: 'rgba(107, 85, 89, 0.85)',
-      orbColors: ['#E8D4D940', '#D4B5BD30', '#9B8A8F50']
+      gradient: 'linear-gradient(180deg, #1a1a2e 0%, #2D2A3E 30%, #3D2A35 60%, #8B6F7F 100%)',
+      textColor: '#E8C09B',
+      accentColor: '#D4A574',
+      cardBg: 'rgba(26, 26, 46, 0.85)',
+      orbColors: ['#E8C09B30', '#D4A57440', '#8B6F7F50']
     };
   }
   
-  // Morning: 7 AM - 12 PM (Dark navy to warm orange/gold - YOUR IMAGE)
+  // Morning: 7 AM - 12 PM (Navy to warm terracotta - MOODBOARD IMAGE 1)
   if (hour >= 7 && hour < 12) {
     return {
       id: 'morning',
       name: 'MORNING',
-      gradient: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 20%, #2d1810 50%, #4a2511 75%, #C67B4E 100%)',
+      gradient: 'linear-gradient(180deg, #1a1a2e 0%, #2D2A3E 25%, #4a2511 60%, #C67B4E 100%)',
       textColor: '#E8C09B',
-      accentColor: '#E8C09B',
+      accentColor: '#C67B4E',
       cardBg: 'rgba(26, 26, 46, 0.85)',
       orbColors: ['#E8C09B20', '#C67B4E30', '#4a251140']
     };
   }
   
-  // Afternoon: 12 PM - 3 PM (Light blue sky)
+  // Afternoon: 12 PM - 3 PM (Warm amber/golden light)
   if (hour >= 12 && hour < 15) {
     return {
       id: 'afternoon',
       name: 'AFTERNOON',
-      gradient: 'linear-gradient(180deg, #87CEEB 0%, #6BA3C9 30%, #4A7BA7 70%, #2C5F85 100%)',
-      textColor: '#1E3A5F',
-      accentColor: '#2C4F6F',
-      cardBg: 'rgba(30, 58, 95, 0.85)',
-      orbColors: ['#87CEEB40', '#6BA3C930', '#4A7BA750']
+      gradient: 'linear-gradient(180deg, #1a1a2e 0%, #2D2A3E 30%, #5C4033 60%, #D4A574 100%)',
+      textColor: '#E8C09B',
+      accentColor: '#D4A574',
+      cardBg: 'rgba(26, 26, 46, 0.85)',
+      orbColors: ['#E8C09B40', '#D4A57430', '#5C403350']
     };
   }
   
-  // Mid-Afternoon: 3 PM - 5 PM (Golden hour)
+  // Mid-Afternoon: 3 PM - 5 PM (Deeper amber, pre-sunset)
   if (hour >= 15 && hour < 17) {
     return {
       id: 'mid-afternoon',
       name: 'MID-AFTERNOON',
-      gradient: 'linear-gradient(180deg, #F0E68C 0%, #DAA520 30%, #B8860B 70%, #8B6914 100%)',
-      textColor: '#704214',
-      accentColor: '#8B5A13',
-      cardBg: 'rgba(112, 66, 20, 0.85)',
-      orbColors: ['#F0E68C40', '#DAA52030', '#B8860B50']
+      gradient: 'linear-gradient(180deg, #1a1a2e 0%, #2D2A3E 35%, #4a3020 65%, #B8860B 100%)',
+      textColor: '#E8C09B',
+      accentColor: '#B8860B',
+      cardBg: 'rgba(26, 26, 46, 0.85)',
+      orbColors: ['#E8C09B40', '#B8860B30', '#4a302050']
     };
   }
   
-  // Evening: 5 PM - 9 PM (Warm brown/orange)
+  // Evening: 5 PM - 9 PM (Warm sunset to dusk)
   if (hour >= 17 && hour < 21) {
     return {
       id: 'evening',
       name: 'EVENING',
-      gradient: 'linear-gradient(180deg, #2a1810 0%, #3d2416 30%, #52301c 60%, #8B4513 100%)',
+      gradient: 'linear-gradient(180deg, #1a1a2e 0%, #2D2838 35%, #3D2A25 65%, #8B4513 100%)',
       textColor: '#D4A574',
-      accentColor: '#D4A574',
-      cardBg: 'rgba(42, 24, 16, 0.85)',
-      orbColors: ['#D4A57440', '#8B451330', '#52301c50']
+      accentColor: '#C67B4E',
+      cardBg: 'rgba(26, 26, 46, 0.85)',
+      orbColors: ['#D4A57440', '#8B451330', '#3D2A2550']
     };
   }
   
-  // Night: 9 PM - 5 AM (Deep charcoal with coral hints - Warm Dusk theme)
+  // Mid-Evening: 9 PM - 11 PM (Deep indigo to mauve - MOODBOARD IMAGE 2)
+  if (hour >= 21 && hour < 23) {
+    return {
+      id: 'mid-evening',
+      name: 'MID-EVENING',
+      gradient: 'linear-gradient(180deg, #0f0f1a 0%, #1a1a3e 30%, #2D2A4E 55%, #8B6F7F 100%)',
+      textColor: '#D4A574',
+      accentColor: '#C67B4E',
+      cardBg: 'rgba(26, 26, 62, 0.85)',
+      orbColors: ['#D4A57430', '#8B6F7F40', '#2D2A4E50']
+    };
+  }
+  
+  // Night: 11 PM - 5 AM (Deep starfield with subtle warmth)
   return {
     id: 'night',
     name: 'NIGHT',
-    gradient: 'linear-gradient(180deg, #12121D 0%, #1A1A2E 30%, #2D2A3E 60%, #3D2A25 100%)',
-    textColor: '#F2CC8F',
-    accentColor: '#E07A5F',
-    cardBg: 'rgba(26, 26, 46, 0.85)',
-    orbColors: ['#E07A5F40', '#F2CC8F30', '#81B29A50']
+    gradient: 'linear-gradient(180deg, #0a0a14 0%, #12121D 30%, #1a1a2e 60%, #2D2A3E 100%)',
+    textColor: '#D4A574',
+    accentColor: '#C67B4E',
+    cardBg: 'rgba(18, 18, 29, 0.9)',
+    orbColors: ['#D4A57420', '#C67B4E30', '#2D2A3E50']
   };
 }
 
-export function getGradientBackground(favoriteColor?: string): string {
-  // Warm Dusk theme - charcoal with terracotta warmth
-  if (favoriteColor) {
-    const [color1] = getColorGradient(favoriteColor);
-    const rgb = hexToRgb(color1);
-    // Add subtle tint of favorite color to the charcoal background
-    return `radial-gradient(ellipse at top, rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12) 0%, #1A1A2E 50%, #12121D 100%)`;
-  }
-  // Default Warm Dusk charcoal with coral hint
-  return 'radial-gradient(ellipse at top, rgba(224, 122, 95, 0.08) 0%, #1A1A2E 50%, #12121D 100%)';
+export function getGradientBackground(_favoriteColor?: string): string {
+  // Moodboard-style gradient - dark navy to warm terracotta
+  const theme = getCurrentTimeTheme();
+  return theme.gradient;
 }
