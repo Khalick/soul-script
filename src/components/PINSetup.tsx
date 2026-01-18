@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Lock } from 'lucide-react';
+import { X, Lock, ArrowRight, Check } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useSecurityStore } from '../stores/securityStore';
 import { hashPin, savePinToServer, generateDeviceFingerprint, addTrustedDevice } from '../lib/pinAuth';
@@ -18,31 +18,27 @@ export const PINSetup: React.FC<PINSetupProps> = ({ onComplete, onSkip }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handlePinInput = (digit: string) => {
+  const currentPin = step === 'create' ? pin : confirmPin;
+
+  const handleNumberPress = (num: string) => {
+    if (loading) return;
     setError('');
 
     if (step === 'create') {
       if (pin.length < 6) {
-        const newPin = pin + digit;
-        setPin(newPin);
-        if (newPin.length === 6) {
-          setTimeout(() => setStep('confirm'), 300);
-        }
+        setPin(pin + num);
       }
     } else {
       if (confirmPin.length < 6) {
-        const newConfirm = confirmPin + digit;
-        setConfirmPin(newConfirm);
-
-        if (newConfirm.length === 6) {
-          validateAndSavePin(pin, newConfirm);
-        }
+        setConfirmPin(confirmPin + num);
       }
     }
   };
 
   const handleDelete = () => {
+    if (loading) return;
     setError('');
+
     if (step === 'create') {
       setPin(pin.slice(0, -1));
     } else {
@@ -50,9 +46,22 @@ export const PINSetup: React.FC<PINSetupProps> = ({ onComplete, onSkip }) => {
     }
   };
 
-  const validateAndSavePin = async (originalPin: string, confirmedPin: string) => {
-    if (originalPin !== confirmedPin) {
-      setError('PINs do not match. Try again.');
+  const handleContinue = () => {
+    if (pin.length !== 6) {
+      setError('Please enter 6 digits');
+      return;
+    }
+    setStep('confirm');
+  };
+
+  const handleSetPin = async () => {
+    if (confirmPin.length !== 6) {
+      setError('Please enter 6 digits');
+      return;
+    }
+
+    if (pin !== confirmPin) {
+      setError('PINs do not match. Please try again.');
       setStep('create');
       setPin('');
       setConfirmPin('');
@@ -67,28 +76,20 @@ export const PINSetup: React.FC<PINSetupProps> = ({ onComplete, onSkip }) => {
     setLoading(true);
 
     try {
-      // Hash the PIN
-      const pinHash = await hashPin(originalPin);
-
-      // Save to server
+      const pinHash = await hashPin(pin);
       const saved = await savePinToServer(user.id, pinHash);
 
       if (!saved) {
         throw new Error('Failed to save PIN');
       }
 
-      // Generate device fingerprint and add as trusted device
       const fingerprint = generateDeviceFingerprint();
       await addTrustedDevice(user.id, fingerprint, getDeviceName());
 
-      // Update local state
       setPinEnabled(true);
       setDeviceFingerprint(fingerprint);
-
-      // Store PIN hash locally for quick verification
       localStorage.setItem('soul-script-pin-hash', pinHash);
 
-      console.log('✅ PIN setup complete');
       onComplete();
     } catch (error: any) {
       console.error('PIN setup error:', error);
@@ -111,178 +112,267 @@ export const PINSetup: React.FC<PINSetupProps> = ({ onComplete, onSkip }) => {
     return 'Unknown Device';
   };
 
-  const currentPin = step === 'create' ? pin : confirmPin;
-
-  // Button press handler with touch support
-  const handleButtonPress = (digit: string) => (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handlePinInput(digit);
-  };
-
-  const handleDeletePress = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleDelete();
-  };
-
-  const handleSkipPress = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onSkip();
-  };
+  const canProceed = step === 'create' ? pin.length === 6 : confirmPin.length === 6;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col"
+      className="pin-setup-overlay"
       style={{
-        background: 'linear-gradient(180deg, rgba(26, 26, 46, 0.95) 0%, rgba(26, 26, 46, 0.98) 100%)',
-        backdropFilter: 'blur(20px)',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 99999,
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#1a1a2e',
       }}
     >
-      {/* Header Section - Top 35% */}
-      <div
-        className="flex flex-col items-center justify-center px-6"
-        style={{ height: '35%' }}
-      >
+      {/* Header */}
+      <div style={{
+        padding: '16px 20px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottom: '1px solid rgba(255,255,255,0.1)'
+      }}>
+        <h2 style={{ color: 'white', fontSize: '20px', fontWeight: 600, margin: 0 }}>
+          {step === 'create' ? 'Create PIN' : 'Confirm PIN'}
+        </h2>
         <button
-          onClick={handleSkipPress}
-          onTouchEnd={handleSkipPress}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors p-2"
+          onClick={onSkip}
           disabled={loading}
-          style={{ touchAction: 'manipulation' }}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: '#9ca3af',
+            padding: '8px',
+            cursor: 'pointer',
+          }}
         >
-          <X className="w-8 h-8" />
+          <X size={24} />
         </button>
+      </div>
 
-        <div className="w-16 h-16 rounded-full bg-primary-500/20 flex items-center justify-center mb-4">
-          <Lock className="w-8 h-8 text-primary-400" />
+      {/* PIN Display Area */}
+      <div style={{
+        flex: '0 0 auto',
+        padding: '40px 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        background: 'rgba(255,255,255,0.02)'
+      }}>
+        <div style={{
+          width: '80px',
+          height: '80px',
+          borderRadius: '50%',
+          background: 'rgba(224, 122, 95, 0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '24px',
+        }}>
+          <Lock size={40} color="#E07A5F" />
         </div>
 
-        <h2 className="text-2xl font-bold text-white text-center mb-2">
-          Secure Your Journal
-        </h2>
-        <p className="text-gray-400 text-lg text-center">
-          {step === 'create' ? 'Create a 6-digit PIN' : 'Confirm your PIN'}
+        <p style={{
+          color: '#9ca3af',
+          fontSize: '16px',
+          textAlign: 'center',
+          marginBottom: '24px',
+          margin: '0 0 24px 0'
+        }}>
+          {step === 'create'
+            ? 'Enter a 6-digit PIN to secure your journal'
+            : 'Re-enter your PIN to confirm'}
         </p>
 
-        {/* PIN Display Dots */}
-        <div className="flex justify-center gap-4 mt-6">
-          {[...Array(6)].map((_, i) => (
+        {/* PIN Dots */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
+          {[0, 1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className={`w-5 h-5 rounded-full border-2 transition-all duration-200 ${i < currentPin.length
-                  ? 'bg-primary-400 border-primary-400 scale-110'
-                  : 'border-gray-600'
-                }`}
+              style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                border: '2px solid',
+                borderColor: i < currentPin.length ? '#E07A5F' : '#4b5563',
+                background: i < currentPin.length ? '#E07A5F' : 'transparent',
+                transition: 'all 0.15s ease',
+              }}
             />
           ))}
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="mt-4 px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm text-center">
+          <div style={{
+            padding: '10px 16px',
+            background: 'rgba(239, 68, 68, 0.15)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '8px',
+            color: '#f87171',
+            fontSize: '14px',
+            textAlign: 'center',
+            marginTop: '8px',
+          }}>
             {error}
-          </div>
-        )}
-
-        {/* Loading */}
-        {loading && (
-          <div className="mt-4 px-4 py-2 bg-primary-500/20 border border-primary-500/50 rounded-lg text-primary-400 text-sm text-center flex items-center justify-center gap-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-400 border-t-transparent" />
-            Setting up your PIN...
           </div>
         )}
       </div>
 
-      {/* PIN Pad Section - Bottom 65% - Full Width */}
-      <div
-        className="flex-1 w-full px-4 pb-8"
-        style={{
-          background: 'rgba(20, 20, 35, 0.95)',
-          borderTopLeftRadius: '24px',
-          borderTopRightRadius: '24px',
-          boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.3)',
-        }}
-      >
-        {/* PIN Pad Grid - Full Width */}
-        <div
-          className="grid grid-cols-3 gap-3 pt-6 h-full"
-          style={{ maxHeight: 'calc(100% - 60px)' }}
-        >
+      {/* Number Pad */}
+      <div style={{
+        flex: 1,
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'rgba(15, 15, 25, 0.95)',
+        borderTopLeftRadius: '24px',
+        borderTopRightRadius: '24px',
+      }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '12px',
+          flex: 1,
+          maxHeight: '320px',
+        }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
             <button
               key={num}
-              onClick={handleButtonPress(num.toString())}
-              onTouchEnd={handleButtonPress(num.toString())}
+              type="button"
+              onClick={() => handleNumberPress(num.toString())}
               disabled={loading}
-              className="rounded-2xl bg-gray-800/80 hover:bg-gray-700 active:bg-primary-500/30 text-white text-3xl font-bold transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center"
               style={{
+                background: 'rgba(60, 60, 80, 0.8)',
+                border: 'none',
+                borderRadius: '16px',
+                color: '#ffffff',
+                fontSize: '28px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 minHeight: '70px',
-                height: '100%',
-                maxHeight: '90px',
-                touchAction: 'manipulation',
-                WebkitTapHighlightColor: 'transparent',
-                userSelect: 'none',
               }}
             >
               {num}
             </button>
           ))}
+
+          {/* Delete Button */}
           <button
-            onClick={handleDeletePress}
-            onTouchEnd={handleDeletePress}
-            disabled={loading}
-            className="rounded-2xl bg-gray-800/80 hover:bg-red-500/20 active:bg-red-500/40 text-red-400 text-lg font-semibold transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center"
+            type="button"
+            onClick={handleDelete}
+            disabled={loading || currentPin.length === 0}
             style={{
+              background: 'rgba(60, 60, 80, 0.8)',
+              border: 'none',
+              borderRadius: '16px',
+              color: currentPin.length > 0 ? '#f87171' : '#6b7280',
+              fontSize: '16px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               minHeight: '70px',
-              height: '100%',
-              maxHeight: '90px',
-              touchAction: 'manipulation',
-              WebkitTapHighlightColor: 'transparent',
-              userSelect: 'none',
+              opacity: currentPin.length === 0 ? 0.5 : 1,
             }}
           >
-            ← Delete
+            Delete
           </button>
+
+          {/* Zero Button */}
           <button
-            onClick={handleButtonPress('0')}
-            onTouchEnd={handleButtonPress('0')}
+            type="button"
+            onClick={() => handleNumberPress('0')}
             disabled={loading}
-            className="rounded-2xl bg-gray-800/80 hover:bg-gray-700 active:bg-primary-500/30 text-white text-3xl font-bold transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center"
             style={{
+              background: 'rgba(60, 60, 80, 0.8)',
+              border: 'none',
+              borderRadius: '16px',
+              color: '#ffffff',
+              fontSize: '28px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               minHeight: '70px',
-              height: '100%',
-              maxHeight: '90px',
-              touchAction: 'manipulation',
-              WebkitTapHighlightColor: 'transparent',
-              userSelect: 'none',
             }}
           >
             0
           </button>
-          <button
-            onClick={handleSkipPress}
-            onTouchEnd={handleSkipPress}
-            disabled={loading}
-            className="rounded-2xl bg-gray-800/80 hover:bg-gray-700 active:bg-gray-600 text-gray-400 text-lg transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center"
-            style={{
-              minHeight: '70px',
-              height: '100%',
-              maxHeight: '90px',
-              touchAction: 'manipulation',
-              WebkitTapHighlightColor: 'transparent',
-              userSelect: 'none',
-            }}
-          >
-            Skip
-          </button>
+
+          {/* Empty space or can be used for something else */}
+          <div style={{ minHeight: '70px' }} />
         </div>
 
-        {/* Info */}
-        <div className="text-center text-gray-500 text-sm mt-4">
-          <p>🔒 Your PIN is encrypted and stored securely</p>
-        </div>
+        {/* Action Button - Continue or Set PIN */}
+        <button
+          type="button"
+          onClick={step === 'create' ? handleContinue : handleSetPin}
+          disabled={!canProceed || loading}
+          style={{
+            marginTop: '20px',
+            padding: '18px',
+            background: canProceed
+              ? 'linear-gradient(135deg, #E07A5F 0%, #C9624A 100%)'
+              : 'rgba(60, 60, 80, 0.5)',
+            border: 'none',
+            borderRadius: '16px',
+            color: canProceed ? '#ffffff' : '#6b7280',
+            fontSize: '18px',
+            fontWeight: 700,
+            cursor: canProceed ? 'pointer' : 'not-allowed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            opacity: loading ? 0.7 : 1,
+          }}
+        >
+          {loading ? (
+            'Saving...'
+          ) : step === 'create' ? (
+            <>
+              Continue
+              <ArrowRight size={22} />
+            </>
+          ) : (
+            <>
+              <Check size={22} />
+              Set PIN
+            </>
+          )}
+        </button>
+
+        {/* Skip Link */}
+        <button
+          type="button"
+          onClick={onSkip}
+          disabled={loading}
+          style={{
+            marginTop: '16px',
+            padding: '12px',
+            background: 'transparent',
+            border: 'none',
+            color: '#6b7280',
+            fontSize: '16px',
+            cursor: 'pointer',
+            textAlign: 'center',
+          }}
+        >
+          Skip for now
+        </button>
       </div>
     </div>
   );
