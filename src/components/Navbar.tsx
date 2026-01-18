@@ -18,7 +18,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
     // Check if already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const isIOSStandalone = (window.navigator as any).standalone === true;
-    
+
     if (isStandalone || isIOSStandalone) {
       setIsInstalled(true);
       return;
@@ -106,7 +106,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           <span style={{ fontSize: '24px' }}>{favoriteEmoji}</span>
           <span>Soul Script</span>
         </div>
-        
+
         {/* Mobile Actions Container */}
         <div style={{
           display: 'flex',
@@ -155,18 +155,18 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-        
+
         {/* Desktop Navigation */}
-        <div style={{ 
+        <div style={{
           display: 'none',
-          gap: '15px', 
+          gap: '15px',
           alignItems: 'center'
         }} className="desktop-nav">
           <button
             onClick={() => onNavigate('home')}
             style={{
               padding: '12px 20px',
-              background: currentView === 'home' 
+              background: currentView === 'home'
                 ? 'rgba(255, 255, 255, 0.2)'
                 : 'rgba(255, 255, 255, 0.05)',
               border: '2px solid rgba(255, 255, 255, 0.2)',
@@ -184,12 +184,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           >
             🏠 Sanctuary
           </button>
-          
+
           <button
             onClick={() => onNavigate('timeline')}
             style={{
               padding: '12px 20px',
-              background: currentView === 'timeline' 
+              background: currentView === 'timeline'
                 ? 'rgba(255, 255, 255, 0.2)'
                 : 'rgba(255, 255, 255, 0.05)',
               border: '2px solid rgba(255, 255, 255, 0.2)',
@@ -207,12 +207,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           >
             📅 Echo Trails
           </button>
-          
+
           <button
             onClick={() => onNavigate('community')}
             style={{
               padding: '12px 20px',
-              background: currentView === 'community' 
+              background: currentView === 'community'
                 ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                 : 'rgba(255, 255, 255, 0.15)',
               border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -230,12 +230,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           >
             👥 The Quiet
           </button>
-          
+
           <button
             onClick={() => onNavigate('legacy')}
             style={{
               padding: '12px 20px',
-              background: currentView === 'legacy' 
+              background: currentView === 'legacy'
                 ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                 : 'rgba(255, 255, 255, 0.15)',
               border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -253,12 +253,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           >
             👑 Legacy
           </button>
-          
+
           <button
             onClick={() => onNavigate('settings')}
             style={{
               padding: '12px 20px',
-              background: currentView === 'settings' 
+              background: currentView === 'settings'
                 ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                 : 'rgba(255, 255, 255, 0.15)',
               border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -276,7 +276,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           >
             ⚙️ Boundaries
           </button>
-          
+
           {!isInstalled && (
             <button
               onClick={handleInstall}
@@ -307,7 +307,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               <Download size={18} /> Install App
             </button>
           )}
-          
+
           <button
             onClick={onLogout}
             style={{
@@ -353,7 +353,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
               onClick={() => handleNavigation('home')}
               style={{
                 padding: '15px 20px',
-                background: currentView === 'home' 
+                background: currentView === 'home'
                   ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                   : 'rgba(255, 255, 255, 0.15)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -371,12 +371,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             >
               🏠 Sanctuary
             </button>
-            
+
             <button
               onClick={() => handleNavigation('timeline')}
               style={{
                 padding: '15px 20px',
-                background: currentView === 'timeline' 
+                background: currentView === 'timeline'
                   ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                   : 'rgba(255, 255, 255, 0.15)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -394,12 +394,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             >
               📅 Echo Trails
             </button>
-            
+
             <button
               onClick={() => handleNavigation('community')}
               style={{
                 padding: '15px 20px',
-                background: currentView === 'community' 
+                background: currentView === 'community'
                   ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                   : 'rgba(255, 255, 255, 0.15)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -417,12 +417,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             >
               👥 The Quiet
             </button>
-            
+
             <button
               onClick={() => handleNavigation('legacy')}
               style={{
                 padding: '15px 20px',
-                background: currentView === 'legacy' 
+                background: currentView === 'legacy'
                   ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                   : 'rgba(255, 255, 255, 0.15)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -440,12 +440,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             >
               👑 Legacy
             </button>
-            
+
             <button
               onClick={() => handleNavigation('settings')}
               style={{
                 padding: '15px 20px',
-                background: currentView === 'settings' 
+                background: currentView === 'settings'
                   ? `linear-gradient(135deg, ${favoriteColor}, ${favoriteColor}cc)`
                   : 'rgba(255, 255, 255, 0.15)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
@@ -463,7 +463,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             >
               ⚙️ Boundaries
             </button>
-            
+
             <button
               onClick={handleLogout}
               style={{
@@ -487,14 +487,14 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           </div>
         </div>
       )}
-      
+
       {/* Bottom Navigation for Mobile/PWA */}
       <nav className="mobile-nav-bottom">
-        <button 
+        <button
           className={`mobile-nav-item ${currentView === 'home' ? 'active' : ''}`}
           onClick={() => handleNavigation('home')}
           style={{
-            background: currentView === 'home' 
+            background: currentView === 'home'
               ? 'rgba(255, 255, 255, 0.2)'
               : 'rgba(255, 255, 255, 0.05)',
             border: '2px solid rgba(255, 255, 255, 0.2)',
@@ -503,26 +503,14 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           <span style={{ fontSize: '20px' }}>🏠</span>
           <span style={{ fontSize: '11px', fontWeight: '600' }}>Sanctuary</span>
         </button>
-        
-        <button 
-          className={`mobile-nav-item ${currentView === 'timeline' ? 'active' : ''}`}
-          onClick={() => handleNavigation('timeline')}
-          style={{
-            background: currentView === 'timeline' 
-              ? 'rgba(255, 255, 255, 0.2)'
-              : 'rgba(255, 255, 255, 0.05)',
-            border: '2px solid rgba(255, 255, 255, 0.2)',
-          }}
-        >
-          <span style={{ fontSize: '20px' }}>📅</span>
-          <span style={{ fontSize: '11px', fontWeight: '600' }}>Echo Trails</span>
-        </button>
-        
-        <button 
+
+
+
+        <button
           className={`mobile-nav-item ${currentView === 'analytics' ? 'active' : ''}`}
           onClick={() => handleNavigation('analytics')}
           style={{
-            background: currentView === 'analytics' 
+            background: currentView === 'analytics'
               ? 'rgba(255, 255, 255, 0.2)'
               : 'rgba(255, 255, 255, 0.05)',
             border: '2px solid rgba(255, 255, 255, 0.2)',
@@ -531,12 +519,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           <span style={{ fontSize: '20px' }}>📊</span>
           <span style={{ fontSize: '11px', fontWeight: '600' }}>Insights</span>
         </button>
-        
-        <button 
+
+        <button
           className={`mobile-nav-item ${currentView === 'community' ? 'active' : ''}`}
           onClick={() => handleNavigation('community')}
           style={{
-            background: currentView === 'community' 
+            background: currentView === 'community'
               ? 'rgba(255, 255, 255, 0.2)'
               : 'rgba(255, 255, 255, 0.05)',
             border: '2px solid rgba(255, 255, 255, 0.2)',
@@ -545,12 +533,12 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           <span style={{ fontSize: '20px' }}>👥</span>
           <span style={{ fontSize: '11px', fontWeight: '600' }}>The Quiet</span>
         </button>
-        
-        <button 
+
+        <button
           className={`mobile-nav-item ${currentView === 'settings' ? 'active' : ''}`}
           onClick={() => handleNavigation('settings')}
           style={{
-            background: currentView === 'settings' 
+            background: currentView === 'settings'
               ? 'rgba(255, 255, 255, 0.2)'
               : 'rgba(255, 255, 255, 0.05)',
             border: '2px solid rgba(255, 255, 255, 0.2)',

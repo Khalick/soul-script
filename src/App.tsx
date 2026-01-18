@@ -90,7 +90,7 @@ function App() {
     const updateThemeColors = () => {
       const hour = new Date().getHours();
       const root = document.documentElement;
-      
+
       if (hour >= 6 && hour < 12) {
         // Morning
         root.style.setProperty('--current-bg-start', 'var(--morning-bg-start)');
@@ -117,11 +117,11 @@ function App() {
         root.style.setProperty('--current-glow', 'var(--night-glow)');
       }
     };
-    
+
     updateThemeColors();
     // Update every 30 minutes
     const interval = setInterval(updateThemeColors, 30 * 60 * 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -139,7 +139,7 @@ function App() {
     };
 
     window.addEventListener('popstate', handlePopState);
-    
+
     // Push initial state
     window.history.pushState({ view: currentView }, '');
 
@@ -166,7 +166,7 @@ function App() {
   useEffect(() => {
     const REFRESH_KEY = 'soul-script-page-loaded';
     const wasPageLoaded = sessionStorage.getItem(REFRESH_KEY);
-    
+
     if (wasPageLoaded) {
       // Page was already loaded before = this is a REFRESH
       console.log('🚪 Page refresh detected - forcing logout');
@@ -179,7 +179,7 @@ function App() {
       });
       return;
     }
-    
+
     // First load of this tab - mark it
     sessionStorage.setItem(REFRESH_KEY, 'true');
   }, []);
@@ -247,7 +247,7 @@ function App() {
     const handleNewEntry = () => {
       setCurrentView('checkin');
     };
-    
+
     window.addEventListener('start-new-entry', handleNewEntry);
     return () => window.removeEventListener('start-new-entry', handleNewEntry);
   }, []);
@@ -256,7 +256,7 @@ function App() {
   useEffect(() => {
     // Add secure mode class to body
     document.body.classList.add('secure-mode');
-    
+
     // Disable right-click context menu
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -276,13 +276,13 @@ function App() {
       ) {
         e.preventDefault();
         e.stopPropagation();
-        
+
         // Blur the screen briefly when screenshot detected
         document.body.style.filter = 'blur(20px)';
         setTimeout(() => {
           document.body.style.filter = 'none';
         }, 100);
-        
+
         console.log('🔒 Screenshot protection active - Your privacy is protected');
         return false;
       }
@@ -315,8 +315,8 @@ function App() {
     const handleCopy = (e: ClipboardEvent) => {
       const target = e.target as HTMLElement;
       // Only prevent copy for journal content, not input fields
-      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && 
-          !target.classList.contains('ProseMirror')) {
+      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' &&
+        !target.classList.contains('ProseMirror')) {
         e.preventDefault();
         return false;
       }
@@ -334,7 +334,7 @@ function App() {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     document.addEventListener('copy', handleCopy);
     document.addEventListener('dragstart', handleDragStart);
-    
+
     // Prevent canvas capture
     preventCanvasCapture();
     const canvasInterval = setInterval(preventCanvasCapture, 1000);
@@ -434,12 +434,12 @@ function App() {
     return (
       <MediaRecordingContext.Provider value={{ setMediaActive }}>
         <Suspense fallback={<LoadingSpinner />}>
-          <Navbar 
+          <Navbar
             currentView="home"
             onNavigate={navigateToView}
             onLogout={handleLogout}
           />
-          <Dashboard 
+          <Dashboard
             onNavigate={navigateToView}
             onNewEntry={handleNewEntry}
             onLogout={handleLogout}
@@ -452,131 +452,131 @@ function App() {
   return (
     <MediaRecordingContext.Provider value={{ setMediaActive }}>
       <Suspense fallback={<LoadingSpinner />}>
-      <div className="min-h-screen" style={{ paddingTop: '80px' }}>
-        {/* Navigation */}
-        <Navbar 
-          currentView={currentView}
-          onNavigate={navigateToView}
-          onLogout={handleLogout}
-        />
-
-        {/* Main Content */}
-        <main className="pb-20">,
-        {currentView === 'checkin' && (
-          <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
-            <div className="text-center space-y-4">
-              <h1 className="text-5xl font-display font-bold text-gray-900 dark:text-white">
-                Welcome back, {user?.full_name || 'friend'}
-              </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-400">
-                How are you holding up today?
-              </p>
-            </div>
-
-            <div className="flex justify-center">
-              <button
-                onClick={handleNewEntry}
-                className="btn-primary text-xl px-10 py-5 flex items-center gap-3 shadow-xl hover:shadow-2xl"
-              >
-                <PlusCircle className="w-7 h-7" />
-                <span>New Entry</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-              <div className="card cursor-pointer hover:shadow-xl transition-shadow" onClick={() => setCurrentView('timeline')}>
-                <Calendar className="w-12 h-12 text-primary-500 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                  Your Timeline
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  See your emotional journey over time
-                </p>
-                <div className="mt-4 text-3xl font-bold text-primary-500">
-                  {entries.length}
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Total Entries</div>
-              </div>
-
-              <div className="card cursor-pointer hover:shadow-xl transition-shadow" onClick={() => setCurrentView('analytics')}>
-                <BarChart3 className="w-12 h-12 text-secondary-500 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                  Insights
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Understand your emotional patterns
-                </p>
-                <div className="mt-4 text-3xl font-bold text-secondary-500">
-                  📊
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">View Analytics</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {currentView === 'checkin' && <EmotionCheckIn onComplete={handleCheckInComplete} />}
-        
-        {currentView === 'moodboard' && (
-          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
-            <MoodboardSelector onSelect={handleMoodboardSelect} />
-          </Suspense>
-        )}
-        
-        {currentView === 'editor' && (
-          <JournalEditor
-            onSave={handleEntrySaved}
-            onCancel={() => setCurrentView('home')}
-            editingEntry={editingEntry}
+        <div className="min-h-screen" style={{ paddingTop: '80px' }}>
+          {/* Navigation */}
+          <Navbar
+            currentView={currentView}
+            onNavigate={navigateToView}
+            onLogout={handleLogout}
           />
-        )}
-        
-        {currentView === 'timeline' && (
-          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
-            <EmotionalTimeline onEntryClick={handleEditEntry} />
-          </Suspense>
-        )}
-        
-        {currentView === 'settings' && (
-          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
-            <Settings />
-          </Suspense>
-        )}
-        
-        {currentView === 'legacy' && (
-          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
-            <LegacyMode />
-          </Suspense>
-        )}
-        
-        {currentView === 'analytics' && (
-          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
-            <Analytics />
-          </Suspense>
-        )}
-        
-        {currentView === 'community' && (
-          <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
-            <Community />
-          </Suspense>
-        )}
-      </main>
 
-      {/* Offline Indicator */}
-      <OfflineIndicator />
+          {/* Main Content */}
+          <main className="pb-20">,
+            {currentView === 'checkin' && (
+              <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
+                <div className="text-center space-y-4">
+                  <h1 className="text-5xl font-display font-bold text-gray-900 dark:text-white">
+                    Welcome back, {user?.full_name || 'friend'}
+                  </h1>
+                  <p className="text-xl text-gray-600 dark:text-gray-400">
+                    How are you holding up today?
+                  </p>
+                </div>
 
-      {/* Install App Prompt */}
-      <InstallPrompt />
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleNewEntry}
+                    className="btn-primary text-xl px-10 py-5 flex items-center gap-3 shadow-xl hover:shadow-2xl"
+                  >
+                    <PlusCircle className="w-7 h-7" />
+                    <span>New Entry</span>
+                  </button>
+                </div>
 
-      {/* Floating Action Button */}
-      <button
-        onClick={handleNewEntry}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 active:scale-95 flex items-center justify-center"
-      >
-        <PlusCircle className="w-8 h-8" />
-      </button>
-    </div>
-    </Suspense>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+                  <div className="card cursor-pointer hover:shadow-xl transition-shadow" onClick={() => setCurrentView('timeline')}>
+                    <Calendar className="w-12 h-12 text-primary-500 mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      Your Timeline
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      See your emotional journey over time
+                    </p>
+                    <div className="mt-4 text-3xl font-bold text-primary-500">
+                      {entries.length}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Total Entries</div>
+                  </div>
+
+                  <div className="card cursor-pointer hover:shadow-xl transition-shadow" onClick={() => setCurrentView('analytics')}>
+                    <BarChart3 className="w-12 h-12 text-secondary-500 mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      Insights
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Understand your emotional patterns
+                    </p>
+                    <div className="mt-4 text-3xl font-bold text-secondary-500">
+                      📊
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">View Analytics</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {currentView === 'checkin' && <EmotionCheckIn onComplete={handleCheckInComplete} />}
+
+            {currentView === 'moodboard' && (
+              <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+                <MoodboardSelector onSelect={handleMoodboardSelect} />
+              </Suspense>
+            )}
+
+            {currentView === 'editor' && (
+              <JournalEditor
+                onSave={handleEntrySaved}
+                onCancel={() => setCurrentView('home')}
+                editingEntry={editingEntry}
+              />
+            )}
+
+            {currentView === 'timeline' && (
+              <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+                <EmotionalTimeline onEntryClick={handleEditEntry} />
+              </Suspense>
+            )}
+
+            {currentView === 'settings' && (
+              <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+                <Settings />
+              </Suspense>
+            )}
+
+            {currentView === 'legacy' && (
+              <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+                <LegacyMode />
+              </Suspense>
+            )}
+
+            {currentView === 'analytics' && (
+              <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+                <Analytics />
+              </Suspense>
+            )}
+
+            {currentView === 'community' && (
+              <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
+                <Community />
+              </Suspense>
+            )}
+          </main>
+
+          {/* Offline Indicator */}
+          <OfflineIndicator />
+
+          {/* Install App Prompt */}
+          <InstallPrompt />
+
+          {/* Floating Action Button */}
+          <button
+            onClick={handleNewEntry}
+            className="mobile-fab fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 active:scale-95 flex items-center justify-center"
+          >
+            <PlusCircle className="w-8 h-8" />
+          </button>
+        </div>
+      </Suspense>
     </MediaRecordingContext.Provider>
   );
 }
