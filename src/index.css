@@ -1398,6 +1398,27 @@ input[type="range"]::-moz-range-thumb:hover {
   box-sizing: border-box;
 }
 
+/* Mobile: Ensure FULL WIDTH with strong specificity */
+@media (max-width: 768px) {
+
+  .settings-content,
+  .dashboard-content-wrapper .settings-content,
+  .settings-page .settings-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 20px 16px 120px 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .settings-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
 /* Desktop: center and constrain width */
 @media (min-width: 769px) {
   .settings-content {
@@ -1441,10 +1462,68 @@ input[type="range"]::-moz-range-thumb:hover {
   display: flex;
 }
 
-/* Mobile: Hide header completely */
+/* Mobile: Hide header completely - STRONG SPECIFICITY */
 @media (max-width: 768px) {
-  .app-header {
+
+  .app-header,
+  header.app-header,
+  .app-header[style] {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* =====================================================
+   MOBILE BOTTOM NAVIGATION - Always visible on mobile
+   ===================================================== */
+
+/* Base: Hide on desktop */
+.mobile-nav-bottom {
+  display: none;
+}
+
+/* Mobile: Show bottom nav with full styling */
+@media (max-width: 768px) {
+  .mobile-nav-bottom {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 88px !important;
+    background: rgba(26, 26, 46, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(232, 192, 155, 0.25) !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding: 8px 12px 12px 12px !important;
+    z-index: 9999 !important;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .mobile-nav-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 10px 16px !important;
+    cursor: pointer !important;
+    border-radius: 16px !important;
+    min-width: 68px !important;
+    min-height: 56px !important;
+    color: #D4B896 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .mobile-nav-item.active {
+    background: rgba(198, 123, 78, 0.25) !important;
+    color: #E8C09B !important;
   }
 }
 
