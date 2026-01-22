@@ -2148,22 +2148,22 @@ input[type="range"]::-moz-range-thumb:hover {
     font-size: 0.875rem !important;
   }
 
-  /* BOTTOM NAV - Dark with gold accents (moodboard style) */
+  /* BOTTOM NAV - Dark with gold accents - PROFESSIONAL LAYOUT */
   .mobile-nav-bottom {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 75px;
-    background: rgba(26, 26, 46, 0.95) !important;
+    height: 88px;
+    background: rgba(26, 26, 46, 0.98) !important;
     backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(232, 192, 155, 0.2) !important;
+    border-top: 1px solid rgba(232, 192, 155, 0.25) !important;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0 10px;
+    padding: 8px 12px 12px 12px;
     z-index: 9999;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4) !important;
   }
 
   .mobile-nav-item {
@@ -2171,18 +2171,27 @@ input[type="range"]::-moz-range-thumb:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 10px 14px;
+    gap: 6px;
+    padding: 10px 16px;
     cursor: pointer;
     transition: all 0.3s ease;
-    border-radius: 12px;
-    min-width: 60px;
+    border-radius: 16px;
+    min-width: 68px;
+    min-height: 56px;
     color: #D4B896 !important;
+    background: transparent;
+    border: none !important;
   }
 
-  .mobile-nav-item span {
+  .mobile-nav-item span:first-child {
+    font-size: 24px !important;
+  }
+
+  .mobile-nav-item span:last-child {
     color: #D4B896 !important;
-    font-size: 17px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px;
   }
 
   .mobile-nav-item:hover {
@@ -2236,35 +2245,6 @@ input[type="range"]::-moz-range-thumb:hover {
   .mobile-fab {
     bottom: 100px !important;
     z-index: 9998 !important;
-  }
-
-  /* PIN Setup Overlay - Full Screen Coverage */
-  .pin-setup-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 99999 !important;
-    background: #1a1a2e !important;
-  }
-
-  /* PIN Setup Buttons - Override mobile button styles */
-  .pin-setup-overlay button {
-    background: rgba(55, 55, 75, 0.9) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    text-shadow: none !important;
-    border-radius: 16px !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
-  }
-
-  .pin-setup-overlay button:active {
-    background: rgba(224, 122, 95, 0.4) !important;
-    transform: scale(0.95);
   }
 }
 
@@ -2428,31 +2408,55 @@ h6,
 /* Mobile PWA - increase font sizes for sunlight */
 @media (display-mode: standalone) {
   body {
-    font-size: 1.125rem !important;
+    font-size: 20px !important;
   }
 
   h1 {
-    font-size: 2.5rem !important;
+    font-size: 2.75rem !important;
   }
 
   h2 {
-    font-size: 2rem !important;
+    font-size: 2.25rem !important;
   }
 
   h3 {
-    font-size: 1.75rem !important;
+    font-size: 1.875rem !important;
+  }
+
+  p,
+  span,
+  label {
+    font-size: 18px !important;
   }
 
   button {
-    font-size: 1.125rem !important;
-    padding: 14px 24px !important;
+    font-size: 18px !important;
+    padding: 16px 28px !important;
+    min-height: 52px !important;
   }
 
   input,
   textarea,
   select {
-    font-size: 1.125rem !important;
-    padding: 14px !important;
+    font-size: 18px !important;
+    padding: 16px !important;
+    min-height: 52px !important;
+  }
+
+  /* Settings page - stack cards vertically */
+  .settings-flex-row {
+    flex-direction: column !important;
+  }
+
+  /* Improved button spacing */
+  .button-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .button-stack button {
+    width: 100% !important;
   }
 }
 
@@ -2475,101 +2479,6 @@ h6,
   border: 1px solid rgba(6, 182, 212, 0.5) !important;
   font-weight: 600 !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* =====================================================
-   LOCK SCREEN STYLES
-   ===================================================== */
-
-/* Lock screen backdrop blur */
-.lock-screen-overlay {
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-}
-
-/* PIN pad button glow effects */
-.pin-button {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  transition: all 0.2s ease;
-}
-
-.pin-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
-}
-
-.pin-button:active {
-  transform: scale(0.95);
-}
-
-/* PIN dot indicators */
-.pin-dot {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.pin-dot.filled {
-  animation: pin-dot-fill 0.2s ease;
-}
-
-@keyframes pin-dot-fill {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* Biometric button pulse */
-.biometric-button {
-  animation: biometric-pulse 2s ease-in-out infinite;
-}
-
-@keyframes biometric-pulse {
-
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(167, 139, 250, 0.4);
-  }
-
-  50% {
-    box-shadow: 0 0 30px rgba(167, 139, 250, 0.6);
-  }
-}
-
-/* Lock screen error shake */
-.pin-error {
-  animation: shake 0.5s ease-in-out;
-}
-
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: translateX(-5px);
-  }
-
-  20%,
-  40%,
-  60%,
-  80% {
-    transform: translateX(5px);
-  }
 }
 
 /* Security settings animations */

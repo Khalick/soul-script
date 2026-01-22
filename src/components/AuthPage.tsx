@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
-import { PINSetup } from './PINSetup';
-import { BiometricSetup } from './BiometricSetup';
 
 interface AuthPageProps {
   onSuccess: () => void;
@@ -15,8 +13,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showPinSetup, setShowPinSetup] = useState(false);
-  const [showBiometricSetup, setShowBiometricSetup] = useState(false);
   const { setUser } = useAuthStore();
 
   // Create floating particles
@@ -31,7 +27,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
       particle.style.animationDuration = Math.random() * 10 + 10 + 's';
       particle.style.animationDelay = Math.random() * 5 + 's';
       document.body.appendChild(particle);
-      
+
       setTimeout(() => particle.remove(), 20000);
     }, 300);
 
@@ -47,7 +43,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
         sparkle.style.left = e.pageX + 'px';
         sparkle.style.top = e.pageY + 'px';
         document.body.appendChild(sparkle);
-        
+
         setTimeout(() => sparkle.remove(), 1500);
       }
     };
@@ -91,8 +87,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
             subscription_tier: 'free',
             storage_used: 0,
           });
-          // Show PIN setup for new users
-          setShowPinSetup(true);
+          onSuccess();
         }
       } else {
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -177,14 +172,14 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
         <div style={{
           animation: 'fadeIn 0.8s ease-out, float 6s infinite ease-in-out',
         }}>
-          <svg 
-            width="80" 
-            height="80" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="white" 
+          <svg
+            width="80"
+            height="80"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
             strokeWidth="1.5"
-            strokeLinecap="round" 
+            strokeLinecap="round"
             strokeLinejoin="round"
             style={{
               filter: 'drop-shadow(0 4px 20px rgba(255, 255, 255, 0.3))',
@@ -197,7 +192,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
         </div>
 
         {/* Title */}
-        <div style={{ 
+        <div style={{
           textAlign: 'center',
           animation: 'fadeIn 1s ease-out 0.2s backwards',
         }}>
@@ -286,7 +281,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
         </div>
 
         {/* Form */}
-        <form 
+        <form
           onSubmit={handleAuth}
           style={{
             width: '100%',
@@ -306,14 +301,14 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
                 transform: 'translateY(-50%)',
                 pointerEvents: 'none',
               }}>
-                <svg 
-                  width="24" 
-                  height="24" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="rgba(255, 255, 255, 0.5)" 
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="rgba(255, 255, 255, 0.5)"
                   strokeWidth="1.5"
-                  strokeLinecap="round" 
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                 >
                   <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
@@ -361,14 +356,14 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
               transform: 'translateY(-50%)',
               pointerEvents: 'none',
             }}>
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="rgba(255, 255, 255, 0.5)" 
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="rgba(255, 255, 255, 0.5)"
                 strokeWidth="1.5"
-                strokeLinecap="round" 
+                strokeLinecap="round"
                 strokeLinejoin="round"
               >
                 <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
@@ -415,14 +410,14 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
               transform: 'translateY(-50%)',
               pointerEvents: 'none',
             }}>
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="rgba(255, 255, 255, 0.5)" 
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="rgba(255, 255, 255, 0.5)"
                 strokeWidth="1.5"
-                strokeLinecap="round" 
+                strokeLinecap="round"
                 strokeLinejoin="round"
               >
                 <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
@@ -547,34 +542,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
           color: rgba(255, 255, 255, 0.5);
         }
       `}</style>
-
-      {/* PIN Setup Modal */}
-      {showPinSetup && (
-        <PINSetup
-          onComplete={() => {
-            setShowPinSetup(false);
-            setShowBiometricSetup(true);
-          }}
-          onSkip={() => {
-            setShowPinSetup(false);
-            onSuccess();
-          }}
-        />
-      )}
-
-      {/* Biometric Setup Modal */}
-      {showBiometricSetup && (
-        <BiometricSetup
-          onComplete={() => {
-            setShowBiometricSetup(false);
-            onSuccess();
-          }}
-          onSkip={() => {
-            setShowBiometricSetup(false);
-            onSuccess();
-          }}
-        />
-      )}
     </div>
   );
 };

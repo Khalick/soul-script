@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Lock, Fingerprint, Clock, Smartphone, Trash2, AlertCircle, Check } from 'lucide-react';
+import { Shield, Fingerprint, Clock, Smartphone, Trash2, AlertCircle, Check } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useSecurityStore } from '../stores/securityStore';
-import { disablePin, disableBiometric, removeTrustedDevice, isBiometricAvailable } from '../lib/pinAuth';
+import { disableBiometric, removeTrustedDevice, isBiometricAvailable } from '../lib/pinAuth';
 import { supabase } from '../lib/supabase';
-import { PINSetup } from './PINSetup';
 import { BiometricSetup } from './BiometricSetup';
 
 export const SecuritySettings: React.FC = () => {
   const { user } = useAuthStore();
-  const { pinEnabled, biometricEnabled, setPinEnabled, setBiometricEnabled, setAutoLockTimeout, autoLockTimeout, deviceFingerprint } = useSecurityStore();
-  const [showPinSetup, setShowPinSetup] = useState(false);
+  const { biometricEnabled, setBiometricEnabled, setAutoLockTimeout, autoLockTimeout, deviceFingerprint } = useSecurityStore();
   const [showBiometricSetup, setShowBiometricSetup] = useState(false);
   const [trustedDevices, setTrustedDevices] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -31,7 +29,7 @@ export const SecuritySettings: React.FC = () => {
 
   const loadTrustedDevices = async () => {
     if (!user) return;
-    
+
     const { data } = await supabase
       .from('users')
       .select('trusted_devices')
@@ -40,28 +38,6 @@ export const SecuritySettings: React.FC = () => {
 
     if (data && data.trusted_devices) {
       setTrustedDevices(data.trusted_devices);
-    }
-  };
-
-  const handleDisablePin = async () => {
-    if (!user) return;
-    if (!confirm('Are you sure you want to disable PIN? You will need to use your password to unlock the app.')) return;
-
-    setLoading(true);
-    try {
-      const success = await disablePin(user.id);
-      if (success) {
-        setPinEnabled(false);
-        localStorage.removeItem('soul-script-pin-hash');
-        setMessage({ type: 'success', text: 'PIN disabled successfully' });
-      } else {
-        throw new Error('Failed to disable PIN');
-      }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to disable PIN. Please try again.' });
-    } finally {
-      setLoading(false);
-      setTimeout(() => setMessage(null), 3000);
     }
   };
 
@@ -144,60 +120,14 @@ export const SecuritySettings: React.FC = () => {
 
       {/* Message */}
       {message && (
-        <div className={`p-4 rounded-xl border flex items-center gap-3 ${
-          message.type === 'success'
-            ? 'bg-green-500/20 border-green-500/50 text-green-400'
-            : 'bg-red-500/20 border-red-500/50 text-red-400'
-        }`}>
+        <div className={`p-4 rounded-xl border flex items-center gap-3 ${message.type === 'success'
+          ? 'bg-green-500/20 border-green-500/50 text-green-400'
+          : 'bg-red-500/20 border-red-500/50 text-red-400'
+          }`}>
           {message.type === 'success' ? <Check className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
           {message.text}
         </div>
       )}
-
-      {/* PIN Protection */}
-      <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-start gap-3">
-            <Lock className="w-6 h-6 text-primary-400 mt-1" />
-            <div>
-              <h3 className="text-xl font-semibold text-white">PIN Protection</h3>
-              <p className="text-gray-400 text-sm mt-1">
-                Quick unlock with a 6-digit PIN
-              </p>
-            </div>
-          </div>
-          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-            pinEnabled ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-400'
-          }`}>
-            {pinEnabled ? 'Enabled' : 'Disabled'}
-          </div>
-        </div>
-
-        {pinEnabled ? (
-          <div className="space-y-3">
-            <button
-              onClick={() => setShowPinSetup(true)}
-              className="w-full py-3 px-4 rounded-xl bg-gray-700 hover:bg-gray-600 text-white transition-all"
-            >
-              Change PIN
-            </button>
-            <button
-              onClick={handleDisablePin}
-              disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 transition-all disabled:opacity-50"
-            >
-              Disable PIN
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setShowPinSetup(true)}
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-primary-500 to-secondary-300 hover:from-primary-600 hover:to-secondary-400 text-white font-semibold transition-all"
-          >
-            Enable PIN Protection
-          </button>
-        )}
-      </div>
 
       {/* Biometric Authentication */}
       <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
@@ -214,9 +144,8 @@ export const SecuritySettings: React.FC = () => {
               )}
             </div>
           </div>
-          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-            biometricEnabled ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-400'
-          }`}>
+          <div className={`px-3 py-1 rounded-full text-xs font-medium ${biometricEnabled ? 'bg-green-500/20 text-green-400' : 'bg-gray-700 text-gray-400'
+            }`}>
             {biometricEnabled ? 'Enabled' : 'Disabled'}
           </div>
         </div>
@@ -232,10 +161,10 @@ export const SecuritySettings: React.FC = () => {
         ) : (
           <button
             onClick={() => setShowBiometricSetup(true)}
-            disabled={!biometricAvailable || !pinEnabled}
+            disabled={!biometricAvailable}
             className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-accent-400 to-accent-500 hover:from-accent-500 hover:to-accent-600 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {!pinEnabled ? 'Enable PIN First' : 'Enable Biometric'}
+            Enable Biometric
           </button>
         )}
       </div>
@@ -255,7 +184,7 @@ export const SecuritySettings: React.FC = () => {
         <select
           value={autoLockTimeout}
           onChange={(e) => handleTimeoutChange(Number(e.target.value))}
-          disabled={loading || !pinEnabled}
+          disabled={loading}
           className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-primary-500 transition-colors disabled:opacity-50"
         >
           <option value={5}>5 minutes</option>
@@ -273,7 +202,7 @@ export const SecuritySettings: React.FC = () => {
           <div>
             <h3 className="text-xl font-semibold text-white">Trusted Devices</h3>
             <p className="text-gray-400 text-sm mt-1">
-              Devices where you've enabled PIN
+              Devices with biometric authentication enabled
             </p>
           </div>
         </div>
@@ -317,16 +246,6 @@ export const SecuritySettings: React.FC = () => {
       </div>
 
       {/* Modals */}
-      {showPinSetup && (
-        <PINSetup
-          onComplete={() => {
-            setShowPinSetup(false);
-            loadTrustedDevices();
-          }}
-          onSkip={() => setShowPinSetup(false)}
-        />
-      )}
-
       {showBiometricSetup && (
         <BiometricSetup
           onComplete={() => setShowBiometricSetup(false)}

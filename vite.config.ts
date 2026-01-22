@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'favicon.svg', 'favicon-96x96.png', 'web-app-manifest-192x192.png', 'web-app-manifest-512x512.png'],
-      
+
       manifest: {
         name: 'Soul Script',
         short_name: 'SoulScript',
@@ -79,14 +79,14 @@ export default defineConfig({
           }
         ]
       },
-      
+
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,jpg,jpeg}'],
-        
+
         // Offline fallback page
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api/],
-        
+
         // Cache strategies for different resource types
         runtimeCaching: [
           {
@@ -145,15 +145,15 @@ export default defineConfig({
             }
           }
         ],
-        
+
         // Clean up old caches
         cleanupOutdatedCaches: true,
-        
+
         // Skip waiting to activate new service worker immediately
         skipWaiting: true,
         clientsClaim: true
       },
-      
+
       devOptions: {
         enabled: true,
         type: 'module',
@@ -161,4 +161,7 @@ export default defineConfig({
       }
     })
   ],
+  server: {
+    allowedHosts: ['.ngrok-free.dev', '.ngrok.io', 'localhost']
+  }
 })

@@ -3,7 +3,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useSubscriptionStore } from '../stores/subscriptionStore';
 import { useJournalStore } from '../stores/journalStore';
 import { getGradientBackground } from '../lib/colorUtils';
-import { Crown, Volume2, Download, Smartphone, Package, Trash2 } from 'lucide-react';
+import { Crown, Download, Smartphone, Package, Trash2, Shield, Palette, User, Music } from 'lucide-react';
 import { SecuritySettings } from './SecuritySettings';
 
 export function Settings() {
@@ -27,7 +27,6 @@ export function Settings() {
     { name: 'Teal', value: '#14b8a6' },
     { name: 'Blue', value: '#60a5fa' },
     { name: 'Indigo', value: '#818cf8' },
-    { name: 'Teal', value: '#14b8a6' },
     { name: 'Green', value: '#4ade80' },
     { name: 'Lime', value: '#84cc16' },
     { name: 'Yellow', value: '#facc15' },
@@ -35,6 +34,7 @@ export function Settings() {
     { name: 'Red', value: '#f87171' },
     { name: 'Rose', value: '#fb7185' },
     { name: 'Fuchsia', value: '#e879f9' },
+    { name: 'Purple', value: '#a855f7' },
   ];
 
   // Create particles
@@ -55,30 +55,24 @@ export function Settings() {
 
   // Check PWA install status
   useEffect(() => {
-    // Check if already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const isIOSStandalone = (window.navigator as any).standalone === true;
-    
+
     if (isStandalone || isIOSStandalone) {
       setIsInstalled(true);
       return;
     }
 
-    // Skip iOS (manual install only)
     const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     if (ios) return;
 
-    // Listen for install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
       setDeferredPrompt(e);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    console.log('👂 Listening for beforeinstallprompt event...');
 
-    // Listen for app installed event
     const handleAppInstalled = () => {
-      console.log('✅ App installed!');
       setIsInstalled(true);
       setDeferredPrompt(null);
     };
@@ -93,15 +87,12 @@ export function Settings() {
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
-
     try {
       await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-
       if (outcome === 'accepted') {
         setIsInstalled(true);
       }
-
       setDeferredPrompt(null);
     } catch (error) {
       console.error('Install error:', error);
@@ -109,7 +100,7 @@ export function Settings() {
   };
 
   const handleClearCache = async () => {
-    if (window.confirm('Are you sure you want to clear the app cache? This will refresh the app and may fix loading issues. Your data will be preserved if synced.')) {
+    if (window.confirm('Are you sure you want to clear the app cache? This will refresh the app and may fix loading issues.')) {
       try {
         if ('serviceWorker' in navigator) {
           const registrations = await navigator.serviceWorker.getRegistrations();
@@ -117,18 +108,16 @@ export function Settings() {
             await registration.unregister();
           }
         }
-        
         if ('caches' in window) {
           const keys = await caches.keys();
           for (const key of keys) {
             await caches.delete(key);
           }
         }
-        
         window.location.reload();
       } catch (error) {
         console.error('Error clearing cache:', error);
-        alert('Failed to clear cache completely. Please try manually clearing browser data.');
+        alert('Failed to clear cache. Please try manually clearing browser data.');
       }
     }
   };
@@ -174,349 +163,421 @@ export function Settings() {
   };
 
   return (
-    <div className="dashboard-page" style={{
-      background: gradientBackground
-    }}>
+    <div className="dashboard-page" style={{ background: gradientBackground }}>
       <div className="dashboard-orb dashboard-orb1" style={{ background: `${favoriteColor}40` }}></div>
       <div className="dashboard-orb dashboard-orb2" style={{ background: `${favoriteColor}30` }}></div>
       <div className="dashboard-orb dashboard-orb3" style={{ background: `${favoriteColor}50` }}></div>
 
       <div className="dashboard-content-wrapper">
-        <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
-          <div className="text-center" style={{ animation: 'fadeIn 1s ease-out' }}>
-            <h1 style={{ fontSize: '48px', fontWeight: '700', color: 'white', textShadow: '0 0 40px rgba(255, 255, 255, 0.5)', marginBottom: '10px', animation: 'glow 3s ease-in-out infinite' }}>
-              {favoriteEmoji} Boundaries
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px' }}>
+
+          {/* Header - Bigger & Bolder */}
+          <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+            <h1 style={{
+              fontSize: '64px',
+              fontWeight: '800',
+              color: 'white',
+              textShadow: '0 4px 40px rgba(255, 255, 255, 0.4)',
+              margin: 0,
+              marginBottom: '12px',
+              letterSpacing: '2px'
+            }}>
+              {favoriteEmoji} BOUNDARIES
             </h1>
-            <p style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.9)' }}>
-              Personalize your Sanctuary experience
+            <p style={{
+              fontSize: '22px',
+              color: 'rgba(255, 255, 255, 0.9)',
+              letterSpacing: '3px',
+              textTransform: 'uppercase',
+              fontWeight: '500'
+            }}>
+              Personalize Your Sanctuary
             </p>
           </div>
 
-          {/* Install App Button */}
+          {/* Install App Section */}
           {!isInstalled && deferredPrompt && (
-            <div className="dashboard-card" style={{ animationDelay: '0.1s', textAlign: 'center' }}>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(224, 122, 95, 0.4), rgba(201, 98, 74, 0.4))',
+              borderRadius: '20px',
+              padding: '30px',
+              marginBottom: '30px',
+              border: '2px solid rgba(224, 122, 95, 0.5)',
+              textAlign: 'center'
+            }}>
               <button
                 onClick={handleInstall}
                 style={{
-                  padding: '16px 40px',
+                  padding: '20px 50px',
                   background: 'linear-gradient(135deg, #E07A5F, #C9624A)',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '12px',
-                  fontSize: '18px',
+                  borderRadius: '16px',
+                  fontSize: '20px',
                   fontWeight: '700',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '12px',
-                  boxShadow: '0 8px 30px rgba(224, 122, 95, 0.4)',
+                  gap: '14px',
+                  boxShadow: '0 10px 40px rgba(224, 122, 95, 0.5)',
                   transition: 'all 0.3s'
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(224, 122, 95, 0.6)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 8px 30px rgba(224, 122, 95, 0.4)';
-                }}
               >
-                <Download size={24} />
+                <Download size={28} />
                 Install Sanctuary
               </button>
             </div>
           )}
 
           {isInstalled && (
-            <div className="dashboard-card" style={{ animationDelay: '0.1s', background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3))', border: '2px solid rgba(255, 255, 255, 0.2)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <div style={{ 
-                  padding: '12px', 
-                  background: 'rgba(255, 255, 255, 0.2)', 
-                  borderRadius: '12px'
-                }}>
-                  <Smartphone size={24} color="white" />
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: 'white', marginBottom: '5px' }}>
-                    ✅ App Installed
-                  </h3>
-                  <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)' }}>
-                    Soul Script is installed on your device!
-                  </p>
-                </div>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3))',
+              borderRadius: '20px',
+              padding: '25px 30px',
+              marginBottom: '30px',
+              border: '2px solid rgba(74, 222, 128, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '20px'
+            }}>
+              <div style={{ padding: '14px', background: 'rgba(255, 255, 255, 0.2)', borderRadius: '14px' }}>
+                <Smartphone size={28} color="white" />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '22px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '4px' }}>
+                  ✅ App Installed
+                </h3>
+                <p style={{ fontSize: '16px', color: 'rgba(255, 255, 255, 0.9)', margin: 0 }}>
+                  Soul Script is installed on your device!
+                </p>
               </div>
             </div>
           )}
 
-          {/* Customizable Dear Prompt */}
-          <div className="dashboard-card" style={{ animationDelay: '0.2s' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '15px', color: 'white' }}>
-              📝 Customize Your Greeting
-            </h2>
-            <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '15px' }}>
-              Change who you're writing to (e.g., "Dear Mom", "Dear Future Me", "Dear God")
-            </p>
-            <input
-              type="text"
-              value={tempPrompt}
-              onChange={(e) => setTempPrompt(e.target.value)}
-              placeholder="Dear Diary"
-              maxLength={30}
-              style={{
-                width: '100%',
-                padding: '15px 20px',
-                background: 'rgba(255, 255, 255, 0.15)',
-                border: '2px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '12px',
-                color: 'white',
-                fontSize: '18px',
-                fontWeight: '600',
-                outline: 'none',
-                transition: 'all 0.3s'
-              }}
-            />
-            <p style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '10px' }}>
-              Preview: {tempPrompt || 'Dear Diary'},
-            </p>
-          </div>
-
-          {/* Favorite Emoji */}
-          <div className="dashboard-card" style={{ animationDelay: '0.3s' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '20px', color: 'white' }}>
-              Choose Your Favorite Emoji
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '15px' }}>
-              {emojis.map((emoji) => (
-                <button
-                  key={emoji}
-                  onClick={() => setTempEmoji(emoji)}
-                  style={{
-                    fontSize: '48px',
-                    padding: '20px',
-                    background: tempEmoji === emoji ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.1)',
-                    border: tempEmoji === emoji ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '20px',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    transform: tempEmoji === emoji ? 'scale(1.1)' : 'scale(1)'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = tempEmoji === emoji ? 'scale(1.1)' : 'scale(1)'}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Favorite Color */}
-          <div className="dashboard-card" style={{ animationDelay: '0.5s' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '20px', color: 'white' }}>
-              Choose Your Favorite Color
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
-              {colors.map((color) => (
-                <button
-                  key={color.value}
-                  onClick={() => setTempColor(color.value)}
-                  style={{
-                    padding: '25px',
-                    background: tempColor === color.value 
-                      ? `linear-gradient(135deg, ${color.value}, ${color.value}cc)` 
-                      : `linear-gradient(135deg, ${color.value}88, ${color.value}44)`,
-                    border: tempColor === color.value ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.3)',
-                    borderRadius: '20px',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    color: 'white',
-                    fontWeight: '700',
-                    fontSize: '16px',
-                    boxShadow: tempColor === color.value ? `0 10px 30px ${color.value}60` : 'none',
-                    transform: tempColor === color.value ? 'scale(1.05)' : 'scale(1)'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = tempColor === color.value ? 'scale(1.05)' : 'scale(1)'}
-                >
-                  {color.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Theme Toggle */}
-          <div className="dashboard-card" style={{ animationDelay: '0.7s' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '20px', color: 'white' }}>
-              Theme Mode
-            </h2>
-            <div style={{ display: 'flex', gap: '15px' }}>
-              <button
-                onClick={() => setTheme('light')}
-                style={{
-                  flex: 1,
-                  padding: '20px',
-                  background: theme === 'light' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)',
-                  border: theme === 'light' ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '15px',
-                  color: 'white',
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s'
-                }}
-              >
-                ☀️ Light
-              </button>
-              <button
-                onClick={() => setTheme('dark')}
-                style={{
-                  flex: 1,
-                  padding: '20px',
-                  background: theme === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)',
-                  border: theme === 'dark' ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '15px',
-                  color: 'white',
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s'
-                }}
-              >
-                🌙 Dark
-              </button>
-            </div>
-          </div>
-
-          {/* Background Ambience */}
-          <div className="dashboard-card" style={{ animationDelay: '0.75s' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-              <Volume2 size={24} color="white" />
-              <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'white' }}>
-                Background Ambience
+          {/* CARD 1: Personalization (Greeting + Emoji + Color) */}
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '24px',
+            padding: '35px',
+            marginBottom: '25px',
+            border: '2px solid rgba(255, 255, 255, 0.15)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '30px' }}>
+              <div style={{ padding: '14px', background: 'rgba(255, 255, 255, 0.15)', borderRadius: '14px' }}>
+                <User size={28} color="white" />
+              </div>
+              <h2 style={{ fontSize: '28px', fontWeight: '700', color: 'white', margin: 0 }}>
+                Personalization
               </h2>
             </div>
-            <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '20px' }}>
-              Choose calming sounds to play while journaling
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px', marginBottom: '20px' }}>
-              {[
-                { name: 'None', value: 'none', emoji: '🔇' },
-                { name: 'Rain', value: 'rain', emoji: '🌧️' },
-                { name: 'Fire', value: 'fire', emoji: '🔥' },
-                { name: 'Waves', value: 'waves', emoji: '🌊' },
-                { name: 'Forest', value: 'forest', emoji: '🌲' },
-                { name: 'Cafe', value: 'cafe', emoji: '☕' },
-                { name: 'White Noise', value: 'whitenoise', emoji: '📻' },
-                { name: 'Custom Music', value: 'custom', emoji: '🎵' },
-              ].map((ambience) => (
-                <button
-                  key={ambience.value}
-                  onClick={() => setBackgroundAmbience(ambience.value as any)}
-                  style={{
-                    padding: '15px 20px',
-                    background: backgroundAmbience === ambience.value ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)',
-                    border: backgroundAmbience === ambience.value ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '15px',
-                    color: 'white',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <span style={{ fontSize: '24px' }}>{ambience.emoji}</span>
-                  {ambience.name}
-                </button>
-              ))}
+
+            {/* Greeting Input */}
+            <div style={{ marginBottom: '35px' }}>
+              <label style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: 'white',
+                display: 'block',
+                marginBottom: '12px'
+              }}>
+                📝 Your Greeting
+              </label>
+              <input
+                type="text"
+                value={tempPrompt}
+                onChange={(e) => setTempPrompt(e.target.value)}
+                placeholder="Dear Diary"
+                maxLength={30}
+                style={{
+                  width: '100%',
+                  padding: '18px 24px',
+                  background: 'rgba(255, 255, 255, 0.12)',
+                  border: '2px solid rgba(255, 255, 255, 0.25)',
+                  borderRadius: '14px',
+                  color: 'white',
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  outline: 'none',
+                  transition: 'all 0.3s'
+                }}
+              />
+              <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '10px' }}>
+                Preview: <span style={{ fontWeight: '600' }}>{tempPrompt || 'Dear Diary'},</span>
+              </p>
             </div>
-            {backgroundAmbience === 'custom' && (
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '10px', display: 'block' }}>
-                  Enter music URL (MP3 link)
-                </label>
-                <input
-                  type="url"
-                  value={tempMusicUrl}
-                  onChange={(e) => setTempMusicUrl(e.target.value)}
-                  placeholder="https://example.com/music.mp3"
-                  style={{
-                    width: '100%',
-                    padding: '12px 15px',
-                    background: 'rgba(255, 255, 255, 0.15)',
-                    border: '2px solid rgba(255, 255, 255, 0.3)',
-                    borderRadius: '12px',
-                    color: 'white',
-                    fontSize: '14px',
-                    outline: 'none',
-                    transition: 'all 0.3s'
-                  }}
-                />
-                <p style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '8px' }}>
-                  💡 Tip: Use a direct MP3 link from Google Drive, Dropbox, or any audio hosting service
-                </p>
+
+            {/* Emoji Selection */}
+            <div style={{ marginBottom: '35px' }}>
+              <label style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: 'white',
+                display: 'block',
+                marginBottom: '15px'
+              }}>
+                Your Favorite Emoji
+              </label>
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                flexWrap: 'wrap',
+                justifyContent: 'center'
+              }}>
+                {emojis.map((emoji) => (
+                  <button
+                    key={emoji}
+                    onClick={() => setTempEmoji(emoji)}
+                    style={{
+                      fontSize: '36px',
+                      padding: '14px',
+                      background: tempEmoji === emoji ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.08)',
+                      border: tempEmoji === emoji ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.15)',
+                      borderRadius: '16px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      transform: tempEmoji === emoji ? 'scale(1.15)' : 'scale(1)'
+                    }}
+                  >
+                    {emoji}
+                  </button>
+                ))}
               </div>
-            )}
-            {backgroundAmbience !== 'none' && (
-              <div>
-                <label style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '10px', display: 'block' }}>
-                  Volume: {Math.round(ambienceVolume * 100)}%
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={ambienceVolume * 100}
-                  onChange={(e) => setAmbienceVolume(parseInt(e.target.value) / 100)}
-                  style={{
-                    width: '100%',
-                    height: '8px',
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    borderRadius: '4px',
-                    outline: 'none',
-                    cursor: 'pointer'
-                  }}
-                />
+            </div>
+
+            {/* Color Selection */}
+            <div>
+              <label style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: 'white',
+                display: 'block',
+                marginBottom: '15px'
+              }}>
+                Your Favorite Color
+              </label>
+              <div style={{
+                display: 'flex',
+                gap: '10px',
+                flexWrap: 'wrap',
+                justifyContent: 'center'
+              }}>
+                {colors.map((color) => (
+                  <button
+                    key={color.value}
+                    onClick={() => setTempColor(color.value)}
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      background: `linear-gradient(135deg, ${color.value}, ${color.value}cc)`,
+                      border: tempColor === color.value ? '4px solid white' : '2px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '14px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      boxShadow: tempColor === color.value ? `0 8px 25px ${color.value}70` : 'none',
+                      transform: tempColor === color.value ? 'scale(1.1)' : 'scale(1)'
+                    }}
+                    title={color.name}
+                  />
+                ))}
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Premium Subscription */}
-          <div className="dashboard-card" style={{ 
-            animationDelay: '0.8s',
-            background: premiumActive 
-              ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2))' 
-              : 'rgba(255, 255, 255, 0.1)',
-            border: premiumActive ? '2px solid rgba(255, 215, 0, 0.5)' : '2px solid rgba(255, 255, 255, 0.2)'
+          {/* CARD 2: Theme & Ambience (2-column flex - stacks on mobile) */}
+          <div className="settings-flex-row" style={{
+            display: 'flex',
+            gap: '20px',
+            marginBottom: '25px',
+            flexWrap: 'wrap'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
-              <Crown size={32} color={premiumActive ? '#FFD700' : 'rgba(255, 255, 255, 0.7)'} />
-              <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'white' }}>
+            {/* Theme Mode */}
+            <div style={{
+              flex: 1,
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '24px',
+              padding: '30px',
+              border: '2px solid rgba(255, 255, 255, 0.15)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '25px' }}>
+                <Palette size={24} color="white" />
+                <h3 style={{ fontSize: '22px', fontWeight: '700', color: 'white', margin: 0 }}>
+                  Theme
+                </h3>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <button
+                  onClick={() => setTheme('light')}
+                  style={{
+                    padding: '18px',
+                    background: theme === 'light' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.08)',
+                    border: theme === 'light' ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '14px',
+                    color: 'white',
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s'
+                  }}
+                >
+                  ☀️ Light
+                </button>
+                <button
+                  onClick={() => setTheme('dark')}
+                  style={{
+                    padding: '18px',
+                    background: theme === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.08)',
+                    border: theme === 'dark' ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '14px',
+                    color: 'white',
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s'
+                  }}
+                >
+                  🌙 Dark
+                </button>
+              </div>
+            </div>
+
+            {/* Background Ambience */}
+            <div style={{
+              flex: 2,
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '24px',
+              padding: '30px',
+              border: '2px solid rgba(255, 255, 255, 0.15)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <Music size={24} color="white" />
+                <h3 style={{ fontSize: '22px', fontWeight: '700', color: 'white', margin: 0 }}>
+                  Background Ambience
+                </h3>
+              </div>
+              <div style={{
+                display: 'flex',
+                gap: '10px',
+                flexWrap: 'wrap'
+              }}>
+                {[
+                  { name: 'None', value: 'none', emoji: '🔇' },
+                  { name: 'Rain', value: 'rain', emoji: '🌧️' },
+                  { name: 'Fire', value: 'fire', emoji: '🔥' },
+                  { name: 'Waves', value: 'waves', emoji: '🌊' },
+                  { name: 'Forest', value: 'forest', emoji: '🌲' },
+                  { name: 'Cafe', value: 'cafe', emoji: '☕' },
+                  { name: 'White Noise', value: 'whitenoise', emoji: '📻' },
+                  { name: 'Custom', value: 'custom', emoji: '🎵' },
+                ].map((ambience) => (
+                  <button
+                    key={ambience.value}
+                    onClick={() => setBackgroundAmbience(ambience.value as any)}
+                    style={{
+                      padding: '12px 18px',
+                      background: backgroundAmbience === ambience.value ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.08)',
+                      border: backgroundAmbience === ambience.value ? '2px solid white' : '2px solid rgba(255, 255, 255, 0.15)',
+                      borderRadius: '12px',
+                      color: 'white',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span style={{ fontSize: '20px' }}>{ambience.emoji}</span>
+                    {ambience.name}
+                  </button>
+                ))}
+              </div>
+
+              {backgroundAmbience === 'custom' && (
+                <div style={{ marginTop: '20px' }}>
+                  <input
+                    type="url"
+                    value={tempMusicUrl}
+                    onChange={(e) => setTempMusicUrl(e.target.value)}
+                    placeholder="https://example.com/music.mp3"
+                    style={{
+                      width: '100%',
+                      padding: '14px 18px',
+                      background: 'rgba(255, 255, 255, 0.12)',
+                      border: '2px solid rgba(255, 255, 255, 0.25)',
+                      borderRadius: '12px',
+                      color: 'white',
+                      fontSize: '15px',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+              )}
+
+              {backgroundAmbience !== 'none' && (
+                <div style={{ marginTop: '20px' }}>
+                  <label style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '10px', display: 'block' }}>
+                    Volume: {Math.round(ambienceVolume * 100)}%
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={ambienceVolume * 100}
+                    onChange={(e) => setAmbienceVolume(parseInt(e.target.value) / 100)}
+                    style={{
+                      width: '100%',
+                      height: '8px',
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      borderRadius: '4px',
+                      outline: 'none',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* CARD 3: Premium Subscription - Prominent Design */}
+          <div style={{
+            background: premiumActive
+              ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 165, 0, 0.25))'
+              : 'linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1))',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '24px',
+            padding: '35px',
+            marginBottom: '25px',
+            border: premiumActive ? '3px solid rgba(255, 215, 0, 0.6)' : '2px solid rgba(255, 215, 0, 0.3)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+              <Crown size={36} color={premiumActive ? '#FFD700' : 'rgba(255, 215, 0, 0.8)'} />
+              <h2 style={{ fontSize: '28px', fontWeight: '700', color: 'white', margin: 0 }}>
                 Premium Subscription
               </h2>
             </div>
-            
+
             {premiumActive ? (
               <div>
-                <p style={{ fontSize: '16px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '15px' }}>
+                <p style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '20px' }}>
                   🎉 You are a premium member! Enjoy unlimited access to Legacy Mode and all future premium features.
                 </p>
                 <button
                   onClick={() => {
-                    if (confirm('Are you sure you want to cancel premium? (This is for demo purposes)')) {
+                    if (confirm('Are you sure you want to cancel premium?')) {
                       setSubscription(false);
                     }
                   }}
                   style={{
-                    padding: '12px 25px',
+                    padding: '14px 28px',
                     background: 'rgba(239, 68, 68, 0.2)',
                     border: '2px solid rgba(239, 68, 68, 0.5)',
-                    borderRadius: '12px',
+                    borderRadius: '14px',
                     color: 'white',
-                    fontSize: '14px',
+                    fontSize: '16px',
                     fontWeight: '600',
                     cursor: 'pointer'
                   }}
@@ -526,158 +587,180 @@ export function Settings() {
               </div>
             ) : (
               <div>
-                <p style={{ fontSize: '16px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '20px' }}>
-                  Unlock Legacy Mode and write letters to your future self. Get reminded about your dreams and goals exactly when you need them.
+                <p style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '25px' }}>
+                  Unlock Legacy Mode and write letters to your future self. Get reminded about your dreams exactly when you need them.
                 </p>
                 <button
                   onClick={() => {
-                    // Demo mode - activate premium immediately
                     const oneYearFromNow = new Date();
                     oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
                     setSubscription(true, oneYearFromNow.toISOString());
-                    alert('🎉 Premium activated! (Demo mode - normally this would integrate with payment provider)');
+                    alert('🎉 Premium activated!');
                   }}
                   style={{
-                    padding: '15px 30px',
+                    padding: '20px 40px',
                     background: 'linear-gradient(135deg, #FFD700, #FFA500)',
                     border: 'none',
-                    borderRadius: '12px',
+                    borderRadius: '16px',
                     color: '#000',
-                    fontSize: '18px',
+                    fontSize: '20px',
                     fontWeight: '700',
                     cursor: 'pointer',
-                    boxShadow: '0 8px 30px rgba(255, 215, 0, 0.4)',
+                    boxShadow: '0 10px 40px rgba(255, 215, 0, 0.5)',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '10px'
+                    gap: '12px'
                   }}
                 >
-                  <Crown size={20} /> Activate Premium (Demo)
+                  <Crown size={24} /> Activate Premium
                 </button>
               </div>
             )}
           </div>
 
-          {/* Export Data */}
-          <div className="dashboard-card" style={{ animationDelay: '0.8s' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-              <div style={{ 
-                padding: '12px', 
-                background: 'rgba(255, 255, 255, 0.2)', 
-                borderRadius: '12px'
-              }}>
-                <Package size={24} color="white" />
+          {/* CARD 4: Data & Maintenance (2-column flex - stacks on mobile) */}
+          <div className="settings-flex-row" style={{
+            display: 'flex',
+            gap: '20px',
+            marginBottom: '25px',
+            flexWrap: 'wrap'
+          }}>
+            {/* Export Data */}
+            <div style={{
+              flex: 1,
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '24px',
+              padding: '30px',
+              border: '2px solid rgba(255, 255, 255, 0.15)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
+                <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.15)', borderRadius: '12px' }}>
+                  <Package size={24} color="white" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '4px' }}>
+                    Carry With Me
+                  </h3>
+                  <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+                    Export your journal
+                  </p>
+                </div>
               </div>
-              <div style={{ flex: 1 }}>
-                <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '6px' }}>
-                  Carry With Me
-                </h2>
-                <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
-                  Download your journal entries as a keepsake
-                </p>
-              </div>
+              <button
+                onClick={handleExport}
+                disabled={entries.length === 0}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  background: entries.length === 0
+                    ? 'rgba(255, 255, 255, 0.08)'
+                    : exported
+                      ? 'linear-gradient(135deg, #4ade80, #22c55e)'
+                      : 'linear-gradient(135deg, #60a5fa, #3b82f6)',
+                  border: 'none',
+                  borderRadius: '14px',
+                  color: entries.length === 0 ? 'rgba(255, 255, 255, 0.4)' : 'white',
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  cursor: entries.length === 0 ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px'
+                }}
+              >
+                {exported ? '✅ Exported!' : <><Download size={20} /> Export {entries.length} Entries</>}
+              </button>
             </div>
-            <button
-              onClick={handleExport}
-              disabled={entries.length === 0}
-              style={{
-                padding: '15px 30px',
-                background: entries.length === 0 
-                  ? 'rgba(255, 255, 255, 0.1)'
-                  : exported 
-                    ? 'linear-gradient(135deg, #4ade80, #22c55e)' 
-                    : 'linear-gradient(135deg, #60a5fa, #3b82f6)',
-                border: 'none',
-                borderRadius: '12px',
-                color: entries.length === 0 ? 'rgba(255, 255, 255, 0.5)' : 'white',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: entries.length === 0 ? 'not-allowed' : 'pointer',
-                boxShadow: entries.length === 0 ? 'none' : exported ? '0 8px 30px rgba(74, 222, 128, 0.4)' : '0 8px 30px rgba(96, 165, 250, 0.4)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                transition: 'all 0.3s',
-              }}
-            >
-              {exported ? (
-                <>✅ Carried Away!</>
-              ) : (
-                <>
-                  <Download size={20} /> 
-                  {entries.length === 0 ? 'No entries yet' : `Carry ${entries.length} ${entries.length === 1 ? 'Entry' : 'Entries'}`}
-                </>
-              )}
-            </button>
-            <p style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '12px' }}>
-              Your entries will be saved as a JSON file. Media files are not included.
-            </p>
+
+            {/* Clear Cache */}
+            <div style={{
+              flex: 1,
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '24px',
+              padding: '30px',
+              border: '2px solid rgba(255, 255, 255, 0.15)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
+                <div style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.15)', borderRadius: '12px' }}>
+                  <Trash2 size={24} color="white" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '4px' }}>
+                    Clear Cache
+                  </h3>
+                  <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+                    Fix loading issues
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={handleClearCache}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '14px',
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  transition: 'all 0.3s'
+                }}
+              >
+                <Trash2 size={20} /> Clear Cache
+              </button>
+            </div>
           </div>
 
-          {/* Clear Cache */}
-          <div className="dashboard-card" style={{ animationDelay: '0.85s' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-              <div style={{ 
-                padding: '12px', 
-                background: 'rgba(255, 255, 255, 0.2)', 
-                borderRadius: '12px'
-              }}>
-                <Trash2 size={24} color="white" />
+          {/* CARD 5: Security Settings */}
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '24px',
+            padding: '35px',
+            marginBottom: '40px',
+            border: '2px solid rgba(255, 255, 255, 0.15)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '25px' }}>
+              <div style={{ padding: '14px', background: 'rgba(255, 255, 255, 0.15)', borderRadius: '14px' }}>
+                <Shield size={28} color="white" />
               </div>
-              <div style={{ flex: 1 }}>
-                <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '6px' }}>
-                  Clear Cache
-                </h2>
-                <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
-                  Fix loading issues by resetting the application cache
-                </p>
-              </div>
+              <h2 style={{ fontSize: '28px', fontWeight: '700', color: 'white', margin: 0 }}>
+                Security
+              </h2>
             </div>
-            <button
-              onClick={handleClearCache}
-              style={{
-                padding: '15px 30px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '12px',
-                color: 'white',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                transition: 'all 0.3s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-              }}
-            >
-              <Trash2 size={20} /> Clear App Cache
-            </button>
-          </div>
-
-          {/* Security Settings */}
-          <div className="dashboard-card" style={{ animationDelay: '0.7s' }}>
             <SecuritySettings />
           </div>
 
-          {/* Save Button */}
-          <div style={{ display: 'flex', justifyContent: 'center', animation: 'fadeIn 1s ease-out 0.9s backwards' }}>
-            <button 
+          {/* Save Button - Big & Prominent */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <button
               onClick={handleSave}
-              className="dashboard-new-entry-btn"
-              style={{ 
-                fontSize: '18px', 
-                padding: '18px 50px',
-                background: saved ? 'linear-gradient(135deg, #4ade80, #22c55e)' : undefined,
-                boxShadow: saved ? '0 10px 30px rgba(74, 222, 128, 0.5)' : undefined
+              style={{
+                fontSize: '22px',
+                fontWeight: '700',
+                padding: '22px 60px',
+                background: saved
+                  ? 'linear-gradient(135deg, #4ade80, #22c55e)'
+                  : 'linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.15))',
+                border: '3px solid rgba(255,255,255,0.4)',
+                borderRadius: '20px',
+                color: 'white',
+                cursor: 'pointer',
+                boxShadow: saved ? '0 12px 40px rgba(74, 222, 128, 0.5)' : '0 8px 30px rgba(0,0,0,0.3)',
+                transition: 'all 0.3s',
+                letterSpacing: '1px'
               }}
             >
-              <span>{saved ? '✅ Boundaries Set!' : '💾 Set Boundaries'}</span>
+              {saved ? '✅ Boundaries Set!' : '💾 Set Boundaries'}
             </button>
           </div>
         </div>

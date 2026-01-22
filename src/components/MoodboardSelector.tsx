@@ -127,7 +127,7 @@ const moodboards = [
 // Function to get current time-based moodboard
 const getCurrentTimeBasedMoodboard = (): string => {
   const hour = new Date().getHours();
-  
+
   if (hour >= 5 && hour < 7) return 'dawn';           // 5 AM - 7 AM
   if (hour >= 7 && hour < 12) return 'morning';       // 7 AM - 12 PM
   if (hour >= 12 && hour < 15) return 'afternoon';    // 12 PM - 3 PM
@@ -159,7 +159,7 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
   };
 
   return (
-    <div 
+    <div
       style={{
         minHeight: '100vh',
         background: selectedBoard.gradient,
@@ -171,8 +171,8 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
       }}
     >
       {/* Curved Time Navigation */}
-      <div style={{ 
-        width: '100%', 
+      <div style={{
+        width: '100%',
         maxWidth: '700px',
         marginBottom: '40px',
         position: 'relative'
@@ -186,7 +186,7 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
             strokeWidth="2"
             opacity="0.4"
           />
-          
+
           {/* Time points */}
           {moodboards.map((board, index) => {
             const totalBoards = moodboards.length;
@@ -194,7 +194,7 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
             const x = 50 + Math.cos(Math.PI - angle) * 300;
             const y = 100 - Math.sin(angle) * 70;
             const isSelected = selectedMoodboard === board.id;
-            
+
             return (
               <g key={board.id}>
                 <circle
@@ -215,8 +215,8 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
                   fill={selectedBoard.textColor}
                   fontSize={isSelected ? "14" : "11"}
                   fontWeight={isSelected ? "700" : "400"}
-                  style={{ 
-                    cursor: 'pointer', 
+                  style={{
+                    cursor: 'pointer',
                     userSelect: 'none',
                     textTransform: 'uppercase',
                     letterSpacing: '1px'
@@ -235,175 +235,184 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
       </div>
 
       {/* Title Section */}
-      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <div style={{ 
-          fontSize: '14px', 
-          fontWeight: '500',
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <div style={{
+          fontSize: '18px',
+          fontWeight: '600',
           color: selectedBoard.textColor,
-          letterSpacing: '3px',
-          marginBottom: '15px',
-          opacity: 0.8
+          letterSpacing: '4px',
+          marginBottom: '12px',
+          opacity: 0.9,
+          textTransform: 'uppercase'
         }}>
           {selectedBoard.name}
         </div>
-        <h1 style={{ 
-          fontSize: '56px', 
-          fontWeight: '700', 
+        <h1 style={{
+          fontSize: '72px',
+          fontWeight: '800',
           color: selectedBoard.titleColor,
           margin: 0,
-          marginBottom: '5px',
-          letterSpacing: '2px',
+          marginBottom: '0',
+          letterSpacing: '3px',
           textTransform: 'uppercase',
-          textShadow: '0 2px 20px rgba(0,0,0,0.2)'
+          textShadow: '0 4px 30px rgba(0,0,0,0.3)',
+          lineHeight: '0.95'
         }}>
           {selectedBoard.name}
         </h1>
-        <h1 style={{ 
-          fontSize: '56px', 
-          fontWeight: '700', 
+        <h1 style={{
+          fontSize: '72px',
+          fontWeight: '800',
           color: selectedBoard.titleColor,
           margin: 0,
-          marginBottom: '15px',
-          letterSpacing: '3px',
+          marginBottom: '12px',
+          letterSpacing: '4px',
           textTransform: 'uppercase',
-          textShadow: '0 2px 20px rgba(0,0,0,0.2)'
+          textShadow: '0 4px 30px rgba(0,0,0,0.3)',
+          lineHeight: '1'
         }}>
           JOURNALING
         </h1>
-        <div style={{ 
-          fontSize: '18px', 
-          fontWeight: '400',
+        <div style={{
+          fontSize: '22px',
+          fontWeight: '500',
           color: selectedBoard.textColor,
-          letterSpacing: '4px',
-          opacity: 0.9
+          letterSpacing: '6px',
+          opacity: 0.95,
+          textTransform: 'uppercase'
         }}>
           {selectedBoard.subtitle}
         </div>
       </div>
 
-      {/* Main Content Grid */}
+      {/* Main Content - New Layout: 2 flex + 2 horizontal */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '30px',
         maxWidth: '900px',
         width: '100%',
-        marginBottom: '40px'
+        marginBottom: '40px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+        padding: '0 10px'
       }}>
-        {/* Left Column - Default Ambience */}
+        {/* Top Row - 2 Cards Side by Side */}
         <div style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          borderRadius: '12px',
-          padding: '40px 30px',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '30px',
-          backdropFilter: 'blur(10px)'
+          gap: '20px',
+          width: '100%'
         }}>
-          {/* Icons */}
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '30px',
-            alignItems: 'center'
+          {/* Card 1 - Default Ambience */}
+          <div style={{
+            flex: 1,
+            background: 'rgba(0, 0, 0, 0.4)',
+            borderRadius: '16px',
+            padding: '30px 24px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '20px',
+            backdropFilter: 'blur(10px)',
+            minHeight: '320px'
           }}>
-            {selectedBoard.icons.map((icon, idx) => (
-              <div key={idx} style={{ 
-                fontSize: '60px',
-                filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.3))',
-                opacity: 0.8
-              }}>
-                {icon}
-              </div>
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div style={{ 
-            width: '80%', 
-            height: '2px', 
-            background: selectedBoard.textColor,
-            opacity: 0.3,
-            margin: '10px 0'
-          }}></div>
-
-          {/* Default Ambience Text */}
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ 
-              fontSize: '16px', 
-              fontWeight: '600',
-              color: selectedBoard.textColor,
-              letterSpacing: '2px',
-              marginBottom: '20px',
-              textTransform: 'uppercase'
+            {/* Icons Row */}
+            <div style={{
+              display: 'flex',
+              gap: '20px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexWrap: 'wrap'
             }}>
-              DEFAULT AMBIENCE
-            </div>
-
-            {/* Ambience List */}
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              gap: '12px',
-              alignItems: 'flex-start',
-              width: '100%'
-            }}>
-              {selectedBoard.ambiences.map((ambience, idx) => (
-                <div 
-                  key={idx}
-                  onClick={() => handleSelectAmbience(ambience.name, ambience.free)}
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center',
-                    gap: '12px',
-                    fontSize: '14px',
-                    color: selectedBoard.textColor,
-                    cursor: 'pointer',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    width: '100%',
-                    background: selectedAmbience === ambience.name 
-                      ? 'rgba(255,255,255,0.15)' 
-                      : 'transparent',
-                    transition: 'all 0.3s'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (ambience.free) {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = selectedAmbience === ambience.name 
-                      ? 'rgba(255,255,255,0.15)' 
-                      : 'transparent';
-                  }}
-                >
-                  <span style={{ fontSize: '10px' }}>○</span>
-                  <span>{ambience.name}</span>
-                  {!ambience.free && (
-                    <Lock size={14} style={{ marginLeft: 'auto' }} />
-                  )}
+              {selectedBoard.icons.map((icon, idx) => (
+                <div key={idx} style={{
+                  fontSize: '48px',
+                  filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.3))',
+                  opacity: 0.9
+                }}>
+                  {icon}
                 </div>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Right Column - Theme Images */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px'
-        }}>
-          {selectedBoard.themes.map((theme, idx) => (
-            <div 
-              key={idx}
+            {/* Divider */}
+            <div style={{
+              width: '80%',
+              height: '2px',
+              background: selectedBoard.textColor,
+              opacity: 0.3
+            }}></div>
+
+            {/* Default Ambience Text */}
+            <div style={{ textAlign: 'center', width: '100%' }}>
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: selectedBoard.textColor,
+                letterSpacing: '3px',
+                marginBottom: '16px',
+                textTransform: 'uppercase'
+              }}>
+                DEFAULT AMBIENCE
+              </div>
+
+              {/* Ambience List */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+                alignItems: 'flex-start',
+                width: '100%'
+              }}>
+                {selectedBoard.ambiences.map((ambience, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => handleSelectAmbience(ambience.name, ambience.free)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontSize: '16px',
+                      color: selectedBoard.textColor,
+                      cursor: 'pointer',
+                      padding: '10px 14px',
+                      borderRadius: '10px',
+                      width: '100%',
+                      background: selectedAmbience === ambience.name
+                        ? 'rgba(255,255,255,0.2)'
+                        : 'transparent',
+                      transition: 'all 0.3s',
+                      fontWeight: '500'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (ambience.free) {
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = selectedAmbience === ambience.name
+                        ? 'rgba(255,255,255,0.2)'
+                        : 'transparent';
+                    }}
+                  >
+                    <span style={{ fontSize: '12px' }}>○</span>
+                    <span>{ambience.name}</span>
+                    {!ambience.free && (
+                      <Lock size={16} style={{ marginLeft: 'auto' }} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2 - First Theme Image */}
+          {selectedBoard.themes[0] && (
+            <div
               style={{
+                flex: 1,
                 position: 'relative',
-                borderRadius: '12px',
+                borderRadius: '16px',
                 overflow: 'hidden',
-                height: selectedBoard.themes.length === 2 ? '220px' : '150px',
+                minHeight: '320px',
                 boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
                 cursor: 'pointer',
                 transition: 'transform 0.3s'
@@ -415,9 +424,9 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
                 e.currentTarget.style.transform = 'scale(1)';
               }}
             >
-              <img 
-                src={theme.image} 
-                alt={theme.name}
+              <img
+                src={selectedBoard.themes[0].image}
+                alt={selectedBoard.themes[0].name}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -429,43 +438,136 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
                 bottom: 0,
                 left: 0,
                 right: 0,
-                padding: '20px',
+                padding: '24px',
                 background: 'rgba(0, 0, 0, 0.7)',
                 backdropFilter: 'blur(5px)',
                 color: selectedBoard.textColor,
-                fontSize: '15px',
-                fontWeight: '600',
-                letterSpacing: '1.5px',
+                fontSize: '18px',
+                fontWeight: '700',
+                letterSpacing: '2px',
                 textTransform: 'uppercase',
                 textAlign: 'center'
               }}>
-                {theme.name}
+                {selectedBoard.themes[0].name}
               </div>
-            </div>
-          ))}
-
-          {/* CEO Hymn Layer (if available) */}
-          {selectedBoard.ambiences.some(a => a.name.includes('CEO Hymn')) && (
-            <div style={{
-              background: 'rgba(0, 0, 0, 0.6)',
-              borderRadius: '12px',
-              padding: '25px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '12px',
-              color: selectedBoard.textColor,
-              fontSize: '16px',
-              fontWeight: '600',
-              letterSpacing: '1px',
-              backdropFilter: 'blur(10px)',
-              flex: 1
-            }}>
-              <Lock size={20} />
-              <span>CEO Hymn Layer</span>
             </div>
           )}
         </div>
+
+        {/* Bottom Row - 2 Horizontal Cards Stacked */}
+        {selectedBoard.themes[1] && (
+          <div
+            style={{
+              position: 'relative',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              height: '180px',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+              cursor: 'pointer',
+              transition: 'transform 0.3s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.01)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <img
+              src={selectedBoard.themes[1].image}
+              alt={selectedBoard.themes[1].name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: '24px',
+              background: 'rgba(0, 0, 0, 0.7)',
+              backdropFilter: 'blur(5px)',
+              color: selectedBoard.textColor,
+              fontSize: '18px',
+              fontWeight: '700',
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              textAlign: 'center'
+            }}>
+              {selectedBoard.themes[1].name}
+            </div>
+          </div>
+        )}
+
+        {/* Third Theme or CEO Hymn Layer */}
+        {selectedBoard.themes[2] ? (
+          <div
+            style={{
+              position: 'relative',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              height: '180px',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+              cursor: 'pointer',
+              transition: 'transform 0.3s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.01)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <img
+              src={selectedBoard.themes[2].image}
+              alt={selectedBoard.themes[2].name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: '24px',
+              background: 'rgba(0, 0, 0, 0.7)',
+              backdropFilter: 'blur(5px)',
+              color: selectedBoard.textColor,
+              fontSize: '18px',
+              fontWeight: '700',
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              textAlign: 'center'
+            }}>
+              {selectedBoard.themes[2].name}
+            </div>
+          </div>
+        ) : selectedBoard.ambiences.some(a => a.name.includes('CEO Hymn')) && (
+          <div style={{
+            background: 'rgba(0, 0, 0, 0.6)',
+            borderRadius: '16px',
+            padding: '30px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '14px',
+            color: selectedBoard.textColor,
+            fontSize: '20px',
+            fontWeight: '700',
+            letterSpacing: '2px',
+            backdropFilter: 'blur(10px)',
+            textTransform: 'uppercase'
+          }}>
+            <Lock size={24} />
+            <span>CEO Hymn Layer</span>
+          </div>
+        )}
       </div>
 
       {/* Begin Journaling Button */}
@@ -477,8 +579,8 @@ export const MoodboardSelector: React.FC<MoodboardSelectorProps> = ({ onSelect }
           fontSize: '18px',
           fontWeight: '700',
           color: 'white',
-          background: selectedAmbience 
-            ? `linear-gradient(135deg, ${selectedBoard.textColor}, ${selectedBoard.titleColor})` 
+          background: selectedAmbience
+            ? `linear-gradient(135deg, ${selectedBoard.textColor}, ${selectedBoard.titleColor})`
             : 'rgba(0,0,0,0.3)',
           border: 'none',
           borderRadius: '50px',

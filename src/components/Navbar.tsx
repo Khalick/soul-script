@@ -493,59 +493,41 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
         <button
           className={`mobile-nav-item ${currentView === 'home' ? 'active' : ''}`}
           onClick={() => handleNavigation('home')}
-          style={{
-            background: currentView === 'home'
-              ? 'rgba(255, 255, 255, 0.2)'
-              : 'rgba(255, 255, 255, 0.05)',
-            border: '2px solid rgba(255, 255, 255, 0.2)',
-          }}
         >
-          <span style={{ fontSize: '20px' }}>🏠</span>
-          <span style={{ fontSize: '11px', fontWeight: '600' }}>Sanctuary</span>
+          <span style={{ fontSize: '24px' }}>🏠</span>
+          <span style={{ fontSize: '14px', fontWeight: '600' }}>Home</span>
         </button>
 
-
+        <button
+          className={`mobile-nav-item ${currentView === 'timeline' ? 'active' : ''}`}
+          onClick={() => handleNavigation('timeline')}
+        >
+          <span style={{ fontSize: '24px' }}>📅</span>
+          <span style={{ fontSize: '14px', fontWeight: '600' }}>Trails</span>
+        </button>
 
         <button
           className={`mobile-nav-item ${currentView === 'analytics' ? 'active' : ''}`}
           onClick={() => handleNavigation('analytics')}
-          style={{
-            background: currentView === 'analytics'
-              ? 'rgba(255, 255, 255, 0.2)'
-              : 'rgba(255, 255, 255, 0.05)',
-            border: '2px solid rgba(255, 255, 255, 0.2)',
-          }}
         >
-          <span style={{ fontSize: '20px' }}>📊</span>
-          <span style={{ fontSize: '11px', fontWeight: '600' }}>Insights</span>
+          <span style={{ fontSize: '24px' }}>📊</span>
+          <span style={{ fontSize: '14px', fontWeight: '600' }}>Insights</span>
         </button>
 
         <button
           className={`mobile-nav-item ${currentView === 'community' ? 'active' : ''}`}
           onClick={() => handleNavigation('community')}
-          style={{
-            background: currentView === 'community'
-              ? 'rgba(255, 255, 255, 0.2)'
-              : 'rgba(255, 255, 255, 0.05)',
-            border: '2px solid rgba(255, 255, 255, 0.2)',
-          }}
         >
-          <span style={{ fontSize: '20px' }}>👥</span>
-          <span style={{ fontSize: '11px', fontWeight: '600' }}>The Quiet</span>
+          <span style={{ fontSize: '24px' }}>👥</span>
+          <span style={{ fontSize: '14px', fontWeight: '600' }}>Community</span>
         </button>
 
         <button
           className={`mobile-nav-item ${currentView === 'settings' ? 'active' : ''}`}
           onClick={() => handleNavigation('settings')}
-          style={{
-            background: currentView === 'settings'
-              ? 'rgba(255, 255, 255, 0.2)'
-              : 'rgba(255, 255, 255, 0.05)',
-            border: '2px solid rgba(255, 255, 255, 0.2)',
-          }}
         >
-          <span style={{ fontSize: '20px' }}>⚙️</span>
-          <span style={{ fontSize: '11px', fontWeight: '600' }}>Boundaries</span>
+          <span style={{ fontSize: '24px' }}>⚙️</span>
+          <span style={{ fontSize: '14px', fontWeight: '600' }}>Settings</span>
         </button>
       </nav>
     </>
