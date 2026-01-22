@@ -1386,6 +1386,68 @@ input[type="range"]::-moz-range-thumb:hover {
   display: none;
 }
 
+/* =====================================================
+   SETTINGS PAGE - Mobile-First Responsive Styles
+   ===================================================== */
+
+/* Settings content container - MOBILE FIRST (full width) */
+.settings-content {
+  width: 100%;
+  padding: 24px 16px;
+  padding-bottom: 120px;
+  box-sizing: border-box;
+}
+
+/* Desktop: center and constrain width */
+@media (min-width: 769px) {
+  .settings-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+/* Settings save button - MOBILE FIRST (full width) */
+.settings-save-button-container {
+  position: fixed;
+  bottom: 90px;
+  left: 16px;
+  right: 16px;
+  z-index: 100;
+}
+
+/* Desktop: center and constrain width */
+@media (min-width: 769px) {
+  .settings-save-button-container {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 568px;
+  }
+}
+
+/* Settings card - full width on mobile */
+.settings-card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =====================================================
+   APP HEADER - Desktop visible, Mobile hidden
+   ===================================================== */
+
+/* Base: Desktop - show header with flex */
+.app-header {
+  display: flex;
+}
+
+/* Mobile: Hide header completely */
+@media (max-width: 768px) {
+  .app-header {
+    display: none !important;
+  }
+}
+
 /* ==========================================
    MOBILE RESPONSIVE STYLES
    ========================================== */

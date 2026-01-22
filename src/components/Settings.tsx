@@ -168,7 +168,7 @@ export function Settings() {
       <div className="dashboard-orb dashboard-orb3" style={{ background: `${favoriteColor}50` }}></div>
 
       <div className="dashboard-content-wrapper">
-        <div style={{ maxWidth: '480px', margin: '0 auto', padding: '24px 16px', paddingBottom: '120px' }}>
+        <div className="settings-content">
 
           {/* BOUNDARIES Header - Matching Mockup */}
           <div style={{ textAlign: 'center', marginBottom: '28px' }}>
@@ -749,15 +749,7 @@ export function Settings() {
           </div>
 
           {/* SET BOUNDARIES BUTTON - Bottom */}
-          <div style={{
-            position: 'fixed',
-            bottom: '90px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 'calc(100% - 32px)',
-            maxWidth: '448px',
-            zIndex: 100
-          }}>
+          <div className="settings-save-button-container">
             <button
               onClick={handleSave}
               style={{

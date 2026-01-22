@@ -78,14 +78,13 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
 
   return (
     <>
-      <header style={{
+      <header className="app-header" style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         zIndex: 1000,
         padding: '15px 20px',
-        display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         background: 'rgba(26, 26, 46, 0.95)',
