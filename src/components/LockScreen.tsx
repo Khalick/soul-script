@@ -34,7 +34,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
     if (pin.length < 6) {
       const newPin = pin + digit;
       setPin(newPin);
-      
+
       if (newPin.length === 6) {
         verifyPinAndUnlock(newPin);
       }
@@ -48,7 +48,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
   const verifyPinAndUnlock = async (enteredPin: string) => {
     setLoading(true);
-    
+
     try {
       if (!storedPinHash) {
         setError('PIN not set up. Please use password to login.');
@@ -58,7 +58,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
       // Verify PIN locally first (fast)
       const isValid = await verifyPin(enteredPin, storedPinHash);
-      
+
       if (isValid) {
         // PIN correct - unlock
         unlockApp();
@@ -69,7 +69,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
         // Wrong PIN
         const newAttempts = attempts + 1;
         setAttempts(newAttempts);
-        
+
         if (newAttempts >= MAX_ATTEMPTS) {
           setError(`Too many attempts. Please use your password to login.`);
           setShowPasswordLogin(true);
@@ -98,7 +98,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
     try {
       const success = await authenticateBiometric(biometricCredentialId);
-      
+
       if (success) {
         unlockApp();
         onUnlock();
@@ -136,7 +136,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
           .from('users')
           .select('*')
           .eq('id', data.user.id)
-          .single();
+          .maybeSingle();
 
         if (profile) {
           setUser({
@@ -189,11 +189,10 @@ export const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${
-                    i < pin.length
+                  className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${i < pin.length
                       ? 'bg-primary-400 border-primary-400 scale-125 shadow-lg shadow-primary-400/50'
                       : 'border-gray-600'
-                  }`}
+                    }`}
                 />
               ))}
             </div>

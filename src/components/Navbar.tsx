@@ -13,6 +13,17 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [showInstallToast, setShowInstallToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  // Detect iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+
+  // Detect Firefox (doesn't support PWA install on desktop)
+  const isFirefoxDesktop = /Firefox/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent);
+
+  // Check if install is possible (has native prompt OR is mobile browser that supports it)
+  const canShowInstallButton = !isFirefoxDesktop;
 
   useEffect(() => {
     // Check if already installed
@@ -36,6 +47,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
     const handleAppInstalled = () => {
       setIsInstalled(true);
       setDeferredPrompt(null);
+      showToast('App installed successfully! ✓');
     };
 
     window.addEventListener('appinstalled', handleAppInstalled);
@@ -46,24 +58,39 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
     };
   }, []);
 
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setShowInstallToast(true);
+    setTimeout(() => setShowInstallToast(false), 3000);
+  };
+
   const handleInstall = async () => {
-    if (!deferredPrompt) {
-      // iOS or already installed - do nothing
+    // If we have the native prompt (Chrome/Edge), use it directly
+    if (deferredPrompt) {
+      try {
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+
+        if (outcome === 'accepted') {
+          setIsInstalled(true);
+        }
+
+        setDeferredPrompt(null);
+      } catch (error) {
+        console.error('Install error:', error);
+        showToast('Installation failed. Please try again.');
+      }
       return;
     }
 
-    try {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-
-      if (outcome === 'accepted') {
-        setIsInstalled(true);
-      }
-
-      setDeferredPrompt(null);
-    } catch (error) {
-      console.error('Install error:', error);
+    // For iOS: Show brief toast with instructions
+    if (isIOS) {
+      showToast('Tap Share (↑) → Add to Home Screen');
+      return;
     }
+
+    // For other browsers without native support
+    showToast('Use browser menu → Install App');
   };
 
   const handleNavigation = (view: 'home' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy') => {
@@ -113,7 +140,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           alignItems: 'center'
         }} className="mobile-actions">
           {/* Install Button - Mobile */}
-          {!isInstalled && (
+          {!isInstalled && canShowInstallButton && (
             <button
               onClick={handleInstall}
               style={{
@@ -276,7 +303,7 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
             ⚙️ Boundaries
           </button>
 
-          {!isInstalled && (
+          {!isInstalled && canShowInstallButton && (
             <button
               onClick={handleInstall}
               style={{
@@ -529,6 +556,31 @@ export function Navbar({ currentView, onNavigate, onLogout }: NavbarProps) {
           <span style={{ fontSize: '14px', fontWeight: '600' }}>Settings</span>
         </button>
       </nav>
+
+      {/* Install Toast Notification */}
+      {showInstallToast && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '100px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'linear-gradient(135deg, #1A1A2E, #2D2A3E)',
+            padding: '14px 24px',
+            borderRadius: '12px',
+            color: 'white',
+            fontSize: '15px',
+            fontWeight: '500',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+            border: '1px solid rgba(224, 122, 95, 0.3)',
+            zIndex: 10000,
+            animation: 'fadeIn 0.3s ease-out',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          {toastMessage}
+        </div>
+      )}
     </>
   );
 }

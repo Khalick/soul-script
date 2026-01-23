@@ -46,7 +46,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
   const [showShareModal, setShowShareModal] = useState(false);
   const [savedEntryForSharing, setSavedEntryForSharing] = useState<any>(null);
   const [burnAfterWriting, setBurnAfterWriting] = useState(false);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -83,11 +83,11 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          
+
           // Calculate new dimensions (max 1920x1080)
           const maxWidth = 1920;
           const maxHeight = 1080;
-          
+
           if (width > maxWidth) {
             height = (height * maxWidth) / width;
             width = maxWidth;
@@ -96,13 +96,13 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
             width = (width * maxHeight) / height;
             height = maxHeight;
           }
-          
+
           canvas.width = width;
           canvas.height = height;
-          
+
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, width, height);
-          
+
           // Start with quality 0.9 and reduce if needed
           let quality = 0.9;
           const tryCompress = () => {
@@ -112,7 +112,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
                   resolve(file);
                   return;
                 }
-                
+
                 const sizeMB = blob.size / (1024 * 1024);
                 if (sizeMB <= maxSizeMB || quality <= 0.3) {
                   const compressedFile = new File([blob], file.name, {
@@ -130,7 +130,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
               quality
             );
           };
-          
+
           tryCompress();
         };
         img.src = e.target?.result as string;
@@ -160,7 +160,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
         const file = new File([audioBlob], `voice-${Date.now()}.webm`, { type: 'audio/webm' });
         setMediaFiles((prev) => [...prev, file]);
         stream.getTracks().forEach(track => track.stop());
-        
+
         // Notify that media recording stopped
         setMediaActive(false);
       };
@@ -185,7 +185,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     if (e.target.files) {
       const files = Array.from(e.target.files);
       const compressedFiles: File[] = [];
-      
+
       for (const file of files) {
         if (file.type.startsWith('image/')) {
           try {
@@ -199,7 +199,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
           compressedFiles.push(file);
         }
       }
-      
+
       setMediaFiles((prev) => [...prev, ...compressedFiles]);
     }
   };
@@ -216,16 +216,16 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
 
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
       });
       setStream(mediaStream);
       setShowCamera(true);
       setShowPhotoMenu(false);
-      
+
       // Notify that media recording is active
       setMediaActive(true);
-      
+
       // Wait for the next tick to ensure the video element is rendered
       setTimeout(() => {
         if (videoPreviewRef.current) {
@@ -261,42 +261,42 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
 
   const startVideoRecording = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'environment' },
-        audio: true 
+        audio: true
       });
       setStream(mediaStream);
       setShowVideoRecorder(true);
       setShowVideoMenu(false);
-      
+
       // Notify that media recording is active
       setMediaActive(true);
-      
+
       // Wait for the next tick to ensure the video element is rendered
       setTimeout(() => {
         if (videoPreviewRef.current) {
           videoPreviewRef.current.srcObject = mediaStream;
         }
       }, 100);
-      
+
       const recorder = new MediaRecorder(mediaStream);
       videoChunksRef.current = [];
-      
+
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           videoChunksRef.current.push(event.data);
         }
       };
-      
+
       recorder.onstop = () => {
         const blob = new Blob(videoChunksRef.current, { type: 'video/webm' });
         const file = new File([blob], `video-${Date.now()}.webm`, { type: 'video/webm' });
         handleVideoUpload({ target: { files: [file] } } as any);
-        
+
         // Notify that media recording stopped
         setMediaActive(false);
       };
-      
+
       videoRecorderRef.current = recorder;
       recorder.start();
     } catch (error) {
@@ -325,19 +325,29 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
     setShowCamera(false);
     setShowVideoRecorder(false);
     videoRecorderRef.current = null;
-    
+
     // Notify that media recording stopped
     setMediaActive(false);
   };
 
   const handleSave = async () => {
     if (!user) return;
+
+    // For new entries, check if emotion check-in was completed
+    if (!editingEntry && (!currentEntry || !currentEntry.mood || !currentEntry.intensity)) {
+      setSaveNotification({
+        type: 'error',
+        message: 'Please complete your emotion check-in first before releasing your entry. Go back and select how you\'re feeling.'
+      });
+      return;
+    }
+
     setUploading(true);
-    
+
     try {
       // Check if offline - check both store state and navigator
       const currentlyOffline = !isOnline || !navigator.onLine;
-      
+
       if (currentlyOffline) {
         console.log('📵 Offline mode detected - saving locally');
         // Save offline
@@ -356,7 +366,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
             created_at: new Date().toISOString(),
             isSynced: false,
           };
-          
+
           addOfflineEntry(offlineEntry);
           addEntry(offlineEntry as any);
           setSaveNotification({
@@ -386,104 +396,104 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
 
           if (updateError) throw updateError;
 
-        // Upload new media files
-        // Verify authentication before uploading
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          throw new Error('Not authenticated. Please log in again.');
-        }
-
-        for (const file of mediaFiles) {
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${user.id}/${editingEntry.id}/${Date.now()}.${fileExt}`;
-          const filePath = fileName; // Remove 'journal-media/' prefix - bucket name is already in .from()
-
-          const { error: uploadError } = await supabase.storage
-            .from('journal-media')
-            .upload(filePath, file);
-
-          if (uploadError) {
-            console.error('Storage upload error:', uploadError);
-            throw uploadError;
+          // Upload new media files
+          // Verify authentication before uploading
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) {
+            throw new Error('Not authenticated. Please log in again.');
           }
 
-          const { data: urlData } = supabase.storage
-            .from('journal-media')
-            .getPublicUrl(filePath);
+          for (const file of mediaFiles) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${user.id}/${editingEntry.id}/${Date.now()}.${fileExt}`;
+            const filePath = fileName; // Remove 'journal-media/' prefix - bucket name is already in .from()
 
-          const { error: insertError } = await supabase.from('media_attachments').insert({
-            entry_id: editingEntry.id,
-            user_id: user.id,
-            type: file.type.startsWith('image/') ? 'photo' : file.type.startsWith('video/') ? 'video' : 'audio',
-            url: urlData.publicUrl,
-            size_bytes: file.size,
-            blur_faces: false,
-          });
+            const { error: uploadError } = await supabase.storage
+              .from('journal-media')
+              .upload(filePath, file);
 
-          if (insertError) {
-            console.error('Media insert error:', insertError);
-            console.error('Attempted user_id:', user.id);
-            console.error('Session user_id:', session.user.id);
-            throw insertError;
+            if (uploadError) {
+              console.error('Storage upload error:', uploadError);
+              throw uploadError;
+            }
+
+            const { data: urlData } = supabase.storage
+              .from('journal-media')
+              .getPublicUrl(filePath);
+
+            const { error: insertError } = await supabase.from('media_attachments').insert({
+              entry_id: editingEntry.id,
+              user_id: user.id,
+              type: file.type.startsWith('image/') ? 'photo' : file.type.startsWith('video/') ? 'video' : 'audio',
+              url: urlData.publicUrl,
+              size_bytes: file.size,
+              blur_faces: false,
+            });
+
+            if (insertError) {
+              console.error('Media insert error:', insertError);
+              console.error('Attempted user_id:', user.id);
+              console.error('Session user_id:', session.user.id);
+              throw insertError;
+            }
           }
-        }
 
-        updateEntry(editingEntry.id, { title, text_content: textContent });
-        setShowAffirmation(true);
-      } else {
-        // Creating a new entry
-        if (!currentEntry) return;
-        
-        // Calculate ephemeral_until if burn after writing is enabled (24 hours from now)
-        const ephemeralUntil = burnAfterWriting 
-          ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-          : null;
-        
-        const { data: entry, error: entryError } = await supabase
-          .from('journal_entries')
-          .insert({
-            user_id: user.id,
-            mood: currentEntry.mood,
-            intensity: currentEntry.intensity,
-            title: title || undefined,
-            text_content: textContent || undefined,
-            tags: currentEntry.tags || [],
-            is_public: false,
-            ephemeral_until: ephemeralUntil,
-          })
-          .select()
-          .single();
+          updateEntry(editingEntry.id, { title, text_content: textContent });
+          setShowAffirmation(true);
+        } else {
+          // Creating a new entry
+          if (!currentEntry) return;
 
-        if (entryError) throw entryError;
+          // TODO: Re-enable after applying burn-after-writing-schema.sql migration
+          // const ephemeralUntil = burnAfterWriting
+          //   ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+          //   : null;
 
-        for (const file of mediaFiles) {
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${user.id}/${entry.id}/${Date.now()}.${fileExt}`;
-          const filePath = fileName; // Remove 'journal-media/' prefix - bucket name is already in .from()
+          const { data: entry, error: entryError } = await supabase
+            .from('journal_entries')
+            .insert({
+              user_id: user.id,
+              mood: currentEntry.mood,
+              intensity: currentEntry.intensity,
+              title: title || undefined,
+              text_content: textContent || undefined,
+              tags: currentEntry.tags || [],
+              is_public: false,
+              // ephemeral_until: ephemeralUntil, // Requires DB migration: burn-after-writing-schema.sql
+            })
+            .select()
+            .single();
 
-          const { error: uploadError } = await supabase.storage
-            .from('journal-media')
-            .upload(filePath, file);
+          if (entryError) throw entryError;
 
-          if (uploadError) throw uploadError;
+          for (const file of mediaFiles) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${user.id}/${entry.id}/${Date.now()}.${fileExt}`;
+            const filePath = fileName; // Remove 'journal-media/' prefix - bucket name is already in .from()
 
-          const { data: urlData } = supabase.storage
-            .from('journal-media')
-            .getPublicUrl(filePath);
+            const { error: uploadError } = await supabase.storage
+              .from('journal-media')
+              .upload(filePath, file);
 
-          await supabase.from('media_attachments').insert({
-            entry_id: entry.id,
-            user_id: user.id,
-            type: file.type.startsWith('image/') ? 'photo' : file.type.startsWith('video/') ? 'video' : 'audio',
-            url: urlData.publicUrl,
-            size_bytes: file.size,
-            blur_faces: false,
-          });
-        }
+            if (uploadError) throw uploadError;
 
-        addEntry(entry);
-        setSavedEntryForSharing(entry); // Save for potential sharing
-        setShowAffirmation(true);
+            const { data: urlData } = supabase.storage
+              .from('journal-media')
+              .getPublicUrl(filePath);
+
+            await supabase.from('media_attachments').insert({
+              entry_id: entry.id,
+              user_id: user.id,
+              type: file.type.startsWith('image/') ? 'photo' : file.type.startsWith('video/') ? 'video' : 'audio',
+              url: urlData.publicUrl,
+              size_bytes: file.size,
+              blur_faces: false,
+            });
+          }
+
+          addEntry(entry);
+          setSavedEntryForSharing(entry); // Save for potential sharing
+          setShowAffirmation(true);
         }
       }
     } catch (error) {
@@ -680,22 +690,22 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
                 {showTemplates ? 'Hide Templates' : 'Use Template'}
               </button>
             </div>
-            
+
             {showTemplates && (
-              <div style={{ 
-                marginBottom: '20px', 
-                padding: '15px', 
-                background: 'rgba(255, 255, 255, 0.05)', 
+              <div style={{
+                marginBottom: '20px',
+                padding: '15px',
+                background: 'rgba(255, 255, 255, 0.05)',
                 borderRadius: '12px',
                 animation: 'fadeIn 0.3s ease-out'
               }}>
                 <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '15px' }}>
                   Choose a template to get started:
                 </p>
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', 
-                  gap: '10px' 
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+                  gap: '10px'
                 }}>
                   {[...journalTemplates, ...customTemplates].map((template) => (
                     <button
@@ -708,11 +718,11 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
                       }}
                       style={{
                         padding: '12px',
-                        background: selectedTemplate === template.id 
-                          ? 'rgba(255, 255, 255, 0.25)' 
+                        background: selectedTemplate === template.id
+                          ? 'rgba(255, 255, 255, 0.25)'
                           : 'rgba(255, 255, 255, 0.1)',
-                        border: selectedTemplate === template.id 
-                          ? '2px solid white' 
+                        border: selectedTemplate === template.id
+                          ? '2px solid white'
                           : '2px solid rgba(255, 255, 255, 0.2)',
                         borderRadius: '12px',
                         color: 'white',
@@ -731,8 +741,8 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
                         e.currentTarget.style.transform = 'scale(1.05)';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = selectedTemplate === template.id 
-                          ? 'rgba(255, 255, 255, 0.25)' 
+                        e.currentTarget.style.background = selectedTemplate === template.id
+                          ? 'rgba(255, 255, 255, 0.25)'
                           : 'rgba(255, 255, 255, 0.1)';
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
@@ -753,11 +763,11 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
               onChange={(e) => setTitle(e.target.value)}
               style={{ width: '100%', padding: '15px 20px', background: 'rgba(255, 255, 255, 0.1)', border: '2px solid rgba(255, 255, 255, 0.2)', borderRadius: '12px', fontSize: '18px', fontWeight: '600', color: 'white', outline: 'none', marginBottom: '20px' }}
             />
-            
+
             {/* Dear Prompt */}
-            <div style={{ 
-              fontSize: '18px', 
-              fontWeight: '600', 
+            <div style={{
+              fontSize: '18px',
+              fontWeight: '600',
               color: favoriteColor,
               marginBottom: '12px',
               fontStyle: 'italic',
@@ -766,7 +776,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
             }}>
               {dearPrompt},
             </div>
-            
+
             <textarea
               placeholder="What's on your mind?"
               value={textContent}
@@ -784,7 +794,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
               <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handlePhotoUpload} style={{ display: 'none' }} />
               <input ref={videoInputRef} type="file" accept="video/*" onChange={handleVideoUpload} style={{ display: 'none' }} />
               <input ref={videoCameraInputRef} type="file" accept="video/*" capture="environment" onChange={handleVideoUpload} style={{ display: 'none' }} />
-              
+
               {/* Photo Button with Dropdown */}
               <div style={{ position: 'relative' }}>
                 <button onClick={() => setShowPhotoMenu(!showPhotoMenu)} style={{ padding: '15px 25px', background: 'rgba(255, 255, 255, 0.15)', border: '2px solid rgba(255, 255, 255, 0.3)', borderRadius: '15px', color: 'white', fontSize: '16px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.3s', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -843,7 +853,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
 
           {/* Burn After Writing Toggle */}
           {!editingEntry && (
-            <div 
+            <div
               style={{
                 marginTop: '20px',
                 padding: '20px',
@@ -862,13 +872,13 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
                       Burn After Writing
                     </h4>
                   </div>
-                  <p style={{ 
-                    margin: 0, 
-                    fontSize: '14px', 
+                  <p style={{
+                    margin: 0,
+                    fontSize: '14px',
                     color: 'rgba(255, 255, 255, 0.7)',
                     lineHeight: '1.5'
                   }}>
-                    {burnAfterWriting 
+                    {burnAfterWriting
                       ? '⚠️ This entry will automatically delete in 24 hours. Write freely, without fear of permanence.'
                       : 'Enable to automatically delete this entry after 24 hours. Perfect for cathartic venting.'}
                   </p>
@@ -877,8 +887,8 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
                   onClick={() => setBurnAfterWriting(!burnAfterWriting)}
                   style={{
                     padding: '12px 30px',
-                    background: burnAfterWriting 
-                      ? 'linear-gradient(135deg, #ef4444, #dc2626)' 
+                    background: burnAfterWriting
+                      ? 'linear-gradient(135deg, #ef4444, #dc2626)'
                       : 'rgba(255, 255, 255, 0.15)',
                     border: `2px solid ${burnAfterWriting ? '#ef4444' : 'rgba(255, 255, 255, 0.3)'}`,
                     borderRadius: '12px',
@@ -907,7 +917,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
               Cancel
             </button>
             {!editingEntry && textContent && (
-              <button 
+              <button
                 onClick={() => {
                   const templateName = title || `Custom Template ${customTemplates.length + 1}`;
                   addCustomTemplate({
@@ -920,15 +930,15 @@ const JournalEditor: React.FC<JournalEditorProps> = ({ onSave, onCancel, editing
                   });
                   alert(`✨ Template "${templateName}" saved! You can use it for future entries.`);
                 }}
-                style={{ 
-                  padding: '16px 40px', 
-                  background: 'rgba(255, 255, 255, 0.15)', 
-                  border: '2px solid rgba(255, 255, 255, 0.3)', 
-                  borderRadius: '50px', 
-                  color: 'white', 
-                  fontSize: '16px', 
-                  fontWeight: '600', 
-                  cursor: 'pointer', 
+                style={{
+                  padding: '16px 40px',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: '50px',
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
                   transition: 'all 0.3s',
                   display: 'flex',
                   alignItems: 'center',

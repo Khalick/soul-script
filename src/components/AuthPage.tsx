@@ -103,7 +103,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
             .from('users')
             .select('*')
             .eq('id', data.user.id)
-            .single();
+            .maybeSingle();
 
           setUser({
             id: data.user.id,

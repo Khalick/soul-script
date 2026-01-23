@@ -34,7 +34,7 @@ export const SecuritySettings: React.FC = () => {
       .from('users')
       .select('trusted_devices')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
 
     if (data && data.trusted_devices) {
       setTrustedDevices(data.trusted_devices);

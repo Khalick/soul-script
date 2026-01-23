@@ -24,9 +24,9 @@ const Settings = lazy(() => import('./components/Settings').then(m => ({ default
 const LegacyMode = lazy(() => import('./components/LegacyMode'));
 const Analytics = lazy(() => import('./components/Analytics').then(m => ({ default: m.Analytics })));
 const Community = lazy(() => import('./components/Community').then(m => ({ default: m.Community })));
-const MoodboardSelector = lazy(() => import('./components/MoodboardSelector').then(m => ({ default: m.MoodboardSelector })));
 
-type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy' | 'moodboard';
+
+type View = 'home' | 'checkin' | 'editor' | 'timeline' | 'analytics' | 'community' | 'settings' | 'legacy';
 
 // Loading spinner for lazy-loaded components - Warm Dusk theme
 const LoadingSpinner = () => (
@@ -193,7 +193,7 @@ function App() {
           .from('users')
           .select('*')
           .eq('id', session.user.id)
-          .single()
+          .maybeSingle()
           .then(({ data: profile }) => {
             setUser({
               id: session.user.id,
@@ -374,14 +374,10 @@ function App() {
 
   const handleNewEntry = () => {
     setEditingEntry(null);
-    navigateToView('editor');
-  };
-
-  const handleMoodboardSelect = (moodboard: string, ambience: string) => {
-    // Store moodboard selection in settingsStore or journalStore
-    console.log('Selected:', moodboard, ambience);
     navigateToView('checkin');
   };
+
+
 
   const handleCheckInComplete = () => {
     navigateToView('editor');
@@ -517,11 +513,7 @@ function App() {
 
             {currentView === 'checkin' && <EmotionCheckIn onComplete={handleCheckInComplete} />}
 
-            {currentView === 'moodboard' && (
-              <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading...</div>}>
-                <MoodboardSelector onSelect={handleMoodboardSelect} />
-              </Suspense>
-            )}
+
 
             {currentView === 'editor' && (
               <JournalEditor
